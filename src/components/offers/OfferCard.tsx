@@ -55,7 +55,7 @@ export function OfferCard({ offer, className }: { offer: Offer; className?: stri
           <span className={cn("inline-flex size-9 items-center justify-center rounded-xl bg-cream-100", a.text)}>
             <Icon className="size-4" />
           </span>
-          {offer.expires && <span className="text-[11px] font-semibold text-muted">Till {new Date(offer.expires).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>}
+          {offer.expires && <span className="text-[11px] font-semibold text-muted max-sm:text-xs">Till {new Date(offer.expires).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>}
         </div>
         <h3 className="mt-3 font-display text-lg font-semibold leading-tight text-cocoa-900">{offer.title}</h3>
         <p className="mt-1 text-[13px] leading-snug text-muted">{offer.description}</p>
@@ -65,12 +65,12 @@ export function OfferCard({ offer, className }: { offer: Offer; className?: stri
               {offer.code}
             </span>
           ) : (
-            <button type="button" onClick={reveal} className="inline-flex items-center rounded-lg border border-dashed border-cocoa-900/30 bg-cream-100 px-3 py-1.5 font-mono text-sm font-bold tracking-[0.2em] text-cocoa-900/40 transition-colors hover:border-copper-500 hover:text-copper-600">
+            <button type="button" onClick={reveal} className="inline-flex items-center rounded-lg border border-dashed border-cocoa-900/30 bg-cream-100 px-3 py-1.5 font-mono text-sm font-bold tracking-[0.2em] text-cocoa-900/40 transition-colors hover:border-copper-500 hover:text-copper-600 max-lg:h-11">
               {offer.code.replace(/./g, "•")}
-              <span className="ml-2 font-sans text-[11px] font-bold uppercase tracking-wider text-copper-600">Reveal</span>
+              <span className="ml-2 font-sans text-[11px] font-bold uppercase tracking-wider text-copper-600 max-lg:text-xs">Reveal</span>
             </button>
           )}
-          <button type="button" onClick={copy} className="inline-flex size-9 items-center justify-center rounded-full text-cocoa-700 transition-colors hover:bg-cream-100" aria-label={`Copy code ${offer.code}`}>
+          <button type="button" onClick={copy} className="inline-flex size-9 items-center justify-center rounded-full text-cocoa-700 transition-colors hover:bg-cream-100 max-lg:size-11" aria-label={`Copy code ${offer.code}`}>
             <Copy className="size-4" />
           </button>
         </div>

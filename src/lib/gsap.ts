@@ -11,7 +11,8 @@ import { useGSAP } from "@gsap/react";
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, SplitText, useGSAP);
   gsap.defaults({ ease: "power3.out", duration: 0.8 });
-  ScrollTrigger.config({ ignoreMobileResize: true });
+  // limitCallbacks: enter/leave callbacks only fire on a real toggle, never for a trigger the scroll jumped past in one tick.
+  ScrollTrigger.config({ limitCallbacks: true, ignoreMobileResize: true });
 }
 
 /** Shared motion vocabulary — keep every animation on the same clock. */

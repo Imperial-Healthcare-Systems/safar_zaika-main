@@ -6,6 +6,7 @@ Frontend only: every flow works end to end on realistic mock data and a swappabl
 ```
 npm install
 npm run dev        # http://localhost:3000 (Next picks the next free port if 3000 is busy)
+# docs/viewports/index.html shows the whole site captured at phone, tablet and desktop widths
 npm run build && npm start
 npm run lint       # eslint (React Compiler rules on)
 npm run typecheck  # tsc --noEmit, strict
@@ -42,7 +43,7 @@ Also: `/order` hub, `/stations` explorer (four regions), `/bulk-order`, `/offers
 | Next.js 16 (App Router, Turbopack), React 19, TypeScript strict | App | Server pages export metadata; interactivity lives in client components |
 | Tailwind CSS v4 | Styling, design tokens | All tokens in `src/app/globals.css` (`@theme`), custom utilities (`container-x`, `signboard`, `led`, `led-panel`, `flap-cell`, `glass`, `gradient-*`, `map-grid`, `ticket-edge`); carousel CSS in `src/app/carousels.css` |
 | GSAP 3 + ScrollTrigger + MotionPathPlugin + SplitText + `@gsap/react` | Every animation: hero line reveal (SplitText), section entrances (`Reveal` variants: rise, slide, zoom, flip, tilt, clip, letters; no two neighbouring home sections share one), pinned horizontal "How it works" with the active card centred, route-line trains, the PNR discovery camera, fly-to-cart, modals, page wipe, split-flap boards, scroll skew | Registered once in `src/lib/gsap.ts`; `useGSAP` handles cleanup |
-| Lenis | Smooth scrolling | Single instance in `src/components/providers/SmoothScroll.tsx` ticked by `gsap.ticker`; `useScrollSkew` reads Lenis velocity to skew carousels; disabled for reduced motion; modals call `lockScroll()`; carousels mark `data-lenis-prevent-horizontal` |
+| Lenis | Smooth scrolling | Single instance in `src/components/providers/SmoothScroll.tsx` (lerp 0.08, native touch) ticked by `gsap.ticker` with `lagSmoothing(0)` and `ScrollTrigger.update`; `useScrollSkew` reads Lenis velocity to skew carousels; disabled for reduced motion; modals call `lockScroll()`; carousels mark `data-lenis-prevent-horizontal` |
 | Swiper 14 | Categories (endless crawl), dishes (autoplay), restaurants (endless crawl), offers (autoplay), menu "Popular" row | Every instance: Navigation arrows (`CarouselArrows`), Mousewheel with axis split, Keyboard, A11y; every home carousel moves on its own and pauses on hover; a drag guard (`useDragGuard`) means a drag never click-throughs |
 | react-slick + slick-carousel | Testimonials only | Slick's `centerMode` + `centerPadding` + autoplay with custom dots is the classic quote-carousel pattern and needs no extra code; Swiper stays the engine everywhere else so two engines never compete on one page |
 | Three.js + React Three Fiber | Hero only: articulated express train (loco + 3 coaches) on a dual-rail track with sleepers, ballast, platforms, lamps, shadows | Fully procedural (canvas-painted livery, no model files), dynamically imported, md+ screens with WebGL only; SVG `RouteLine` fallback otherwise |
@@ -112,6 +113,7 @@ Type: the logo's tagline is set in Bahnschrift, a DIN-style railway signage face
 - **3D hero train** (`HeroScene`): a double-ended trainset (two lofted bullet-nose driving cars + two coaches) in the Safar Zaika livery with wraparound windscreens, lit window bands, clearcoat body under a procedural dusk environment map, sway and bob, headlight bloom and red tail lamps, on real rails with sleepers, ballast, canopied platforms, lamps and a colour-light signal; ~59 draw calls / ~38k triangles; a 2.5 s camera push-in on load.
 - **Meal windows** (`MealTimes`, hero tiles): breakfast, lunch, dinner and chai panels; the active one follows the scheduled arrival (or the clock) and links to `/restaurants?meal=…`, which filters kitchens by the dishes they serve in that window.
 - **Carousels**: arrows + wheel + keyboard everywhere, endless category and restaurant crawls, dish and offer autoplay, Slick testimonials, Lenis-velocity skew and heading parallax, drag guard.
+- **Loading and transitions**: a cocoa curtain carries the stacked logo over a platform track that one full train crosses, used for the first-load intro (the page then soft-lands, scaling and fading in) and for every client-side route change. Sections themselves enter with their own restrained reveals, no banner wipes.
 
 ## Operating model reflected in the UI (from the client MOM)
 
@@ -157,6 +159,7 @@ Payment: `CheckoutView` only collects a method; wire the gateway SDK behind "Con
 ## Performance notes
 
 - `next/image` with explicit `sizes` everywhere; AVIF/WebP enabled.
+- Scroll work is kept off the main thread: the navbar changes state only when it crosses the threshold, carousel crawls skip Swiper's per-tick relayout, split-flap boards share one 60 ms ticker and never spin off screen, route-line and map loops pause when out of view, and the hero's R3F canvas does not re-measure on scroll (`resize={{ scroll: false }}`).
 - Three.js/R3F loaded via `dynamic(..., { ssr: false })` only on the home hero, md+ with WebGL; `dpr` capped at 1.5; instanced sleepers and wheels; geometries, materials and textures disposed on unmount; no per-frame allocations.
 - GSAP plugins registered once; animations live inside `useGSAP` (auto cleanup) or are killed on unmount; ScrollTrigger refreshes after route changes.
 - Lenis uses native scroll (no transform wrapper), so sticky/pinned elements and `next/link` scrolling behave normally.
@@ -177,4 +180,5 @@ Payment: `CheckoutView` only collects a method; wire the gateway SDK behind "Con
 - Photography is stock; the train is represented by the brand glyph, SVG and the procedural 3D scene.
 - `robots` is set to `noindex` for the prototype.
 - In dev, React Three Fiber logs an upstream `THREE.Clock` deprecation warning once; it is harmless.
-- Verified in Chrome via Playwright at 1440×900 and 390×844 (full PNR → tracking click-through on both, every route screenshotted); Safari/Firefox were not exercised in this pass.
+- Verified in Chrome via Playwright against a production build at 1440×900, 768×1024 and 390×844 (full PNR → tracking click-through on desktop and phone, every route screenshotted); Safari/Firefox were not exercised in this pass.
+- Scroll pacing on the production build while wheel-scrolling the whole home page: no frame over 50 ms on either desktop or phone (p95 27.8 ms desktop, 7.0 ms phone).

@@ -19,7 +19,8 @@ export function useScrollSkew(ref: RefObject<HTMLElement | null>, { max = 6 }: {
   useEffect(() => {
     const el = ref.current;
     if (!el || prefersReducedMotion()) return;
-    const skewTo = gsap.quickTo(el, "skewX", { duration: 0.4, ease: "power3" });
+    // force3D: the track keeps its own compositor layer between scroll bursts, so a skew is a composite, not a re-raster of every card.
+    const skewTo = gsap.quickTo(el, "skewX", { duration: 0.4, ease: "power3", force3D: true });
     const apply = (velocity: number) => skewTo(clamp((velocity / FULL_SKEW_VELOCITY) * max, -max, max));
     const reset = () => {
       gsap.killTweensOf(el);
@@ -67,7 +68,7 @@ export function useHeadingParallax(ref: RefObject<HTMLElement | null>, { x = 0, 
       gsap.fromTo(
         el,
         { x, y },
-        { x: -x, y: -y, ease: "none", scrollTrigger: { trigger: el.closest("section") ?? el, start: "top bottom", end: "bottom top", scrub: true } },
+        { x: -x, y: -y, ease: "none", force3D: true, scrollTrigger: { trigger: el.closest("section") ?? el, start: "top bottom", end: "bottom top", scrub: true } },
       );
     },
     { scope: ref },
@@ -107,13 +108,19 @@ export function useCarouselCrawl(swiperRef: RefObject<SwiperClass | null>, { ena
       rest();
     };
     const view = ScrollTrigger.create({ trigger: el, start: "top bottom", end: "bottom top" });
+    let index = s.activeIndex;
     const tick = (_time: number, dt: number) => {
       if (!view.isActive || hovered || held || s.animating || performance.now() < idleUntil) return;
       if (s.wrapperEl.style.transitionDuration !== "0ms") s.setTransition(0);
       s.setTranslate(s.translate - (pxPerSec * Math.min(dt, 50)) / 1000);
       s.updateActiveIndex();
-      s.updateSlidesClasses();
-      s.loopFix({ direction: "next", byMousewheel: true });
+      // Swiper's loopFix re-measures every slide (updateSlides: inline margins + a forced layout), so it runs only
+      // when a slide boundary is crossed, which is also the only time the active/prev/next classes can change.
+      if (s.activeIndex !== index) {
+        s.updateSlidesClasses();
+        s.loopFix({ direction: "next", byMousewheel: true });
+        index = s.activeIndex;
+      }
     };
     el.addEventListener("pointerenter", onEnter);
     el.addEventListener("pointerleave", onLeave);

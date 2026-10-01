@@ -21,7 +21,7 @@ export function SmoothScroll() {
     if (reduced) return;
     const lenis = new Lenis({
       autoRaf: false,
-      lerp: 0.09,
+      lerp: 0.08,
       wheelMultiplier: 1,
       smoothWheel: true,
       syncTouch: false,

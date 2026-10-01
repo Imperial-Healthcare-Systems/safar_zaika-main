@@ -129,18 +129,42 @@ export function NetworkMap({ mode = "full", fit, fitPad, route, routePathRef, dr
     return () => ro.disconnect();
   }, []);
 
+  // Infinite tweens (drift, twinkle, marching dashes) only run while the map is on screen.
+  const loops = useRef<gsap.core.Tween[]>([]);
+  const visible = useRef(true);
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver((entries) => {
+      visible.current = entries.some((e) => e.isIntersecting);
+      loops.current.forEach((t) => (visible.current ? t.play() : t.pause()));
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const track = (t: gsap.core.Tween) => {
+    loops.current.push(t);
+    if (!visible.current) t.pause();
+    return t;
+  };
+  const untrack = (...ts: gsap.core.Tween[]) => {
+    loops.current = loops.current.filter((t) => !ts.includes(t));
+    ts.forEach((t) => t.kill());
+  };
+
   // Rotation drift + twinkle while searching.
   useEffect(() => {
     if (!spin || prefersReducedMotion()) return;
     const c = cam.current;
     const dots = dotsRef.current ? Array.from(dotsRef.current.children) : [];
-    const drift = gsap.to(c, { drift: "+=360", duration: 60, repeat: -1, ease: "none", onUpdate: () => applyCam(worldRef.current, c) });
-    const twinkle = gsap.to(dots, { opacity: 0.45, duration: 0.8, repeat: -1, yoyo: true, stagger: 0.27, ease: "sine.inOut" });
+    const drift = track(gsap.to(c, { drift: "+=360", duration: 60, repeat: -1, ease: "none", onUpdate: () => applyCam(worldRef.current, c) }));
+    const twinkle = track(gsap.to(dots, { opacity: 0.45, duration: 0.8, repeat: -1, yoyo: true, stagger: 0.27, ease: "sine.inOut" }));
     return () => {
-      drift.kill();
-      twinkle.kill();
+      untrack(drift, twinkle);
       gsap.set(dots, { opacity: 1 });
     };
+    // track/untrack are stable helpers over refs
+     
   }, [spin]);
 
   // Camera: jump on mount/resize, fly when the framing changes.
@@ -184,11 +208,12 @@ export function NetworkMap({ mode = "full", fit, fitPad, route, routePathRef, dr
     const el = flowRef.current;
     if (!flow || !route || !el || prefersReducedMotion()) return;
     const fade = gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.8, delay: drawDelay + 0.9 });
-    const march = gsap.to(el, { strokeDashoffset: -20, duration: 0.9, repeat: -1, ease: "none" });
+    const march = track(gsap.to(el, { strokeDashoffset: -20, duration: 0.9, repeat: -1, ease: "none" }));
     return () => {
       fade.kill();
-      march.kill();
+      untrack(march);
     };
+     
   }, [flow, drawDelay, route]);
 
   const d = useMemo(() => (route ? smoothPath(route) : ""), [route]);

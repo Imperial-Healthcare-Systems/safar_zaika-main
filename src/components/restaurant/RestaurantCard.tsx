@@ -79,7 +79,7 @@ export function RestaurantCard({ restaurant, className, showStation }: { restaur
           </span>
         </div>
         <div className="mt-3">
-          <div className="flex items-center justify-between text-[11px] font-semibold">
+          <div className="flex items-center justify-between text-[11px] font-semibold max-sm:text-xs">
             <span className="text-muted">Delivery confidence</span>
             <span className={r.deliveryConfidence >= 93 ? "text-leaf-600" : "text-copper-600"}>{r.deliveryConfidence}%</span>
           </div>
@@ -90,7 +90,7 @@ export function RestaurantCard({ restaurant, className, showStation }: { restaur
         {r.tags.length > 0 && (
           <ul className="mt-3 flex flex-wrap gap-1.5">
             {r.tags.slice(0, 3).map((t) => (
-              <li key={t} className="rounded-full bg-cream-100 px-2 py-0.5 text-[11px] font-semibold text-cocoa-700">
+              <li key={t} className="rounded-full bg-cream-100 px-2 py-0.5 text-[11px] font-semibold text-cocoa-700 max-sm:text-xs">
                 {t}
               </li>
             ))}

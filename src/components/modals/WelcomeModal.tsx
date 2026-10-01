@@ -16,12 +16,13 @@ const OPEN_AFTER_MS = 1600;
 export function WelcomeModal() {
   const open = useUIStore((s) => s.welcomeOpen);
   const setOpen = useUIStore((s) => s.setWelcomeOpen);
+  const introDone = useUIStore((s) => s.introDone);
 
-  // Mount effect = first page load of this session (Providers never remount on
-  // client navigation). The route is read from the window so later navigations
-  // to "/" never re-trigger it.
+  // Runs once the intro curtain has lifted (introDone flips once, on the first
+  // page load of this session; Providers never remount on client navigation).
+  // The route is read from the window so later navigations to "/" never re-trigger it.
   useEffect(() => {
-    if (window.location.pathname !== "/") return;
+    if (!introDone || window.location.pathname !== "/") return;
     try {
       if (sessionStorage.getItem(SEEN_KEY)) return;
     } catch {
@@ -37,7 +38,7 @@ export function WelcomeModal() {
       ui.setWelcomeOpen(true);
     }, OPEN_AFTER_MS);
     return () => window.clearTimeout(t);
-  }, []);
+  }, [introDone]);
 
   return (
     <Modal open={open} onClose={() => setOpen(false)} size="lg">

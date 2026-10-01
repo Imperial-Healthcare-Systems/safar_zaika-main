@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState, useSyncExternalStore } from "react";
+import { memo, useRef, useState, useSyncExternalStore } from "react";
 import { ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui";
 import { RouteLine } from "@/components/animations/RouteLine";
 import { SplitFlap } from "@/components/animations/SplitFlap";
-import { useIsMobile } from "@/hooks/useMediaQuery";
+import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
 import { toast } from "@/stores";
 
 /** The site map, read as a departures board. Times step like a timetable; platforms rotate 1-4. */
@@ -48,11 +48,35 @@ const serverClock = () => "--:--";
 
 const ledHead = "led text-[10px] tracking-[0.18em] text-[#ffb648]/70 sm:text-[11px]";
 
+/** One departure row. memo: a hover re-renders the two rows whose `hot` changed, not all 16 boards. */
+const Row = memo(function Row({ i, time, label, href, hot, small, onHot }: { i: number; time: string; label: string; href: string; hot: boolean; small: boolean; onHot: (i: number | null) => void }) {
+  return (
+    <li>
+      <Link
+        href={href}
+        aria-label={label}
+        onMouseEnter={() => onHot(i)}
+        onMouseLeave={() => onHot(null)}
+        onFocus={() => onHot(i)}
+        onBlur={() => onHot(null)}
+        className="grid grid-cols-[1fr_2.25rem] items-center gap-x-3 rounded-md px-1 py-[7px] outline-none transition-colors hover:bg-cream-50/4 focus-visible:bg-cream-50/8 sm:grid-cols-[3.5rem_1fr_2.5rem_auto]"
+      >
+        <span className="led hidden text-[13px] tabular-nums sm:block">{time}</span>
+        <SplitFlap text={label} length={15} delay={i * 55} trigger={small && i >= 8 ? "static" : "view"} className="text-[13px] sm:text-[15px]" />
+        <span className="led text-center text-[13px]">{(i % 4) + 1}</span>
+        <SplitFlap text={hot ? "Boarding" : "On time"} length={8} delay={i * 55 + 220} className="hidden text-[13px] sm:inline-flex" cellClassName={hot ? "text-gold-400" : "text-leaf-300"} />
+      </Link>
+    </li>
+  );
+});
+
 export function Footer() {
   const ref = useRef<HTMLElement>(null);
   const [progress, setProgress] = useState(0);
   const [boarding, setBoarding] = useState<number | null>(null);
   const isMobile = useIsMobile();
+  // Phones: the whole board is on screen at once, so only the first 8 rows flip; the rest show their text at once.
+  const small = useMediaQuery("(max-width: 639px)");
   const clock = useSyncExternalStore(subscribeClock, readClock, serverClock);
 
   useGSAP(
@@ -71,7 +95,7 @@ export function Footer() {
   return (
     <footer ref={ref} className="relative mt-24 overflow-hidden gradient-cocoa text-cream-50">
       <div aria-hidden className="absolute inset-0 map-grid-dark opacity-60" />
-      <div className="container-x relative pb-10 pt-16 sm:pt-20">
+      <div className="container-x relative pb-24 pt-16 sm:pt-20 lg:pb-10">
         {/* Station sign */}
         <div className="flex flex-col items-center text-center">
           <Logo variant="stacked-white" className="h-36 sm:h-44" />
@@ -96,33 +120,9 @@ export function Footer() {
             </div>
 
             <ol className="divide-y divide-cream-50/6">
-              {departures.map(([time, label, href], i) => {
-                const hot = boarding === i;
-                return (
-                  <li key={href}>
-                    <Link
-                      href={href}
-                      aria-label={label}
-                      onMouseEnter={() => setBoarding(i)}
-                      onMouseLeave={() => setBoarding(null)}
-                      onFocus={() => setBoarding(i)}
-                      onBlur={() => setBoarding(null)}
-                      className="grid grid-cols-[1fr_2.25rem] items-center gap-x-3 rounded-md px-1 py-[7px] outline-none transition-colors hover:bg-cream-50/4 focus-visible:bg-cream-50/8 sm:grid-cols-[3.5rem_1fr_2.5rem_auto]"
-                    >
-                      <span className="led hidden text-[13px] tabular-nums sm:block">{time}</span>
-                      <SplitFlap text={label} length={15} delay={i * 55} className="text-[13px] sm:text-[15px]" />
-                      <span className="led text-center text-[13px]">{(i % 4) + 1}</span>
-                      <SplitFlap
-                        text={hot ? "Boarding" : "On time"}
-                        length={8}
-                        delay={i * 55 + 220}
-                        className="hidden text-[13px] sm:inline-flex"
-                        cellClassName={hot ? "text-gold-400" : "text-leaf-300"}
-                      />
-                    </Link>
-                  </li>
-                );
-              })}
+              {departures.map(([time, label, href], i) => (
+                <Row key={href} i={i} time={time} label={label} href={href} hot={boarding === i} small={small} onHot={setBoarding} />
+              ))}
             </ol>
           </div>
         </div>

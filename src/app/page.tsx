@@ -14,6 +14,7 @@ import { OffersSection } from "@/components/offers/OffersSection";
 import { Testimonials } from "@/components/testimonials/Testimonials";
 import { CtaBand } from "@/components/home/CtaBand";
 
+/** Sections enter with their own restrained reveals; the hero has its own intro. */
 export default function HomePage() {
   return (
     <>

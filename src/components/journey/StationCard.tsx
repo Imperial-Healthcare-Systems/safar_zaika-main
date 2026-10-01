@@ -65,7 +65,7 @@ export function StationCard({ item, selected, onSelect, className }: { item: Eli
         </div>
       </dl>
       {availability !== "passed" && (
-        <p className="mt-2 text-[11px] text-muted">
+        <p className="mt-2 text-[11px] text-muted max-sm:text-xs">
           {item.minutesFromBoarding > 0 ? `${formatMinutes(item.minutesFromBoarding)} after boarding` : ""}
           {stop.day > 1 ? ` · day ${stop.day}` : ""}
         </p>

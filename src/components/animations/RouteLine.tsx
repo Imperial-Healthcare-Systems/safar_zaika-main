@@ -33,6 +33,8 @@ export interface RouteLineProps {
 const W = 1000;
 const H = 120;
 const PAD = 56;
+const GLYPH = 1; // glyph scale on the line (the glyph is a full 128-unit train)
+const WHEEL = 10.4; // glyph units from the body centre to the rail (wheels at 9.2 + the stroke)
 
 /**
  * THE SAFAR JOURNEY — the brand's signature interaction.
@@ -57,11 +59,23 @@ export function RouteLine({
   const pathRef = useRef<SVGPathElement>(null);
   const progressRef = useRef<SVGPathElement>(null);
   const trainRef = useRef<SVGGElement>(null);
-  const state = useRef({ p: 0, len: 1, lastStation: -1 });
+  const bodyRef = useRef<SVGGElement>(null);
+  const lampRef = useRef<SVGCircleElement>(null);
+  const state = useRef({ p: 0, len: 1, lastStation: -1, lastP: 0, dir: 1 });
   const onStationRef = useRef(onStation);
   useEffect(() => {
     onStationRef.current = onStation;
   }, [onStation]);
+  // Off screen, the SVG ring animations pause (CSS keys off this attribute).
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const io = new IntersectionObserver((entries) => {
+      svg.dataset.offscreen = entries.some((e) => e.isIntersecting) ? "false" : "true";
+    });
+    io.observe(svg);
+    return () => io.disconnect();
+  }, []);
 
   const points = useMemo(() => {
     const n = Math.max(2, stations.length);
@@ -80,11 +94,15 @@ export function RouteLine({
     const prog = progressRef.current;
     const svg = svgRef.current;
     if (!path || !train || !svg) return;
-    const len = state.current.len;
+    const s = state.current;
+    const len = s.len;
+    if (p !== s.lastP) s.dir = p > s.lastP ? 1 : -1;
+    s.lastP = p;
     const pt = path.getPointAtLength(p * len);
     const ahead = path.getPointAtLength(Math.min(len, p * len + 2));
     const angle = (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI;
-    train.setAttribute("transform", `translate(${pt.x} ${pt.y - 10}) rotate(${angle})`);
+    // pivot on the wheel contact so the glyph sits on the line and faces the way it moves
+    train.setAttribute("transform", `translate(${pt.x} ${pt.y}) rotate(${angle}) scale(${s.dir * GLYPH} ${GLYPH}) translate(0 ${-WHEEL})`);
     if (prog) prog.style.strokeDashoffset = String(len * (1 - p));
     const dots = svg.querySelectorAll<SVGGElement>("[data-station]");
     let current = -1;
@@ -93,9 +111,14 @@ export function RouteLine({
       dot.dataset.reached = reached ? "true" : "false";
       if (reached) current = i;
     });
-    if (current !== state.current.lastStation) {
-      state.current.lastStation = current;
+    if (current !== s.lastStation) {
+      const arrived = s.lastStation >= 0 && current >= 0;
+      s.lastStation = current;
       if (current >= 0) onStationRef.current?.(current);
+      if (arrived && !prefersReducedMotion()) {
+        gsap.fromTo(bodyRef.current, { scale: 1 }, { scale: 1.08, duration: 0.11, yoyo: true, repeat: 1, ease: "sine.inOut", transformOrigin: "50% 100%" });
+        gsap.fromTo(lampRef.current, { opacity: 0.9 }, { opacity: 0, duration: 0.5, ease: "power2.out" });
+      }
     }
   };
 
@@ -179,8 +202,11 @@ export function RouteLine({
           )}
         </g>
       ))}
-      <g ref={trainRef} className={cn(dark ? "text-cream-50" : "text-cocoa-900")} style={{ transformBox: "fill-box" }}>
-        <TrainGlyph windowClass={dark ? "fill-cocoa-900" : "fill-cream-50"} />
+      <g ref={trainRef} className={cn(dark ? "text-cream-50" : "text-cocoa-900")}>
+        <g ref={bodyRef}>
+          <TrainGlyph windowClass={dark ? "fill-cocoa-900" : "fill-cream-50"} />
+          <circle ref={lampRef} cx="27" cy="2" r="5" className="fill-gold-300" style={{ opacity: 0 }} />
+        </g>
       </g>
     </svg>
   );

@@ -8,7 +8,18 @@ import { QuantityControl } from "@/components/menu/QuantityControl";
 import { AnimatedNumber } from "@/components/animations/AnimatedNumber";
 import { selectCartTotals, selectSelectedStation, useCartStore, useJourneyStore } from "@/stores";
 import { getStation } from "@/data/stations";
-import { cn, formatClock } from "@/lib/utils";
+import { cn, formatClock, prefersReducedMotion } from "@/lib/utils";
+import { gsap } from "@/lib/gsap";
+
+/** Collapse a cart row before the store drops it, so the list never jumps. */
+function vanish(el: HTMLElement | null, done: () => void) {
+  if (!el || prefersReducedMotion()) {
+    done();
+    return;
+  }
+  el.style.overflow = "hidden";
+  gsap.to(el, { height: 0, opacity: 0, x: -12, paddingTop: 0, paddingBottom: 0, duration: 0.32, ease: "power2.in", onComplete: done });
+}
 
 export function CartSummaryRows({ className }: { className?: string }) {
   const totals = useCartStore(selectCartTotals);
@@ -103,14 +114,14 @@ export function CartPanel({ onNavigate, inDrawer }: { onNavigate?: () => void; i
             {restaurantName}
           </Link>
         </div>
-        <button type="button" onClick={clear} className="inline-flex items-center gap-1 text-[13px] font-semibold text-muted hover:text-chili-600">
+        <button type="button" onClick={clear} className="inline-flex min-h-10 items-center gap-1 px-1 text-[13px] font-semibold text-muted hover:text-chili-600">
           <Trash2 className="size-3.5" /> Clear
         </button>
       </div>
 
       <ul className="divide-y divide-line">
         {items.map(({ dish, quantity }) => (
-          <li key={dish.id} className="flex items-center gap-3 py-3">
+          <li key={dish.id} data-cart-item={dish.id} className="flex items-center gap-3 py-3">
             <div className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-cream-200">
               <Image src={dish.image} alt="" fill sizes="64px" className="object-cover" />
             </div>
@@ -120,11 +131,23 @@ export function CartPanel({ onNavigate, inDrawer }: { onNavigate?: () => void; i
                 <p className="truncate text-sm font-semibold text-cocoa-900">{dish.name}</p>
               </div>
               <Price value={dish.price * quantity} size="sm" className="mt-1" />
-              <button type="button" onClick={() => remove(dish.id)} className="mt-0.5 text-[12px] font-medium text-muted hover:text-chili-600">
+              <button type="button" onClick={(e) => vanish(e.currentTarget.closest("li"), () => remove(dish.id))} className="mt-1 inline-flex min-h-8 items-center text-[12px] font-medium text-muted hover:text-chili-600">
                 Remove
               </button>
             </div>
-            <QuantityControl size="sm" value={quantity} onIncrement={() => increment(dish.id)} onDecrement={() => decrement(dish.id)} label={dish.name} />
+            <QuantityControl
+              size="sm"
+              value={quantity}
+              onIncrement={() => increment(dish.id)}
+              onDecrement={() => {
+                if (quantity > 1) {
+                  decrement(dish.id);
+                  return;
+                }
+                vanish(document.querySelector<HTMLElement>(`[data-cart-item="${dish.id}"]`), () => decrement(dish.id));
+              }}
+              label={dish.name}
+            />
           </li>
         ))}
       </ul>

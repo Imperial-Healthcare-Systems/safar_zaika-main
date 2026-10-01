@@ -135,7 +135,7 @@ export function BulkOrderForm() {
       ) : (
         <form
           noValidate
-          className="space-y-6 rounded-3xl border border-line bg-white p-5 shadow-card sm:p-8"
+          className="space-y-6 rounded-3xl border border-line bg-white p-5 shadow-card sm:p-8 max-lg:[&_input]:text-base max-lg:[&_select]:text-base max-lg:[&_textarea]:text-base"
           onSubmit={(e) => {
             e.preventDefault();
             void submit();
@@ -304,7 +304,7 @@ export function BulkOrderForm() {
                             </>
                           )}
                           {p.vegPrice !== null && (
-                            <span className="block text-[11px] font-medium text-muted">
+                            <span className="block text-[11px] font-medium text-muted max-sm:text-xs">
                               Veg ₹{p.vegPrice} · Non-veg ₹{p.nonVegPrice}
                             </span>
                           )}
@@ -316,6 +316,10 @@ export function BulkOrderForm() {
                   );
                 })}
               </div>
+              {/* the sidebar estimate sits below the form on phones; echo it here */}
+              <p className="mt-3 text-[13px] text-muted lg:hidden">
+                Live estimate: <span className="font-bold text-cocoa-900">{(() => { const p = packagePrice(pkg, preference); return p === null ? "quoted by your coordinator" : `${groupSize} × ₹${p} = ₹${(groupSize * p).toLocaleString("en-IN")}`; })()}</span>
+              </p>
             </fieldset>
             <Textarea
               label={pkg.id === "custom" ? "Describe the menu" : "Customise the package (optional)"}

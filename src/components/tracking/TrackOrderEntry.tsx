@@ -40,7 +40,7 @@ export function TrackOrderEntry() {
           </h2>
           <p className="mt-1 text-sm text-muted">The ID is in your confirmation message and in recent orders.</p>
           <form
-            className="mt-5 space-y-4"
+            className="mt-5 space-y-4 max-lg:[&_input]:text-base"
             onSubmit={(e) => {
               e.preventDefault();
               submit();

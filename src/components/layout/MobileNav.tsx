@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { memo } from "react";
 import { ArrowRight, LogOut, UserRound } from "lucide-react";
 import { Button, Logo, Modal } from "@/components/ui";
 import { useAuthStore, useUIStore } from "@/stores";
@@ -9,10 +10,13 @@ import { useHydrated } from "@/hooks/useHydrated";
 import { cn } from "@/lib/utils";
 import { JourneyChip, navLinks } from "./Navbar";
 
-export function MobileNav() {
+/** memo: the drawer only re-renders for its own store slices, not every time the Navbar toggles its scrolled state. */
+export const MobileNav = memo(function MobileNav() {
   const pathname = usePathname();
   const open = useUIStore((s) => s.mobileNavOpen);
-  const { setMobileNavOpen, setOrderNowOpen, openLogin } = useUIStore();
+  const setMobileNavOpen = useUIStore((s) => s.setMobileNavOpen);
+  const setOrderNowOpen = useUIStore((s) => s.setOrderNowOpen);
+  const openLogin = useUIStore((s) => s.openLogin);
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const hydrated = useHydrated();
@@ -77,4 +81,4 @@ export function MobileNav() {
       </div>
     </Modal>
   );
-}
+});

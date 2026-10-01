@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, ArrowRight, CalendarDays, CheckCircle2, Hash, Ticket } from "lucide-react";
 import { gsap } from "@/lib/gsap";
@@ -66,6 +66,35 @@ export function PnrModule({ dark, defaultMode = "pnr", className, bare }: PnrMod
   const [boarding, setBoarding] = useState("");
   const [date, setDate] = useState(() => new Date(Date.now() + 86400000).toISOString().slice(0, 10));
   const cardRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const lastHeight = useRef<number | null>(null);
+
+  // Mode/status switches change the card's height: tween it so the layout around the card never jumps.
+  useLayoutEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    const prev = lastHeight.current;
+    const next = el.offsetHeight;
+    lastHeight.current = next;
+    if (prev === null || prev === next || prefersReducedMotion()) return;
+    gsap.fromTo(
+      el,
+      { height: prev },
+      {
+        height: next,
+        duration: 0.45,
+        ease: "power3.out",
+        overwrite: true,
+        onStart: () => {
+          el.style.overflow = "hidden";
+        },
+        onComplete: () => {
+          el.style.overflow = "";
+          el.style.height = "";
+        },
+      },
+    );
+  }, [mode, status, train]);
 
   useEffect(() => {
     if (train && trainQuery === `${train.number} ${train.name}`) return;
@@ -145,13 +174,14 @@ export function PnrModule({ dark, defaultMode = "pnr", className, bare }: PnrMod
     <div
       ref={cardRef}
       className={cn(
-        "relative overflow-hidden rounded-3xl p-5 sm:p-6",
+        "relative overflow-hidden rounded-3xl p-5 sm:p-6 max-lg:[&_input]:text-base max-lg:[&_select]:text-base max-lg:[&_textarea]:text-base",
         dark ? "glass text-cream-50 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]" : "border border-line bg-white text-cocoa-900 shadow-card",
         className,
       )}
     >
       {seq && (
         <PnrLoading
+          pnr={mode === "pnr" ? pnr : undefined}
           found={seq.found}
           error={seq.error}
           onComplete={() => router.push("/journey")}
@@ -161,6 +191,7 @@ export function PnrModule({ dark, defaultMode = "pnr", className, bare }: PnrMod
           }}
         />
       )}
+      <div ref={bodyRef}>
 
       {!bare && (
         <div className="mb-5 flex items-start justify-between gap-3">
@@ -239,7 +270,7 @@ export function PnrModule({ dark, defaultMode = "pnr", className, bare }: PnrMod
             </div>
             <div id="pnr-help" className="mt-2 flex items-center justify-between text-xs">
               <span className={dark ? "text-cream-50/55" : "text-muted"}>Found on your ticket, top-left.</span>
-              <button type="button" onClick={() => setPnr(DEMO_PNR)} className={cn("font-semibold underline-offset-2 hover:underline", dark ? "text-gold-300" : "text-copper-600")}>
+              <button type="button" onClick={() => setPnr(DEMO_PNR)} className={cn("font-semibold underline-offset-2 hover:underline max-lg:inline-flex max-lg:min-h-11 max-lg:items-center", dark ? "text-gold-300" : "text-copper-600")}>
                 Try demo PNR
               </button>
             </div>
@@ -252,7 +283,7 @@ export function PnrModule({ dark, defaultMode = "pnr", className, bare }: PnrMod
           </Button>
           <p className={cn("text-center text-[13px]", dark ? "text-cream-50/60" : "text-muted")}>
             Don&apos;t have your PNR?{" "}
-            <button type="button" onClick={() => setMode("train")} className={cn("font-semibold", dark ? "text-cream-50" : "text-cocoa-900")}>
+            <button type="button" onClick={() => setMode("train")} className={cn("font-semibold max-lg:inline-flex max-lg:min-h-11 max-lg:items-center", dark ? "text-cream-50" : "text-cocoa-900")}>
               Order by train number
             </button>
           </p>
@@ -366,12 +397,13 @@ export function PnrModule({ dark, defaultMode = "pnr", className, bare }: PnrMod
           </Button>
           <p className={cn("text-center text-[13px]", dark ? "text-cream-50/60" : "text-muted")}>
             Have a PNR?{" "}
-            <button type="button" onClick={() => setMode("pnr")} className={cn("font-semibold", dark ? "text-cream-50" : "text-cocoa-900")}>
+            <button type="button" onClick={() => setMode("pnr")} className={cn("font-semibold max-lg:inline-flex max-lg:min-h-11 max-lg:items-center", dark ? "text-cream-50" : "text-cocoa-900")}>
               Use it for seat delivery
             </button>
           </p>
         </form>
       )}
+      </div>
     </div>
   );
 }

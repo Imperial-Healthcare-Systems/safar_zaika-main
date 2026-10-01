@@ -70,14 +70,19 @@ export function Navbar() {
   const cartCount = useCartStore(selectCartCount);
   const user = useAuthStore((s) => s.user);
   const hasJourney = useJourneyStore((s) => s.journey !== null);
-  const { openLogin, setOrderNowOpen, setCartOpen, setSearchOpen, setMobileNavOpen } = useUIStore();
+  // Action selectors (stable references): the navbar never re-renders for a toast or a modal toggle.
+  const openLogin = useUIStore((s) => s.openLogin);
+  const setOrderNowOpen = useUIStore((s) => s.setOrderNowOpen);
+  const setCartOpen = useUIStore((s) => s.setCartOpen);
+  const setSearchOpen = useUIStore((s) => s.setSearchOpen);
+  const setMobileNavOpen = useUIStore((s) => s.setMobileNavOpen);
 
   // Scroll state + progress line via ScrollTrigger so they share Lenis' clock.
+  // onToggle only: React renders when the 48px line is crossed, not on every scroll pixel.
   useGSAP(() => {
     const st = ScrollTrigger.create({
       start: 48,
       end: 1e9, // never "leaves" at the page bottom, so the pill state sticks
-      onUpdate: (self) => setScrolled(self.scroll() > 48),
       onToggle: (self) => setScrolled(self.isActive),
     });
     gsap.to(progressRef.current, { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.4 } });
@@ -92,7 +97,7 @@ export function Navbar() {
   );
 
   return (
-    <header className="fixed inset-x-0 top-0 z-nav">
+    <header className="fixed inset-x-0 top-0 z-nav will-change-transform">
       {/* Reading progress: a copper hairline that grows across the top of the viewport. */}
       <span ref={progressRef} aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 origin-left bg-copper-500" style={{ transform: "scaleX(0)" }} />
 

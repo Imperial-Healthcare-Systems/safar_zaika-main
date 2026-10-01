@@ -33,7 +33,7 @@ function Field({ id, label, hint, error, className, children }: FieldProps & { i
 }
 
 const control =
-  "w-full rounded-xl border border-line bg-white px-4 text-[15px] text-cocoa-900 placeholder:text-cocoa-400 outline-none transition-[border-color,box-shadow] duration-200 focus:border-copper-500 focus:ring-4 focus:ring-copper-500/15 disabled:bg-cream-100 disabled:text-muted";
+  "w-full rounded-xl border border-line bg-white px-4 text-base text-cocoa-900 lg:text-[15px] placeholder:text-cocoa-400 outline-none transition-[border-color,box-shadow] duration-200 focus:border-copper-500 focus:ring-4 focus:ring-copper-500/15 disabled:bg-cream-100 disabled:text-muted";
 const controlError = "border-chili-500 focus:border-chili-500 focus:ring-chili-500/15";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement>, FieldProps {

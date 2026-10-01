@@ -5,6 +5,7 @@ import { useRef, useState, type CSSProperties } from "react";
 import { CreditCard, MapPin, Ticket, Utensils, Armchair } from "lucide-react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { RouteLine } from "@/components/animations/RouteLine";
 import { Reveal } from "@/components/animations/Reveal";
 import { SplitFlap } from "@/components/animations/SplitFlap";
@@ -19,7 +20,7 @@ const overlays = {
     </span>
   ),
   route: (
-    <span className="absolute bottom-4 right-4 flex items-center gap-2.5 rounded-full bg-cocoa-950/80 py-2 pl-3 pr-3.5 backdrop-blur">
+    <span className="absolute bottom-4 right-4 flex items-center gap-2.5 rounded-full bg-cocoa-950/85 py-2 pl-3 pr-3.5">
       <svg width="64" height="16" viewBox="0 0 64 16" aria-hidden className="block">
         <line x1="8" y1="8" x2="56" y2="8" className="stroke-cream-50/35" strokeWidth="2" strokeLinecap="round" />
         <circle cx="8" cy="8" r="3.5" className="fill-cream-50/50" />
@@ -53,6 +54,8 @@ export function HowItWorks({ standalone }: { standalone?: boolean }) {
   const track = useRef<HTMLDivElement>(null);
   const [step, setStep] = useState(0);
   const [pinned, setPinned] = useState(false);
+  // Only the route line for this breakpoint is mounted: a display:none autoplay RouteLine would still animate every frame.
+  const lg = useMediaQuery("(min-width: 1024px)", true);
   const current = steps[step] ?? steps[0];
 
   useGSAP(
@@ -71,12 +74,14 @@ export function HowItWorks({ standalone }: { standalone?: boolean }) {
           return w.clientWidth / 2 - (i * (cardW + gap) + cardW / 2);
         };
         const last = steps.length - 1;
+        let shown = -1; // React only hears about a change of step, not every scrub tick
         gsap.fromTo(
           t,
           { x: () => xFor(0) },
           {
             x: () => xFor(last),
             ease: "none",
+            force3D: true, // the track stays composited while pinned instead of re-rasterising between scrub tweens
             scrollTrigger: {
               trigger: w,
               pin: true,
@@ -87,7 +92,10 @@ export function HowItWorks({ standalone }: { standalone?: boolean }) {
               anticipatePin: 1,
               onUpdate: (self) => {
                 const s = Math.round(self.progress * last);
-                setStep((prev) => (prev === s ? prev : s));
+                if (s !== shown) {
+                  shown = s;
+                  setStep(s);
+                }
               },
             },
           },
@@ -117,12 +125,15 @@ export function HowItWorks({ standalone }: { standalone?: boolean }) {
             }
           />
         </Reveal>
-        <div className="mt-4 hidden max-w-3xl lg:block">
-          <RouteLine stations={stations} labelSize={17} progress={steps.map((_, i) => i / (steps.length - 1))[step]} />
-        </div>
-        <div className="mt-6 lg:hidden">
-          <RouteLine stations={stations} labels={false} duration={8} />
-        </div>
+        {lg ? (
+          <div className="mt-4 hidden max-w-3xl lg:block">
+            <RouteLine stations={stations} labelSize={17} progress={steps.map((_, i) => i / (steps.length - 1))[step]} />
+          </div>
+        ) : (
+          <div className="mt-6 lg:hidden">
+            <RouteLine stations={stations} labels={false} duration={8} />
+          </div>
+        )}
       </div>
 
       {/* Desktop horizontal track: unpadded, GSAP centres the active card. Unpinned (reduced motion) it scrolls natively. */}

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { clamp, cn, formatClock, prefersReducedMotion } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import type { EligibleStation } from "@/types";
 import { NetworkMap, SignLabel, layoutLabels, projectRoute, signWidth, toScreen } from "./NetworkMap";
-import { TrainMarker, placeTrain } from "./TrainMarker";
+import { TrainMarker, pathFractions, placeTrain } from "./TrainMarker";
 
 const availabilityLabel: Record<EligibleStation["availability"], string> = {
   available: "Food available",
@@ -21,6 +22,8 @@ const legend: [string, string][] = [
   ["bg-cream-50", "Boarding"],
   ["bg-cream-50/30", "No service"],
 ];
+
+const TRAIN = 0.9; // marker px per glyph unit
 
 /**
  * Night-mode route map: the shared NetworkMap zoomed to the journey, with
@@ -45,37 +48,40 @@ export function JourneyMap({
   const pathRef = useRef<SVGPathElement>(null);
   const trainRef = useRef<SVGGElement>(null);
   const [hover, setHover] = useState<number | null>(null);
+  const coarse = useMediaQuery("(pointer: coarse)");
 
-  // Fraction of the path length at each station (approximated by polyline distance).
-  const fractions = useMemo(() => {
-    let total = 0;
-    const cum = [0];
-    for (let i = 1; i < points.length; i++) {
-      total += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
-      cum.push(total);
-    }
-    return cum.map((c) => (total ? c / total : 0));
-  }, [points]);
+  const fractions = useMemo(() => pathFractions(points), [points]);
   const state = useRef({ p: fractions[boardingIndex] ?? 0 });
 
-  // Ride to the selected station.
-  useEffect(() => {
+  // Ride to the selected station: duration grows with the distance, eased in and out.
+  useLayoutEffect(() => {
     const idx = selectedCode ? stops.findIndex((s) => s.station.code === selectedCode) : boardingIndex;
     const target = fractions[idx < 0 ? boardingIndex : idx] ?? 0;
     const st = state.current;
+    const root = trainRef.current;
+    const place = () => placeTrain(pathRef.current, root, st.p, TRAIN);
     gsap.killTweensOf(st);
-    if (prefersReducedMotion()) {
+    if (prefersReducedMotion() || st.p === target) {
       st.p = target;
-      placeTrain(pathRef.current, trainRef.current, target);
+      if (root) root.dataset.moving = "false";
+      place();
       return;
     }
-    const tween = gsap.to(st, { p: target, duration: 1.6, ease: "power2.inOut", onUpdate: () => placeTrain(pathRef.current, trainRef.current, st.p) });
+    if (root) root.dataset.moving = "true";
+    const duration = clamp(1.2 + Math.abs(target - st.p) * 1.8, 1.2, 2.4);
+    const tween = gsap.to(st, {
+      p: target,
+      duration,
+      ease: "power1.inOut",
+      onUpdate: place,
+      onComplete: () => {
+        if (root) root.dataset.moving = "false";
+      },
+    });
     return () => {
       tween.kill();
     };
   }, [selectedCode, boardingIndex, fractions, stops]);
-
-  const start = points[boardingIndex] ?? points[0];
 
   return (
     <div className={cn("relative", className)}>
@@ -120,6 +126,8 @@ export function JourneyMap({
                     }}
                   >
                     <g transform={`scale(${k})`}>
+                      {/* fingers: a 44px hit disc around every orderable halt */}
+                      {coarse && selectable && <circle r="22" fill="transparent" />}
                       {selected &&
                         [0, 0.6].map((delay) => (
                           <circle key={delay} r="16" className="animate-pulse-ring fill-leaf-500/25 stroke-leaf-300/70" strokeWidth="1" style={{ transformBox: "fill-box", transformOrigin: "center", animationDelay: `${delay}s` }} />
@@ -150,10 +158,9 @@ export function JourneyMap({
                 );
               })}
 
-              <g ref={trainRef} className="pointer-events-none" transform={`translate(${start?.x ?? 0} ${start?.y ?? 0})`}>
-                <g transform={`scale(${k * 0.9})`}>
-                  <TrainMarker />
-                </g>
+              {/* cars are positioned by placeTrain (layout effect), never by React */}
+              <g ref={trainRef} className="group/train pointer-events-none" data-moving="false">
+                <TrainMarker scale={k * TRAIN} />
               </g>
 
               {tip && (

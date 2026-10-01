@@ -111,8 +111,8 @@ export function StationExplorer() {
                               <Link href={`/restaurants?station=${s.code}`} className="flex items-center gap-3 py-2.5 text-sm transition-colors hover:text-copper-600">
                                 <MapPin className={cn("size-4 shrink-0", count ? "text-copper-500" : "text-cocoa-300")} />
                                 <span className="min-w-0 flex-1 truncate font-semibold">{s.name}</span>
-                                <span className="font-mono text-[11px] text-muted">{s.code}</span>
-                                <span className={cn("text-[11px] font-semibold", count ? "text-leaf-600" : "text-muted")}>{count ? `${count} kitchens` : "Coming soon"}</span>
+                                <span className="font-mono text-[11px] text-muted max-sm:text-xs">{s.code}</span>
+                                <span className={cn("text-[11px] font-semibold max-sm:text-xs", count ? "text-leaf-600" : "text-muted")}>{count ? `${count} kitchens` : "Coming soon"}</span>
                               </Link>
                             </li>
                           );

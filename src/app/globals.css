@@ -181,17 +181,18 @@ html.lenis, html.lenis body { height: auto; }
   @media (width >= 40rem) { padding-inline: 1.5rem; }
   @media (width >= 64rem) { padding-inline: 2.5rem; }
 }
+/* 10px blur: a backdrop-filter re-samples everything behind it on every scrolled frame, so the radius is kept small. */
 @utility glass {
   background: rgb(255 250 242 / 0.08);
   border: 1px solid rgb(255 250 242 / 0.14);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 @utility glass-light {
-  background: rgb(255 255 255 / 0.72);
+  background: rgb(255 255 255 / 0.78);
   border: 1px solid rgb(234 217 191 / 0.9);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 @utility gradient-brand {
   background-image: linear-gradient(135deg, #d2913f 0%, #b86e24 55%, #9d5b1c 100%);
@@ -280,8 +281,8 @@ html.lenis, html.lenis body { height: auto; }
   font-weight: 700;
   line-height: 1;
   text-transform: uppercase;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
+  /* no preserve-3d / backface-visibility: the flap never turns past 88deg, and a 3D context on every
+     cell (hundreds in the footer) would drag each one into its own compositing decision */
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 1px 1px rgb(0 0 0 / 0.5);
   &::after {
     content: "";
@@ -296,6 +297,21 @@ html.lenis, html.lenis body { height: auto; }
     animation: var(--animate-flap);
   }
 }
+
+/* Intro / route curtain (PageTransition.tsx): the logo settles, the rail grows and one train
+   crosses left to right. Plain classes so they never depend on the source scanner. */
+.curtain-logo-on { animation: curtain-logo 0.6s cubic-bezier(0.25, 1, 0.5, 1) both; }
+.curtain-train-on { animation: curtain-train 1s cubic-bezier(0.45, 0, 0.55, 1) both; }
+.curtain-rail-on { animation: curtain-rail 1s cubic-bezier(0.45, 0, 0.55, 1) both; }
+.curtain-led-on { animation: curtain-led 0.5s cubic-bezier(0.25, 1, 0.5, 1) both; }
+.curtain-leave { animation-delay: 350ms; }
+@keyframes curtain-logo { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes curtain-train { from { opacity: 1; transform: translateX(-100%); } to { opacity: 1; transform: translateX(100vw); } }
+@keyframes curtain-rail { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes curtain-led { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Route lines pause their SVG ring animations while off screen (RouteLine sets the flag) */
+svg[data-offscreen="true"] * { animation-play-state: paused !important; }
 
 @utility z-nav { z-index: var(--z-nav); }
 @utility z-sticky { z-index: var(--z-sticky); }
@@ -315,4 +331,6 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  /* The intro curtain (IntroLoader) is server-rendered covering the page; reduced-motion users never see it. */
+  [data-intro] { display: none !important; }
 }

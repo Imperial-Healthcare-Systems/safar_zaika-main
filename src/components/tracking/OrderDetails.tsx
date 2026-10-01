@@ -65,7 +65,7 @@ export function OrderDetails({ order, className }: { order: Order; className?: s
             className="text-leaf-600 [&_dt]:text-leaf-600"
             label={
               <>
-                Discount {t.couponCode && <span className="rounded-md bg-leaf-100 px-1.5 py-0.5 text-[11px] font-bold">{t.couponCode}</span>}
+                Discount {t.couponCode && <span className="rounded-md bg-leaf-100 px-1.5 py-0.5 text-[11px] font-bold max-sm:text-xs">{t.couponCode}</span>}
               </>
             }
             value={`−${formatINR(t.discount)}`}

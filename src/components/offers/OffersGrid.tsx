@@ -24,7 +24,7 @@ export function OffersGrid() {
 
   return (
     <div className="container-x py-12 sm:py-16">
-      <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter offers">
+      <div className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 scroll-px-4 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter offers">
         {filters.map((f) => (
           <Chip key={f.value} active={filter === f.value} onClick={() => setFilter(f.value)}>
             {f.label}

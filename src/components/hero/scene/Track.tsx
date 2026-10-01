@@ -3,8 +3,8 @@
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useLayoutEffect, useMemo, useRef, type RefObject } from "react";
 import * as THREE from "three";
-import { RAIL_Y, SLEEPER_STEP, makeBallast, makeFurniture, makeGlowLine, makeRails, platformLightAt } from "./geometry";
-import { makeHaloTexture, makeNoiseTexture } from "./textures";
+import { GROUND_Y, SLEEPER_STEP, makeBallast, makeFurniture, makeGlowLine, makeRails, platformLightAt } from "./geometry";
+import { makeBokehTexture, makeHaloTexture, makeNoiseTexture, makePuddleTexture } from "./textures";
 
 const X_AXIS = new THREE.Vector3(1, 0, 0);
 const ONE = new THREE.Vector3(1, 1, 1);
@@ -17,7 +17,7 @@ interface TrackProps {
   curve: THREE.Curve<THREE.Vector3>;
 }
 
-/** Dual rails on instanced sleepers over a gravel ballast ribbon, a faint copper centre line, and a shadow-catching ground. */
+/** Dual rails on instanced sleepers over a gravel ballast ribbon, a faint copper centre line, and a wide wet ground that catches the shadow and the lamps. */
 export function Track({ curve }: TrackProps) {
   const a = useMemo(
     () => ({
@@ -26,6 +26,7 @@ export function Track({ curve }: TrackProps) {
       ballast: makeBallast(curve),
       sleeper: new THREE.BoxGeometry(0.06, 0.016, 0.27),
       noise: makeNoiseTexture(),
+      puddles: makePuddleTexture(),
     }),
     [curve],
   );
@@ -64,9 +65,10 @@ export function Track({ curve }: TrackProps) {
       <mesh geometry={a.glow}>
         <meshBasicMaterial color="#d2913f" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
       </mesh>
-      <mesh rotation-x={-Math.PI / 2} position-y={RAIL_Y - 0.075} receiveShadow>
-        <planeGeometry args={[70, 40]} />
-        <shadowMaterial color="#0d0602" opacity={0.6} transparent />
+      {/* Wet ground: puddle map varies the roughness so the env map and the lamps sheen in patches; it runs to the horizon and takes the train's shadow. */}
+      <mesh rotation-x={-Math.PI / 2} position={[0, GROUND_Y, -16]} receiveShadow>
+        <planeGeometry args={[220, 100]} />
+        <meshStandardMaterial color="#120804" roughness={1} roughnessMap={a.puddles} metalness={0} envMapIntensity={0.3} />
       </mesh>
     </group>
   );
@@ -79,14 +81,16 @@ interface FurnitureProps {
   progress: RefObject<{ t: number }>;
 }
 
-/** Platforms (canopy, lamps, yellow board) and a signal, merged into two meshes plus one halo sprite per lamp. */
+/** Platforms (canopy, lamps, yellow board) and a signal, merged into two meshes, plus pools of lamplight on the slabs and one halo sprite per lamp. */
 export function Furniture({ curve, stationTs, signalT, progress }: FurnitureProps) {
-  const a = useMemo(() => ({ ...makeFurniture(curve, stationTs, signalT), halo: makeHaloTexture() }), [curve, stationTs, signalT]);
+  const a = useMemo(() => ({ ...makeFurniture(curve, stationTs, signalT), halo: makeHaloTexture(), pool: makeBokehTexture() }), [curve, stationTs, signalT]);
   useEffect(
     () => () => {
       a.structure.dispose();
       a.lamps.dispose();
+      a.pools.dispose();
       a.halo.dispose();
+      a.pool.dispose();
     },
     [a],
   );
@@ -113,6 +117,9 @@ export function Furniture({ curve, stationTs, signalT, progress }: FurnitureProp
       <mesh geometry={a.lamps}>
         <meshBasicMaterial vertexColors />
       </mesh>
+      <mesh geometry={a.pools}>
+        <meshBasicMaterial map={a.pool} color="#c99a4e" transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
+      </mesh>
       {a.halos.map((h, i) => (
         <sprite
           key={i}
@@ -126,7 +133,7 @@ export function Furniture({ curve, stationTs, signalT, progress }: FurnitureProp
         </sprite>
       ))}
       {lights.map((p, i) => (
-        <pointLight key={i} position={p} color="#ffc98a" intensity={0.55} distance={2} decay={2} />
+        <pointLight key={i} position={p} color="#ffc98a" intensity={1.1} distance={3.5} decay={2} />
       ))}
     </group>
   );

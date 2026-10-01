@@ -49,7 +49,7 @@ export function Tabs<T extends string>({
             aria-selected={active}
             onClick={() => onChange(item.value)}
             className={cn(
-              "relative z-10 flex h-9 items-center justify-center gap-1.5 rounded-full px-4 text-[13px] font-semibold transition-colors",
+              "relative z-10 flex h-9 items-center justify-center gap-1.5 rounded-full px-4 text-[13px] font-semibold transition-colors max-lg:h-10",
               active ? "text-cocoa-900" : dark ? "text-cream-50/70 hover:text-cream-50" : "text-muted hover:text-cocoa-800",
             )}
           >
@@ -83,7 +83,7 @@ export function Chip({
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-semibold transition-[background-color,border-color,color,transform] duration-200 active:scale-95",
+        "inline-flex h-9 shrink-0 snap-start items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-semibold transition-[background-color,border-color,color,transform] duration-200 active:scale-95 max-lg:h-10",
         active
           ? "border-cocoa-900 bg-cocoa-900 text-cream-50"
           : dark

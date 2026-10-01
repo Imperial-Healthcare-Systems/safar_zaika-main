@@ -8,7 +8,7 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { cn, formatClock, prefersReducedMotion } from "@/lib/utils";
 import { useHydrated } from "@/hooks/useHydrated";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { Button, Chip, Input, Select, SkeletonGrid } from "@/components/ui";
+import { Button, Chip, Input, Modal, Select, SkeletonGrid } from "@/components/ui";
 import { RestaurantCard } from "./RestaurantCard";
 import { MEALS, getRestaurantAvailability, getRestaurants, type RestaurantFilters } from "@/services";
 import { getStation, stations } from "@/data/stations";
@@ -28,6 +28,13 @@ const categoryChips = [
   { id: "chinese", label: "Chinese" },
   { id: "beverages", label: "Beverages" },
   { id: "desserts", label: "Desserts" },
+];
+
+const sortOptions = [
+  { value: "recommended", label: "Recommended" },
+  { value: "rating", label: "Top rated" },
+  { value: "prep", label: "Fastest prep" },
+  { value: "price", label: "Price: low to high" },
 ];
 
 const switchClass =
@@ -61,6 +68,7 @@ export function RestaurantsView() {
   const [query, setQuery] = useState("");
   // null = untouched: on when a journey exists, off otherwise.
   const [openOnly, setOpenOnly] = useState<boolean | null>(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [result, setResult] = useState<{ key: string; list: Restaurant[] } | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -155,20 +163,20 @@ export function RestaurantsView() {
             value={stationCode}
             onChange={(e) => router.push(withParams({ station: e.target.value }))}
             options={stations.map((s) => ({ value: s.code, label: `${s.name} (${s.code})` }))}
-            className="w-64"
+            className="w-64 max-lg:[&_select]:text-base"
           />
         }
       />
 
       <section className="container-x pb-24 pt-6">
-        <div className="sticky top-[76px] z-sticky -mx-4 bg-cream-50/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10">
+        <div className="sticky top-16 z-sticky -mx-4 bg-cream-50/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10">
           <div className="flex items-center gap-3">
             <label className="flex shrink-0 cursor-pointer items-center gap-2 text-[13px] font-semibold text-cocoa-800">
               <input type="checkbox" role="switch" checked={showOpenOnly} onChange={(e) => setOpenOnly(e.target.checked)} className={switchClass} />
               {moment?.source === "arrival" ? "Open at arrival" : "Open now"}
             </label>
             <span aria-hidden className="h-6 w-px shrink-0 bg-line" />
-            <div className="no-scrollbar flex flex-1 gap-2 overflow-x-auto">
+            <div className="no-scrollbar flex flex-1 snap-x gap-2 overflow-x-auto">
               {meal && (
                 <Chip active onClick={() => router.push(withParams({ meal: null }))}>
                   {meal.label}
@@ -185,15 +193,32 @@ export function RestaurantsView() {
                 </Chip>
               ))}
             </div>
-            <div className="hidden items-center gap-2 md:flex">
+            <div className="hidden items-center gap-2 lg:flex">
               <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search kitchens" leftIcon={<Search className="size-4" />} aria-label="Search kitchens" inputClassName="h-9 w-48 rounded-full text-sm" />
-              <Select aria-label="Sort" value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} options={[{ value: "recommended", label: "Recommended" }, { value: "rating", label: "Top rated" }, { value: "prep", label: "Fastest prep" }, { value: "price", label: "Price: low to high" }]} className="w-44 [&_select]:h-9 [&_select]:rounded-full [&_select]:text-sm" />
+              <Select aria-label="Sort" value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} options={sortOptions} className="w-44 [&_select]:h-9 [&_select]:rounded-full [&_select]:text-sm" />
             </div>
-            <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-line bg-white text-cocoa-700 md:hidden" aria-hidden>
+            {/* phones and tablets: search + sort in a bottom sheet */}
+            <button
+              type="button"
+              onClick={() => setFiltersOpen(true)}
+              aria-label="Search and sort kitchens"
+              className="relative inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-line bg-white text-cocoa-700 lg:hidden"
+            >
               <SlidersHorizontal className="size-4" />
-            </span>
+              {(query || sort !== "recommended") && <span aria-hidden className="absolute right-1 top-1 size-2 rounded-full bg-copper-500" />}
+            </button>
           </div>
         </div>
+
+        <Modal open={filtersOpen} onClose={() => setFiltersOpen(false)} variant="sheet" title="Search and sort">
+          <div className="space-y-4 px-6 pb-6 pt-4 max-lg:[&_input]:text-base max-lg:[&_select]:text-base">
+            <Input label="Search kitchens" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Name, cuisine or dish" leftIcon={<Search className="size-4" />} />
+            <Select label="Sort by" value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} options={sortOptions} />
+            <Button full size="lg" onClick={() => setFiltersOpen(false)}>
+              Show {shown.length} kitchen{shown.length === 1 ? "" : "s"}
+            </Button>
+          </div>
+        </Modal>
 
         <div className="mt-6">
           {loading ? (

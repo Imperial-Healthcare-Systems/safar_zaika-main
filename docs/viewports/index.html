@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Safar Zaika viewports</title>
+<meta name="description" content="Full-page captures of the Safar Zaika prototype at phone, tablet and desktop sizes.">
+<style>
+  :root { --bg:#fffaf2; --ink:#2a1407; --muted:#7a6350; --line:#ead9bf; --copper:#b86e24; --frame:#1b110a; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#160a03; --ink:#fffaf2; --muted:#c9a687; --line:#3c1d0b; } }
+  :root[data-theme="dark"] { --bg:#160a03; --ink:#fffaf2; --muted:#c9a687; --line:#3c1d0b; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 28px 16px 8px; max-width: 1400px; margin: 0 auto; }
+  h1 { margin:0; font-size: 28px; letter-spacing: -0.01em; }
+  p { margin: 6px 0 0; color: var(--muted); }
+  .tabs { display:flex; gap:8px; flex-wrap:wrap; padding: 16px; max-width:1400px; margin:0 auto; position: sticky; top:0; background: var(--bg); z-index: 2; border-bottom:1px solid var(--line); }
+  .tab { border:1px solid var(--line); background:transparent; color:var(--ink); border-radius:999px; padding:8px 14px; cursor:pointer; font-weight:600; }
+  .tab.on { background: var(--copper); border-color: var(--copper); color:#fff; }
+  .panel { display:none; padding: 20px 16px 48px; max-width:1400px; margin:0 auto; }
+  .panel.on { display:block; }
+  .row { display:grid; grid-template-columns: 1fr; gap: 28px; align-items:start; }
+  @media (min-width: 900px) { .row { grid-template-columns: 300px 1fr; } .dev.desktop { grid-column: 1 / -1; } }
+  figure { margin:0; }
+  figcaption { font-weight: 700; margin-bottom: 10px; }
+  .frame { background: var(--frame); border-radius: 28px; padding: 14px; box-shadow: 0 24px 48px -18px rgba(0,0,0,.5); }
+  .dev.tablet .frame { border-radius: 22px; }
+  .dev.desktop .frame { border-radius: 12px; padding: 10px; }
+  .screen { background:#000; border-radius: 16px; overflow:auto; max-height: 80vh; }
+  .dev.desktop .screen { border-radius: 6px; }
+  .screen img { display:block; width:100%; height:auto; }
+  .dev.phone .frame { max-width: 300px; }
+  .dev.tablet .frame { max-width: 560px; }
+  .note { padding: 0 16px 32px; max-width:1400px; margin:0 auto; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Safar Zaika across viewports</h1>
+  <p>Full-page captures taken from the running prototype at phone (390), tablet (768) and desktop (1440) widths. Scroll inside a frame to see the whole page.</p>
+</header>
+<nav class="tabs" aria-label="Pages"><button class="tab on" data-tab="home">Home</button><button class="tab" data-tab="order">Order</button><button class="tab" data-tab="journey">Journey (after PNR)</button><button class="tab" data-tab="restaurants">Kitchens at Vadodara</button><button class="tab" data-tab="menu">Restaurant menu</button><button class="tab" data-tab="tracking">Order tracking</button><button class="tab" data-tab="stations">Stations</button><button class="tab" data-tab="bulk">Bulk orders</button><button class="tab" data-tab="offers">Offers</button></nav>
+<section class="panel on" id="p-home">
+  <div class="row">
+    <figure class="dev phone">
+      <figcaption>Phone 390 x 844</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="phone-home.jpg" alt="Home at Phone 390 x 844"></div></div>
+    </figure>
+<figure class="dev tablet">
+      <figcaption>Tablet 768 x 1024</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="tablet-home.jpg" alt="Home at Tablet 768 x 1024"></div></div>
+    </figure>
+<figure class="dev desktop">
+      <figcaption>Desktop 1440 x 900</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="desktop-home.jpg" alt="Home at Desktop 1440 x 900"></div></div>
+    </figure>
+  </div>
+</section>
+<section class="panel" id="p-order">
+  <div class="row">
+    <figure class="dev phone">
+      <figcaption>Phone 390 x 844</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="phone-order.jpg" alt="Order at Phone 390 x 844"></div></div>
+    </figure>
+<figure class="dev tablet">
+      <figcaption>Tablet 768 x 1024</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="tablet-order.jpg" alt="Order at Tablet 768 x 1024"></div></div>
+    </figure>
+<figure class="dev desktop">
+      <figcaption>Desktop 1440 x 900</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="desktop-order.jpg" alt="Order at Desktop 1440 x 900"></div></div>
+    </figure>
+  </div>
+</section>
+<section class="panel" id="p-journey">
+  <div class="row">
+    <figure class="dev phone">
+      <figcaption>Phone 390 x 844</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="phone-journey.jpg" alt="Journey (after PNR) at Phone 390 x 844"></div></div>
+    </figure>
+<figure class="dev tablet">
+      <figcaption>Tablet 768 x 1024</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="tablet-journey.jpg" alt="Journey (after PNR) at Tablet 768 x 1024"></div></div>
+    </figure>
+<figure class="dev desktop">
+      <figcaption>Desktop 1440 x 900</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="desktop-journey.jpg" alt="Journey (after PNR) at Desktop 1440 x 900"></div></div>
+    </figure>
+  </div>
+</section>
+<section class="panel" id="p-restaurants">
+  <div class="row">
+    <figure class="dev phone">
+      <figcaption>Phone 390 x 844</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="phone-restaurants.jpg" alt="Kitchens at Vadodara at Phone 390 x 844"></div></div>
+    </figure>
+<figure class="dev tablet">
+      <figcaption>Tablet 768 x 1024</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="tablet-restaurants.jpg" alt="Kitchens at Vadodara at Tablet 768 x 1024"></div></div>
+    </figure>
+<figure class="dev desktop">
+      <figcaption>Desktop 1440 x 900</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="desktop-restaurants.jpg" alt="Kitchens at Vadodara at Desktop 1440 x 900"></div></div>
+    </figure>
+  </div>
+</section>
+<section class="panel" id="p-menu">
+  <div class="row">
+    <figure class="dev phone">
+      <figcaption>Phone 390 x 844</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="phone-menu.jpg" alt="Restaurant menu at Phone 390 x 844"></div></div>
+    </figure>
+<figure class="dev tablet">
+      <figcaption>Tablet 768 x 1024</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="tablet-menu.jpg" alt="Restaurant menu at Tablet 768 x 1024"></div></div>
+    </figure>
+<figure class="dev desktop">
+      <figcaption>Desktop 1440 x 900</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="desktop-menu.jpg" alt="Restaurant menu at Desktop 1440 x 900"></div></div>
+    </figure>
+  </div>
+</section>
+<section class="panel" id="p-tracking">
+  <div class="row">
+    <figure class="dev phone">
+      <figcaption>Phone 390 x 844</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="phone-tracking.jpg" alt="Order tracking at Phone 390 x 844"></div></div>
+    </figure>
+<figure class="dev tablet">
+      <figcaption>Tablet 768 x 1024</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="tablet-tracking.jpg" alt="Order tracking at Tablet 768 x 1024"></div></div>
+    </figure>
+<figure class="dev desktop">
+      <figcaption>Desktop 1440 x 900</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="desktop-tracking.jpg" alt="Order tracking at Desktop 1440 x 900"></div></div>
+    </figure>
+  </div>
+</section>
+<section class="panel" id="p-stations">
+  <div class="row">
+    <figure class="dev phone">
+      <figcaption>Phone 390 x 844</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="phone-stations.jpg" alt="Stations at Phone 390 x 844"></div></div>
+    </figure>
+<figure class="dev tablet">
+      <figcaption>Tablet 768 x 1024</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="tablet-stations.jpg" alt="Stations at Tablet 768 x 1024"></div></div>
+    </figure>
+<figure class="dev desktop">
+      <figcaption>Desktop 1440 x 900</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="desktop-stations.jpg" alt="Stations at Desktop 1440 x 900"></div></div>
+    </figure>
+  </div>
+</section>
+<section class="panel" id="p-bulk">
+  <div class="row">
+    <figure class="dev phone">
+      <figcaption>Phone 390 x 844</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="phone-bulk.jpg" alt="Bulk orders at Phone 390 x 844"></div></div>
+    </figure>
+<figure class="dev tablet">
+      <figcaption>Tablet 768 x 1024</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="tablet-bulk.jpg" alt="Bulk orders at Tablet 768 x 1024"></div></div>
+    </figure>
+<figure class="dev desktop">
+      <figcaption>Desktop 1440 x 900</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="desktop-bulk.jpg" alt="Bulk orders at Desktop 1440 x 900"></div></div>
+    </figure>
+  </div>
+</section>
+<section class="panel" id="p-offers">
+  <div class="row">
+    <figure class="dev phone">
+      <figcaption>Phone 390 x 844</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="phone-offers.jpg" alt="Offers at Phone 390 x 844"></div></div>
+    </figure>
+<figure class="dev tablet">
+      <figcaption>Tablet 768 x 1024</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="tablet-offers.jpg" alt="Offers at Tablet 768 x 1024"></div></div>
+    </figure>
+<figure class="dev desktop">
+      <figcaption>Desktop 1440 x 900</figcaption>
+      <div class="frame"><div class="screen"><img loading="lazy" src="desktop-offers.jpg" alt="Offers at Desktop 1440 x 900"></div></div>
+    </figure>
+  </div>
+</section>
+<p class="note">Captured 2026-10-01 from the demo build with PNR 1234567890 and Vadodara Jn selected where a journey applies. Demo data only.</p>
+<script>
+  document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("on", x === b));
+    document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("on", p.id === "p-" + b.dataset.tab));
+  }));
+</script>
+</body>
+</html>

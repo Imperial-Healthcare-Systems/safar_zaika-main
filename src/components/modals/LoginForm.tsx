@@ -148,7 +148,7 @@ export function LoginForm({ onDone, compact }: { onDone?: () => void; compact?: 
   };
 
   return (
-    <div className={cn(!compact && "pt-2")}>
+    <div className={cn(!compact && "pt-2", "max-lg:[&_input]:text-base max-lg:[&_select]:text-base max-lg:[&_textarea]:text-base")}>
       {step !== "done" && (
         <Tabs<Mode>
           full
@@ -200,7 +200,7 @@ export function LoginForm({ onDone, compact }: { onDone?: () => void; compact?: 
                 continueAsGuest();
                 onDone?.();
               }}
-              className="block w-full text-center text-sm font-semibold text-muted hover:text-cocoa-900"
+              className="block w-full text-center text-sm font-semibold text-muted hover:text-cocoa-900 max-lg:min-h-11"
             >
               Continue as guest
             </button>

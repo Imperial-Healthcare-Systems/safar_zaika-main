@@ -50,7 +50,7 @@ export function SearchModal() {
           {q.length < 2 ? (
             <div className="flex flex-wrap gap-2 px-1 pb-2">
               {["Biryani", "Thali", "Vadodara", "Jain", "Chai", "New Delhi"].map((s) => (
-                <button key={s} type="button" onClick={() => setQ(s)} className="rounded-full border border-line bg-cream-100 px-3 py-1.5 text-sm font-medium text-cocoa-800 hover:border-copper-300">
+                <button key={s} type="button" onClick={() => setQ(s)} className="rounded-full border border-line bg-cream-100 px-3 py-1.5 text-sm font-medium text-cocoa-800 hover:border-copper-300 max-lg:min-h-10">
                   {s}
                 </button>
               ))}

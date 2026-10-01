@@ -78,7 +78,7 @@ export function TrackingHero({ order, stepIndex }: { order: Order; stepIndex: nu
       >
         <div data-swap className="mt-6 flex flex-wrap items-center gap-3">
           <p className="led-panel inline-flex max-w-full rounded-lg px-4 py-2.5" aria-label={`Status board: ${ledText}`}>
-            <span className="led truncate text-base sm:text-lg">{ledText}</span>
+            <span className="led truncate text-base max-sm:whitespace-normal sm:text-lg">{ledText}</span>
           </p>
           <span className="signboard" title="Delivery station">
             {order.deliveryStationCode}
@@ -92,7 +92,7 @@ export function TrackingHero({ order, stepIndex }: { order: Order; stepIndex: nu
                 <f.icon className="size-3.5 text-gold-400" />
                 {f.label}
               </dt>
-              <dd className="mt-1.5 truncate font-display text-lg font-semibold sm:text-xl">{f.value}</dd>
+              <dd className="mt-1.5 truncate font-display text-lg font-semibold max-sm:whitespace-normal sm:text-xl">{f.value}</dd>
             </div>
           ))}
         </dl>

@@ -157,7 +157,7 @@ function CheckoutForm({ placing, setPlacing }: { placing: boolean; setPlacing: (
   return (
     <>
       {header}
-      <div className="container-x grid gap-8 pb-32 pt-8 md:pb-16 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:gap-10">
+      <div className="container-x grid gap-8 pb-32 pt-8 md:pb-16 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:gap-10 max-lg:[&_input]:text-base max-lg:[&_select]:text-base max-lg:[&_textarea]:text-base">
         <div className="space-y-5">
           <Section n={1} title="Journey">
             {journey ? (

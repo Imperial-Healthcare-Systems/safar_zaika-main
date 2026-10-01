@@ -77,7 +77,7 @@ function colorTexture(c: HTMLCanvasElement) {
 }
 
 /** Deterministic LCG so renders are pure and stable. */
-function rng(seed: number) {
+export function rng(seed: number) {
   let s = seed;
   return () => {
     s = (s * 1664525 + 1013904223) % 4294967296;
@@ -448,4 +448,74 @@ export function makeLivery(kind: Kind, dims: Dims, noseAt = 1) {
   const roughnessMap = new THREE.CanvasTexture(paintAtlas(kind, atlas, "rough", noseAt));
   roughnessMap.anisotropy = 4;
   return { map: colorTexture(paintAtlas(kind, atlas, "color", noseAt)), emissiveMap: colorTexture(paintAtlas(kind, atlas, "glow", noseAt)), roughnessMap };
+}
+
+/* ------------------------------------------------------------------------------------------------
+ * Backdrop textures: soft bokeh disc, horizon glow ramp and a puddle map for the wet ground.
+ * ---------------------------------------------------------------------------------------------- */
+
+/** Flat soft-edged disc (alpha only) for out-of-focus lamp bokeh. */
+export function makeBokehTexture() {
+  const size = 64;
+  const c = canvas(size, size);
+  const ctx = c.getContext("2d")!;
+  const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  g.addColorStop(0, "rgba(255,255,255,0.9)");
+  g.addColorStop(0.55, "rgba(255,255,255,0.8)");
+  g.addColorStop(0.85, "rgba(255,255,255,0.25)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  return colorTexture(c);
+}
+
+/** Dusk glow just above the horizon: warm amber at the bottom edge fading to nothing; the plane sits behind the far hills. */
+export function makeHorizonTexture() {
+  const w = 4;
+  const h = 128;
+  const c = canvas(w, h);
+  const ctx = c.getContext("2d")!;
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0, "rgba(255,170,90,0)");
+  g.addColorStop(0.6, "rgba(230,140,70,0.12)");
+  g.addColorStop(0.86, "rgba(236,150,80,0.4)");
+  g.addColorStop(1, "rgba(255,190,120,0.75)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  const t = colorTexture(c);
+  t.generateMipmaps = false;
+  t.minFilter = THREE.LinearFilter;
+  return t;
+}
+
+/** Tileable puddle map (green channel = roughness): mostly matte dirt with glossy wet patches. */
+export function makePuddleTexture() {
+  const size = 128;
+  const c = canvas(size, size);
+  const ctx = c.getContext("2d")!;
+  ctx.fillStyle = "rgb(235,235,235)";
+  ctx.fillRect(0, 0, size, size);
+  const r = rng(23);
+  for (let i = 0; i < 26; i++) {
+    const x = r() * size;
+    const y = r() * size;
+    const rad = 8 + r() * 22;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+    g.addColorStop(0, "rgba(40,40,40,0.95)");
+    g.addColorStop(0.6, "rgba(60,60,60,0.7)");
+    g.addColorStop(1, "rgba(235,235,235,0)");
+    ctx.fillStyle = g;
+    // draw four times so the patches wrap across the tile edges
+    for (const dx of [0, size, -size]) for (const dy of [0, size, -size]) {
+      ctx.save();
+      ctx.translate(dx, dy);
+      ctx.beginPath();
+      ctx.ellipse(x, y, rad * (0.7 + r() * 0.6), rad, r() * Math.PI, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
 }

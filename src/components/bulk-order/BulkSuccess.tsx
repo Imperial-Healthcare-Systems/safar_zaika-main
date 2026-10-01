@@ -52,7 +52,7 @@ export function BulkSuccess({ requestId, estimatedResponse, req, train, pkg }: {
         <tbody className="divide-y divide-line">
           {rows.map((r) => (
             <tr key={r.k} className="align-top">
-              <th scope="row" className="w-36 py-3 pr-4 text-left font-semibold text-muted sm:w-44">
+              <th scope="row" className="w-36 py-3 pr-4 text-left font-semibold text-muted max-sm:w-28 sm:w-44">
                 {r.k}
               </th>
               <td className="py-3 text-cocoa-900">{r.v}</td>

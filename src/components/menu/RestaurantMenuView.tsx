@@ -103,7 +103,7 @@ export function RestaurantMenuView({ id }: { id: string }) {
           {restaurant ? <Image src={restaurant.image} alt="" fill priority sizes="100vw" className={cn("object-cover opacity-50", blocked && "grayscale")} /> : <div className="absolute inset-0 skeleton" />}
           <div className="absolute inset-0 bg-gradient-to-t from-cocoa-950 via-cocoa-950/70 to-cocoa-950/30" />
         </div>
-        <div className="container-x relative pb-8 pt-16 sm:pb-10 sm:pt-24">
+        <div className="container-x relative pb-8 pt-16 max-sm:pt-8 sm:pb-10 sm:pt-24">
           {restaurant ? (
             <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
@@ -193,9 +193,9 @@ export function RestaurantMenuView({ id }: { id: string }) {
       )}
 
       {/* Sticky category nav */}
-      <div className="sticky top-[76px] z-sticky border-b border-line bg-cream-50/92 backdrop-blur">
+      <div className="sticky top-16 z-sticky border-b border-line bg-cream-50/92 backdrop-blur">
         <div className="container-x flex items-center gap-3 py-2.5">
-          <div className="no-scrollbar flex flex-1 gap-2 overflow-x-auto">
+          <div className="no-scrollbar flex flex-1 snap-x gap-2 overflow-x-auto">
             {loading
               ? Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-9 w-24 rounded-full" />)
               : filteredSections.map((s) => (

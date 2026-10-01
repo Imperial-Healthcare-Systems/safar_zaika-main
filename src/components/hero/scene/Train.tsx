@@ -25,7 +25,7 @@ const SWAY = 0.0055; // peak body roll in radians (~0.3 degrees)
 const X_AXIS = new THREE.Vector3(1, 0, 0);
 const Z_AXIS = new THREE.Vector3(0, 0, 1);
 const ONE = new THREE.Vector3(1, 1, 1);
-const KEY_OFFSET = new THREE.Vector3(-2, 4.5, 4.5);
+const KEY_OFFSET = new THREE.Vector3(-3, 4.2, 3.6);
 const _pos = new THREE.Vector3();
 const _tan = new THREE.Vector3();
 const _wheel = new THREE.Vector3();
@@ -147,8 +147,12 @@ function DrivingCar({ a, carRef, wheelRef, tail }: { a: Assets; carRef: Slot; wh
             <mesh geometry={a.beam} position={[HEADLIGHT_X + BEAM_LENGTH / 2, HEADLIGHT_Y, 0]} rotation-z={Math.PI / 2}>
               <meshBasicMaterial color="#ffd2a0" alphaMap={a.beamRamp} transparent opacity={0.09} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
             </mesh>
-            <spotLight ref={spot} position={[HEADLIGHT_X, HEADLIGHT_Y, 0]} angle={0.42} penumbra={0.8} distance={9} decay={1.3} intensity={18} color="#ffd9a6" />
-            <object3D ref={target} position={[6, -0.3, 0]} />
+            {/* splash of headlight on the ballast ahead of the nose: a stretched halo lying just under the rail tops */}
+            <mesh geometry={a.contact} position={[HEADLIGHT_X + 0.7, -0.019, 0]} rotation-x={-Math.PI / 2} scale={[1.9, 0.55, 1]}>
+              <meshBasicMaterial map={a.halo} color="#ffcf98" transparent opacity={0.4} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
+            </mesh>
+            <spotLight ref={spot} position={[HEADLIGHT_X, HEADLIGHT_Y, 0]} angle={0.5} penumbra={0.8} distance={9} decay={1.3} intensity={26} color="#ffd9a6" />
+            <object3D ref={target} position={[4.5, -0.42, 0]} />
           </>
         )}
       </group>

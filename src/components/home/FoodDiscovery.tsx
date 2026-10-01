@@ -14,6 +14,8 @@ import { FoodCard } from "@/components/menu/FoodCard";
 import { useHeadingParallax, useScrollSkew } from "@/hooks/useScrollSkew";
 import { useDragGuard } from "@/hooks/useDragGuard";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useHydrated } from "@/hooks/useHydrated";
+import { selectSelectedStation, useJourneyStore } from "@/stores";
 
 // Curated picks (dish + the kitchen that serves it) for the home carousel.
 const picks: [string, string][] = [
@@ -35,6 +37,9 @@ export function FoodDiscovery() {
   const headRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+  const hydrated = useHydrated();
+  const selected = useJourneyStore(selectSelectedStation);
+  const halt = hydrated ? selected?.station : undefined;
   useHeadingParallax(headRef, { x: -28, y: 0 });
   useScrollSkew(trackRef);
   const dragGuard = useDragGuard();
@@ -46,7 +51,7 @@ export function FoodDiscovery() {
         <Reveal variant="slide-left">
           <SectionHeading
             title={<span id="food-title">Dishes worth checking the clock for</span>}
-            description="Chef-picked from kitchens on the Rajdhani route. Add to cart right here."
+            description="Chef-picked dishes from partner kitchens. Add to cart right here."
             action={<CarouselArrows prevClass="food-prev" nextClass="food-next" label="dishes" />}
           />
         </Reveal>
@@ -88,8 +93,8 @@ export function FoodDiscovery() {
         </Reveal>
       </div>
       <div className="container-x relative mt-10">
-        <Button href="/restaurants?station=BRC" variant="outline" size="lg" rightIcon={<ArrowRight className="size-4" />}>
-          See all kitchens at Vadodara
+        <Button href={halt ? `/restaurants?station=${halt.code}` : "/restaurants"} variant="outline" size="lg" rightIcon={<ArrowRight className="size-4" />}>
+          {halt ? `See all kitchens at ${halt.name}` : "See all kitchens"}
         </Button>
       </div>
     </section>

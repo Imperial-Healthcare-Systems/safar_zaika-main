@@ -14,7 +14,8 @@ export function StickyCartBar() {
   const count = useCartStore(selectCartCount);
   const totals = useCartStore(selectCartTotals);
   const setCartOpen = useUIStore((s) => s.setCartOpen);
-  const hidden = !hydrated || count === 0 || pathname === "/cart" || pathname === "/checkout";
+  // /journey has its own bottom CTA in the same spot; the navbar cart icon still works there.
+  const hidden = !hydrated || count === 0 || pathname === "/cart" || pathname === "/checkout" || pathname === "/journey";
 
   return (
     <div
@@ -35,7 +36,7 @@ export function StickyCartBar() {
             <ShoppingBag className="size-4" />
           </span>
           <span className="text-left">
-            <span className="block text-[11px] uppercase tracking-[0.14em] text-cream-50/60">
+            <span className="block text-[12px] uppercase tracking-[0.14em] text-cream-50/60">
               {count} item{count === 1 ? "" : "s"}
             </span>
             <span className="block text-sm font-bold">

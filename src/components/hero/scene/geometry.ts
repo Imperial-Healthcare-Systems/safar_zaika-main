@@ -1,10 +1,11 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
-import { atlasLayout, type Dims, type Rect } from "./textures";
+import { atlasLayout, rng, type Dims, type Rect } from "./textures";
 
 /** Scene units: one coach is ~24 m, so 1 unit ~ 24 m. All y values are relative to the rail top. */
 export const RAIL_Y = -1.3;
+export const GROUND_Y = RAIL_Y - 0.05; // wet ground plane just under the ballast
 export const GAUGE = 0.17;
 export const SLEEPER_STEP = 0.22;
 
@@ -104,8 +105,8 @@ function merge(parts: THREE.BufferGeometry[]) {
   return g;
 }
 
-export function makeRails(curve: THREE.Curve<THREE.Vector3>) {
-  return merge([-GAUGE / 2, GAUGE / 2].map((o) => new THREE.TubeGeometry(new OffsetCurve(curve, o, 0), 480, 0.011, 5, false)));
+export function makeRails(curve: THREE.Curve<THREE.Vector3>, segments = 480, radial = 5) {
+  return merge([-GAUGE / 2, GAUGE / 2].map((o) => new THREE.TubeGeometry(new OffsetCurve(curve, o, 0), segments, 0.011, radial, false)));
 }
 
 export function makeGlowLine(curve: THREE.Curve<THREE.Vector3>) {
@@ -415,7 +416,7 @@ const DARK = "#2b211b";
 const LAMP_X = [-0.32, 0.32];
 
 /** Platform on the far side of the track: slab with a yellow safety line, a canopy, two lamp posts and a generic yellow board. */
-function platform(frame: Frame, structure: THREE.BufferGeometry[], lamps: THREE.BufferGeometry[], halos: Halo[]) {
+function platform(frame: Frame, structure: THREE.BufferGeometry[], lamps: THREE.BufferGeometry[], pools: THREE.BufferGeometry[], halos: Halo[]) {
   const parts = [
     tint(box(1.24, 0.05, 0.2, 0, 0.01, -0.31), "#6d4c31"),
     tint(box(1.24, 0.05, 0.012, 0, 0.01, -0.216), "#4a3222"),
@@ -435,6 +436,11 @@ function platform(frame: Frame, structure: THREE.BufferGeometry[], lamps: THREE.
     bulb.translate(x, 0.425, -0.37);
     lamps.push(...place([tint(bulb, "#ffe6c0")], frame));
     halos.push({ position: new THREE.Vector3(x, 0.425, -0.37).applyQuaternion(frame.quaternion).add(frame.position), color: "#e3b461", scale: 0.42 });
+    // pool of lamplight on the slab (a halo-textured decal just above the yellow line)
+    const pool = new THREE.PlaneGeometry(0.5, 0.34);
+    pool.rotateX(-Math.PI / 2);
+    pool.translate(x, 0.0395, -0.33);
+    pools.push(...place([pool], frame));
   }
   structure.push(...place(parts, frame));
   lamps.push(...place([tint(box(0.22, 0.06, 0.008, 0.1, 0.25, -0.346), "#f0c04a")], frame));
@@ -454,14 +460,138 @@ function signal(frame: Frame, structure: THREE.BufferGeometry[], lamps: THREE.Bu
 export function makeFurniture(curve: THREE.Curve<THREE.Vector3>, stationTs: number[], signalT: number) {
   const structure: THREE.BufferGeometry[] = [];
   const lamps: THREE.BufferGeometry[] = [];
+  const pools: THREE.BufferGeometry[] = [];
   const halos: Halo[] = [];
-  for (const t of stationTs) platform(frameAt(curve, t), structure, lamps, halos);
+  for (const t of stationTs) platform(frameAt(curve, t), structure, lamps, pools, halos);
   signal(frameAt(curve, signalT), structure, lamps, halos);
-  return { structure: merge(structure), lamps: merge(lamps), halos };
+  return { structure: merge(structure), lamps: merge(lamps), pools: merge(pools), halos };
 }
 
 /** Point-light position per platform (centred under the canopy). */
 export function platformLightAt(curve: THREE.Curve<THREE.Vector3>, t: number) {
   const f = frameAt(curve, t);
   return new THREE.Vector3(0, 0.3, -0.3).applyQuaternion(f.quaternion).add(f.position);
+}
+
+/* ------------------------------------------------------------------------------------------------
+ * Backdrop: far hills, a town skyline with lit windows, line-side trees and poles, and a second
+ * track with a static silhouette train. Everything sits behind the route at staggered depths so the
+ * pointer parallax and the camera push-in slide the layers against each other.
+ * ---------------------------------------------------------------------------------------------- */
+
+const SKY_W = 44; // half-width of the backdrop layers
+
+/** Vertical silhouette strip facing the camera: a height profile sampled every `step` along x, from below the ground up. */
+function ridge(z: number, step: number, height: (x: number) => number) {
+  const n = Math.round((2 * SKY_W) / step) + 1;
+  const pos = new Float32Array(n * 6);
+  const idx: number[] = [];
+  for (let i = 0; i < n; i++) {
+    const x = -SKY_W + i * step;
+    pos.set([x, GROUND_Y - 0.5, z, x, GROUND_Y + height(x), z], i * 6);
+    if (i) idx.push(i * 2 - 2, i * 2, i * 2 + 1, i * 2 - 2, i * 2 + 1, i * 2 - 1);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  return g;
+}
+
+/** Rolling hills on the horizon. */
+function makeHills(z: number) {
+  return ridge(z, 0.5, (x) => 1.3 + 0.9 * Math.sin(x * 0.11 + 1.2) + 0.5 * Math.sin(x * 0.27 + 2.1) + 0.25 * Math.sin(x * 0.63 + 0.4));
+}
+
+/** Blocky town skyline: a run of flat-roofed buildings, each a quad, with lit windows scattered on their faces. */
+function makeTown(z: number, seed: number, windows: number[], windowColors: number[]) {
+  const r = rng(seed);
+  const parts: THREE.BufferGeometry[] = [];
+  const warm = ["#ffd9a6", "#ffc07a", "#ffe6c0", "#e8a860"].map((h) => new THREE.Color(h));
+  let x = -SKY_W + r() * 2;
+  while (x < SKY_W) {
+    const w = 0.5 + r() * 1.9;
+    const tall = r() < 0.12;
+    const h = tall ? 1.1 + r() * 0.8 : 0.22 + r() * r() * 0.9;
+    const g = new THREE.PlaneGeometry(w, h + 0.4);
+    g.translate(x + w / 2, GROUND_Y + h / 2 - 0.2, z);
+    parts.push(g);
+    const n = Math.floor(w * h * 7 * (0.3 + r()));
+    for (let i = 0; i < n; i++) {
+      windows.push(x + 0.08 + r() * (w - 0.16), GROUND_Y + 0.06 + r() * (h - 0.1), z + 0.02);
+      const c = warm[Math.floor(r() * warm.length)];
+      const dim = 0.35 + r() * 0.65;
+      windowColors.push(c.r * dim, c.g * dim, c.b * dim);
+    }
+    x += w + r() * 0.9;
+  }
+  return merge(parts);
+}
+
+/** Dark line-side shapes between the far track and the town: conifer cones and telegraph poles with a crossbar. */
+function makeTrees(seed: number) {
+  const r = rng(seed);
+  const parts: THREE.BufferGeometry[] = [];
+  for (let i = 0; i < 70; i++) {
+    const h = 0.35 + r() * 0.6;
+    const g = new THREE.ConeGeometry(h * 0.32, h, 5);
+    g.translate(-SKY_W * 0.85 + r() * SKY_W * 1.7, GROUND_Y + h / 2 - 0.02, -13.5 - r() * 4.5);
+    parts.push(g);
+  }
+  for (let x = -SKY_W * 0.8; x < SKY_W * 0.8; x += 2.3) {
+    parts.push(box(0.024, 0.62, 0.024, x, GROUND_Y + 0.3, -12.3), box(0.16, 0.014, 0.024, x, GROUND_Y + 0.56, -12.3));
+  }
+  return merge(parts);
+}
+
+/** Gently curved second track well behind the platforms. */
+export function makeFarRoute() {
+  const pts = [
+    [-40, -14.2],
+    [-16, -11.6],
+    [10, -11.4],
+    [40, -14.8],
+  ].map(([x, z]) => new THREE.Vector3(x, RAIL_Y, z));
+  const c = new THREE.CatmullRomCurve3(pts, false, "centripetal", 0.5);
+  c.arcLengthDivisions = 200;
+  return c;
+}
+
+/** Static silhouette trainset parked on the far track with its lead car at `x`, plus its lit window positions. */
+function makeFarTrain(curve: THREE.Curve<THREE.Vector3>, x: number, windows: number[], windowColors: number[]) {
+  const length = curve.getLength();
+  const t0 = findT(curve, x);
+  const parts: THREE.BufferGeometry[] = [];
+  const c = new THREE.Color("#ffc98a");
+  const w = new THREE.Vector3();
+  for (let i = 0; i < CAR_OFFSETS.length; i++) {
+    const f = frameAt(curve, Math.min(1, t0 + CAR_OFFSETS[i] / length));
+    const loco = i === 0 || i === 3;
+    const g = loco ? makeShell(LOCO, true) : makeShell(CAR);
+    if (i === 3) g.rotateY(Math.PI);
+    parts.push(...place([g], f));
+    const panes = loco ? [0, 1, 2, 3].map((j) => 0.135 + j * 0.095) : [0, 1, 2, 3, 4, 5, 6].map((j) => 0.1575 + j * 0.1143);
+    for (const u of panes) {
+      w.set((u - 0.5) * (loco ? LOCO.L : CAR.L), FLOOR + 0.1, CAR.D / 2 + 0.01).applyQuaternion(f.quaternion).add(f.position);
+      windows.push(w.x, w.y, w.z);
+      windowColors.push(c.r * 0.8, c.g * 0.8, c.b * 0.8);
+    }
+  }
+  return merge(parts);
+}
+
+export function makeBackdrop() {
+  const windows: number[] = [];
+  const windowColors: number[] = [];
+  const far = makeFarRoute();
+  const town = merge([makeTown(-21, 11, windows, windowColors), makeTown(-25, 12, windows, windowColors)]);
+  const farTrain = makeFarTrain(far, -3.2, windows, windowColors);
+  return {
+    hills: makeHills(-31),
+    town,
+    trees: makeTrees(13),
+    farRails: makeRails(far, 120, 4),
+    farBallast: makeBallast(far, 70),
+    farTrain,
+    windows: { position: new Float32Array(windows), color: new Float32Array(windowColors) },
+  };
 }

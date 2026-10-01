@@ -83,7 +83,7 @@ export function FoodCard({
   };
 
   const windowChip = windows && (
-    <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold", inWindow ? "bg-gold-200 text-cocoa-800" : "bg-cream-100 text-muted")}>
+    <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold max-sm:text-xs", inWindow ? "bg-gold-200 text-cocoa-800" : "bg-cream-100 text-muted")}>
       <Clock3 className="size-3" /> {mealName(windows)} · {formatWindows(windows)}
     </span>
   );
@@ -98,12 +98,12 @@ export function FoodCard({
           onClick={handleAdd}
           disabled={blocked}
           title={reason}
-          className="inline-flex h-10 items-center gap-1.5 rounded-full border border-copper-500 bg-white px-4 text-[13px] font-bold uppercase tracking-[0.1em] text-copper-700 transition-[background-color,color,transform] duration-200 hover:bg-copper-500 hover:text-cream-50 active:scale-95 disabled:cursor-not-allowed disabled:border-line disabled:bg-cream-100 disabled:text-muted disabled:hover:bg-cream-100 disabled:hover:text-muted disabled:active:scale-100"
+          className="inline-flex h-10 items-center gap-1.5 rounded-full border border-copper-500 bg-white px-4 max-lg:h-11 text-[13px] font-bold uppercase tracking-[0.1em] text-copper-700 transition-[background-color,color,transform] duration-200 hover:bg-copper-500 hover:text-cream-50 active:scale-95 disabled:cursor-not-allowed disabled:border-line disabled:bg-cream-100 disabled:text-muted disabled:hover:bg-cream-100 disabled:hover:text-muted disabled:active:scale-100"
           aria-label={blocked ? `${dish.name} unavailable: ${reason ?? "not available for this delivery"}` : `Add ${dish.name} to cart`}
         >
           <Plus className="size-4" /> Add
         </button>
-        {blocked && reason && <span className={cn("max-w-[11rem] text-right text-[11px] font-medium leading-tight", dark ? "text-cream-50/60" : "text-muted")}>{reason}</span>}
+        {blocked && reason && <span className={cn("max-w-[11rem] text-right text-[11px] font-medium leading-tight max-sm:text-xs", dark ? "text-cream-50/60" : "text-muted")}>{reason}</span>}
       </div>
     );
 
@@ -131,7 +131,7 @@ export function FoodCard({
                 </p>
               )}
             </div>
-            {addControl}
+            <span className="inline-flex w-[108px] shrink-0 justify-end">{addControl}</span>
           </div>
         </div>
       </div>
@@ -177,7 +177,7 @@ export function FoodCard({
         {windowChip && <div className="mt-2">{windowChip}</div>}
         <div className="mt-auto flex items-center justify-between pt-4">
           <Price value={dish.price} mrp={dish.mrp} size="lg" className={cn(dark && "text-cream-50")} />
-          {addControl}
+          <span className="inline-flex w-[108px] shrink-0 justify-end">{addControl}</span>
         </div>
       </div>
     </div>

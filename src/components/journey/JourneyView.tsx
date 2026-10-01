@@ -94,7 +94,7 @@ export function JourneyView() {
       <section className="container-x pb-28 pt-10 lg:pb-20" aria-labelledby="pick-title">
         <SectionHeading title={<span id="pick-title">Where should we deliver?</span>} description="Tap a station on the map or in the list. Timings are the scheduled halt; kitchens need at least 45 minutes before arrival." />
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.35fr_1fr]">
-          <JourneyMap stops={eligible} boardingIndex={journey.boardingIndex} selectedCode={selectedCode} onSelect={selectStation} className="aspect-[4/3] lg:sticky lg:top-28 lg:aspect-auto lg:h-[600px] lg:self-start" />
+          <JourneyMap stops={eligible} boardingIndex={journey.boardingIndex} selectedCode={selectedCode} onSelect={selectStation} className="aspect-[4/3] max-sm:aspect-square lg:sticky lg:top-28 lg:aspect-auto lg:h-[600px] lg:self-start" />
           <div>
             <div ref={listRef} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
               {eligible.map((item) => (

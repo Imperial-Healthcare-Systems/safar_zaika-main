@@ -131,6 +131,7 @@ function CancelOrder({ order }: { order: Order }) {
             options={CANCEL_REASONS.map((r) => ({ value: r, label: r }))}
             error={error}
             required
+            className="max-lg:[&_select]:text-base"
           />
           <div className="flex flex-wrap gap-2">
             <Button variant="danger" loading={busy} onClick={() => void confirm()} leftIcon={<XCircle className="size-4" />}>
