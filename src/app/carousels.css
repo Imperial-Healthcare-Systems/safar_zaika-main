@@ -1,0 +1,90 @@
+/* Carousel theming (Swiper + react-slick). Imported by globals.css; Swiper's core CSS is imported by each component. */
+@import "slick-carousel/slick/slick.css";
+
+/* ---- Swiper core tweaks ---------------------------------------------- */
+.swiper-slide { height: auto; }
+/* watchOverflow: when every slide already fits, Swiper locks the carousel and these hide */
+.swiper-button-lock, .swiper-scrollbar-lock { display: none !important; }
+
+/* ---- Arrows (components/ui/CarouselArrows.tsx) ----------------------- */
+.carousel-arrows { display: flex; gap: 8px; }
+.carousel-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--color-line);
+  background: #fff;
+  color: var(--color-cocoa-800);
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s, transform 0.25s var(--ease-out-quart);
+}
+.carousel-arrow:hover:not(:disabled) { background: var(--color-cocoa-900); border-color: var(--color-cocoa-900); color: var(--color-cream-50); }
+.carousel-arrow:active:not(:disabled) { transform: scale(0.94); }
+.carousel-arrow:disabled { opacity: 0.35; cursor: default; }
+.carousel-arrows-dark .carousel-arrow { border-color: rgb(255 250 242 / 0.18); background: rgb(255 250 242 / 0.08); color: var(--color-cream-50); }
+.carousel-arrows-dark .carousel-arrow:hover:not(:disabled) { background: var(--color-cream-50); border-color: var(--color-cream-50); color: var(--color-cocoa-900); }
+/* Touch devices: swipe is the affordance. The buttons stay in the DOM and reappear on keyboard focus. */
+@media (hover: none) {
+  .carousel-arrows:not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* ---- Progress bar / draggable scrollbar (SwiperProgress) ------------- */
+/* 3px visible track inside a 15px hit area: transparent block borders, background clipped to the padding box. */
+.swiper-progress {
+  position: relative;
+  box-sizing: border-box;
+  height: 15px;
+  border-block: 6px solid transparent;
+  border-radius: 999px;
+  background: rgb(42 20 7 / 0.1);
+  background-clip: padding-box;
+  cursor: pointer;
+  touch-action: none;
+}
+.swiper-progress .swiper-scrollbar-drag {
+  position: relative;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-copper-500);
+}
+.swiper-progress.swiper-scrollbar-cursor-drag { cursor: grabbing; }
+
+/* ---- react-slick: Testimonials --------------------------------------- */
+/* clip instead of hidden + a clip margin so card shadows and the lifted centre card are not cut off */
+.testimonial-slider .slick-list { overflow: clip; overflow-clip-margin: 28px; }
+.testimonial-slider .slick-track { display: flex; }
+.testimonial-slider.slick-initialized .slick-slide {
+  display: flex;
+  flex: 0 0 auto;
+  height: auto;
+  opacity: 0.6;
+  transform: scale(0.94);
+  transition: opacity 0.5s ease, transform 0.6s var(--ease-out-quart);
+}
+.testimonial-slider .slick-slide > div { display: flex; width: 100%; }
+.testimonial-slider.slick-initialized .slick-center { opacity: 1; transform: none; }
+.testimonial-slider .slick-list:focus-visible { outline: 2px solid var(--color-copper-500); outline-offset: 6px; border-radius: 12px; }
+/* Dots as small copper bars (appendDots / customPaging in Testimonials.tsx) */
+.slick-dots { display: flex; justify-content: center; gap: 6px; margin-top: 28px; padding: 0; list-style: none; }
+.slick-dots li { display: flex; }
+.slick-dots button {
+  width: 12px;
+  height: 16px;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 999px;
+  background-color: var(--color-cocoa-400);
+  background-clip: content-box;
+  opacity: 0.35;
+  transition: width 0.3s var(--ease-out-quart), opacity 0.3s;
+}
+.slick-dots li.slick-active button { width: 30px; background-color: var(--color-copper-500); opacity: 1; }
