@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { BedDouble, Radio, Search, Utensils } from "lucide-react";
+import { ArrowRight, BedDouble, Radio, Search, Users, Utensils } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, Select } from "@/components/ui";
 import { PnrModule } from "@/components/pnr/PnrModule";
 import { TrainSearch } from "@/components/tools/ToolParts";
+import { MIN_GROUP, PREFERENCES } from "@/components/bulk-order/constants";
 import { toast } from "@/stores";
 
-type Service = "food" | "status" | "hotels";
+type Service = "food" | "group" | "status" | "hotels";
 
 const services: { id: Service; label: string; Icon: typeof Utensils; soon?: boolean }[] = [
   { id: "food", label: "Order food", Icon: Utensils },
+  { id: "group", label: "Group order", Icon: Users },
   { id: "status", label: "Train status", Icon: Radio },
   { id: "hotels", label: "Hotels", Icon: BedDouble, soon: true },
 ];
@@ -24,6 +26,10 @@ const services: { id: Service; label: string; Icon: typeof Utensils; soon?: bool
 export function HeroServices() {
   const router = useRouter();
   const [service, setService] = useState<Service>("food");
+  // Group-order starters; the bulk form picks them up from the query and carries on from there.
+  const [size, setSize] = useState(String(MIN_GROUP));
+  const [date, setDate] = useState("");
+  const [pref, setPref] = useState<string>(PREFERENCES[0].value);
 
   return (
     <>
@@ -50,6 +56,42 @@ export function HeroServices() {
       </div>
 
       {service === "food" && <PnrModule variant="search" />}
+
+      {service === "group" && (
+        <form
+          className="rounded-3xl bg-white p-4 text-cocoa-900 shadow-lift sm:p-5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const q = new URLSearchParams({ size, pref });
+            if (date) q.set("date", date);
+            router.push(`/bulk-order?${q}`);
+          }}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="font-display text-xl sm:text-2xl">Travelling as a group?</h2>
+            <span className="tag">From {MIN_GROUP} meals</span>
+          </div>
+          <p className="mt-1 text-sm text-muted">Fixed packages or a menu built with you, veg and non-veg packed separately, all handed over together at one halt.</p>
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-[1fr_1fr_1fr]">
+            <Input
+              label="How many people"
+              type="number"
+              inputMode="numeric"
+              min={MIN_GROUP}
+              value={size}
+              onChange={(e) => setSize(e.target.value)}
+              className="col-span-2 sm:col-span-1"
+            />
+            <Input label="Journey date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <Select label="Preference" value={pref} onChange={(e) => setPref(e.target.value)} options={PREFERENCES.map((p) => ({ value: p.value, label: p.label }))} />
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button type="submit" size="lg" rightIcon={<ArrowRight className="size-4" />}>
+              Plan the group order
+            </Button>
+          </div>
+        </form>
+      )}
 
       {service === "status" && (
         <TrainSearch

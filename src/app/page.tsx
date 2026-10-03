@@ -16,7 +16,8 @@ import { OffersSection } from "@/components/offers/OffersSection";
 import { Testimonials } from "@/components/testimonials/Testimonials";
 import { CtaBand } from "@/components/home/CtaBand";
 
-/** Search first, then the order in four steps, tools and offers; browsing, proof and the long read follow. Each section has its own entrance. */
+/** Search first, then the order in four steps, tools and offers; group orders sit with the meal sections, and
+ * browsing, proof and the long read follow. Each section has its own entrance. */
 export default function HomePage() {
   return (
     <>
@@ -27,10 +28,10 @@ export default function HomePage() {
       <OffersSection />
       <Categories />
       <MealTimes />
+      <BulkCta />
       <FoodDiscovery />
       <RestaurantShowcase />
       <TrustSection />
-      <BulkCta />
       <StationCoverage />
       <LiveJourney />
       <RecentOrders />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
 import { ArrowRight, CalendarDays, CheckCircle2, Hash, Mail, Minus, Phone, Plus, Ticket } from "lucide-react";
 import { clamp, cn } from "@/lib/utils";
 import { Button, Chip, Input, Select, Textarea } from "@/components/ui";
@@ -33,15 +34,21 @@ function Section({ step, title, children }: { step: string; title: string; child
 const stepBtn = "inline-flex h-full w-12 items-center justify-center transition-colors hover:bg-copper-100 active:bg-copper-200 disabled:pointer-events-none disabled:opacity-40";
 
 export function BulkOrderForm() {
-  const [sizeInput, setSizeInput] = useState(String(MIN_GROUP));
-  const [date, setDate] = useState("");
+  // The hero's group-order card hands over a headcount, a date and a preference; everything else starts blank.
+  const params = useSearchParams();
+  const fromHero = Number(params.get("size"));
+  const dateParam = params.get("date") ?? "";
+  const prefParam = params.get("pref");
+
+  const [sizeInput, setSizeInput] = useState(String(Number.isInteger(fromHero) && fromHero > 0 ? clamp(fromHero, MIN_GROUP, MAX_GROUP) : MIN_GROUP));
+  const [date, setDate] = useState(/^\d{4}-\d{2}-\d{2}$/.test(dateParam) ? dateParam : "");
   const [trainQuery, setTrainQuery] = useState("");
   const [train, setTrain] = useState<Train | null>(null);
   const [suggestions, setSuggestions] = useState<Train[]>([]);
   const [pnr, setPnr] = useState("");
   const [boarding, setBoarding] = useState("");
   const [delivery, setDelivery] = useState("");
-  const [preference, setPreference] = useState<BulkOrderRequest["preference"]>("veg");
+  const [preference, setPreference] = useState<BulkOrderRequest["preference"]>(PREFERENCES.find((p) => p.value === prefParam)?.value ?? "veg");
   const [packageId, setPackageId] = useState<string>(MEAL_PACKAGES[1].id);
   const [requirements, setRequirements] = useState("");
   const [phone, setPhone] = useState("");

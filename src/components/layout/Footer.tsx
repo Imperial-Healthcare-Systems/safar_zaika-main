@@ -184,16 +184,22 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-cream-50/10 pt-5 text-[13px] text-cream-50/50 sm:flex-row sm:items-center sm:justify-between sm:gap-6 lg:mt-8">
+        {/* Copyright left, the legal pages centred, the build credit right. */}
+        <div className="mt-10 grid gap-3 border-t border-cream-50/10 pt-5 text-[13px] text-cream-50/50 sm:grid-cols-3 sm:items-center lg:mt-8">
           <p>© 2026 Safar Zaika Food Private Limited</p>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1 sm:justify-center">
             {legal.map(([label, href]) => (
               <Link key={href} href={href} className={quiet}>
                 {label}
               </Link>
             ))}
-            <p>Prototype build. Everything shown is demo data.</p>
           </div>
+          <p className="sm:text-right">
+            Built by{" "}
+            <a href="https://www.imperialtechinnovations.com/" target="_blank" rel="noopener noreferrer" className={quiet}>
+              Imperial
+            </a>
+          </p>
         </div>
       </div>
     </footer>

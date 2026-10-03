@@ -64,7 +64,7 @@ Deliberately **not** installed: **styled-components** (Tailwind tokens cover eve
 src/
   app/                  routes (server page.tsx + metadata; client views in components/), globals.css, carousels.css, opengraph-image
   components/
-    layout/             Navbar (transparent over the home hero, solid white elsewhere; sentence-case links, scroll hairline, journey chip), BottomTabBar (mobile: Home, Tools, Cart, Offers, Account), MobileNav, Footer (tagline headline, a thali plate that turns with scroll inside a ring of text, then brand + contact beside four plain link groups, privacy and terms in the bottom bar), PageHeader
+    layout/             Navbar (transparent over the home hero, solid white elsewhere; sentence-case links, scroll hairline, journey chip), BottomTabBar (mobile: Home, Tools, Cart, Offers, Account), MobileNav, Footer (tagline headline, a thali plate that turns with scroll inside a ring of text, then brand + contact and four link groups on five even columns, over a bottom bar: copyright left, privacy and terms centred, the build credit right), PageHeader
     hero/               Hero (content block vertically centred over the navy 3D band, reassurance chips, journey-aware info pill), HeroServices (service switcher: Order food = the three-tab search card, Train status = hand-off to /train-tools?tool=live-status&train=…, Hotels = a labelled coming-soon preview), HeroScene + scene/ (Train, Track, Backdrop, geometry, textures)
     pnr/                PnrModule (PNR / train / station modes; `variant="search"` is the wide hero card), PnrLoading (fullscreen discovery overlay), OrderView
     journey/            NetworkMap (shared camera map), JourneyMap, TrainMarker (isometric train), JourneyCard (ticket), StationCard, JourneyStatus, JourneyView
@@ -74,7 +74,7 @@ src/
     cart/               CartPanel, CartDrawer, StickyCartBar, ReplaceCartModal, CartView
     checkout/           CheckoutView, PaymentMethods (prepaid vs pay-at-delivery), OrderSummary, CouponField, PlacingOverlay
     tracking/           TrackOrderEntry, TrackingView (cancel panel), TrackingHero (LED status), OrderTimeline, OrderDetails
-    bulk-order/         BulkOrderForm (packages with veg / non-veg prices), BulkSidebar, BulkSuccess, constants
+    bulk-order/         BulkOrderForm (packages with veg / non-veg prices; prefills from ?size/?date/?pref), BulkSidebar, BulkSuccess, constants
     offers/             OfferCard, OffersSection, OffersGrid
     testimonials/       Testimonials (react-slick)
     modals/             WelcomeModal (auto-opens once per session), LoginModal + LoginForm (OTP), OrderNowModal, SearchModal
@@ -138,7 +138,7 @@ Type: **Plus Jakarta Sans** 700 for display (`h1`–`h3`, `.font-display`) and *
 | Order flow: received → confirmed → pushed to vendor → prepared → delivered | `orderStatusSteps` labels and the tracking LED |
 | Cancellation with mandatory reason | Cancel panel on tracking (only while received/confirmed), `CANCEL_REASONS`, `cancelMockOrder` |
 | Reminders for long routes, subject to consent | Reminder switch on `/journey` (persisted, consent copy) |
-| Group / bulk orders: fixed packages, customisable, veg / non-veg | Bulk form packages with veg / non-veg prices, custom-menu option, minimum-10 note (tentative) |
+| Group / bulk orders: fixed packages, customisable, veg / non-veg | Group order is one of the hero's four services (headcount, date and preference hand over to `/bulk-order?size&date&pref`), a panel high on the home page, and a nav and footer link; the form carries packages with veg / non-veg prices, a custom-menu option and the minimum-10 note (tentative) |
 
 ## Connecting the real backend later
 

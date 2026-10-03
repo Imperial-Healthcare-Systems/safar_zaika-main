@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { BulkOrderForm } from "@/components/bulk-order/BulkOrderForm";
 import { AUDIENCES } from "@/components/bulk-order/constants";
@@ -27,7 +28,10 @@ export default function BulkOrderPage() {
           ))}
         </ul>
       </PageHeader>
-      <BulkOrderForm />
+      {/* The form reads the headcount, date and preference the hero card passed in ?size/?date/?pref. */}
+      <Suspense fallback={<div aria-hidden className="min-h-[80svh]" />}>
+        <BulkOrderForm />
+      </Suspense>
     </>
   );
 }
