@@ -29,7 +29,7 @@ Also: `/train-tools` (PNR status, train schedule, simulated live status), `/orde
 
 ## Brand rules (from the client, 1 Oct 2026)
 
-- Logo usage (`Logo` component): the navbar is solid white on every page and carries the colour lockup; the white stacked lockup sits in the navy footer's brand block; the cream-plate masters (`public/brand/safar-zaika-*.png`) are used in the welcome popup, login page and placing overlay. The lockup already carries the wordmark, so the company name is never repeated next to it. Never recreated or recoloured.
+- Logo usage (`Logo` component): on the home page the navbar is transparent over the hero and carries the white lockup; once the hero has scrolled out, and on every other page, it is a solid white bar with the colour lockup. The white stacked lockup sits in the navy footer. The cream-plate masters (`public/brand/safar-zaika-*.png`) are used in the welcome popup, login page and placing overlay. The lockup already carries the wordmark, so the company name is never repeated next to it. Never recreated or recoloured.
 - Nothing in the UI names a specific train or halt unless the visitor entered that journey: the hero board cycles meal windows until a PNR is loaded, then the real halts; the navbar journey chip only appears for the journey entered in this browser session (the journey store is session-scoped).
 - No eyebrow / kicker text above headings anywhere. Every heading stands alone with at most one supporting line.
 - No italic accent words, no gradient text. One solid copper or gold word at most.
@@ -64,8 +64,8 @@ Deliberately **not** installed: **styled-components** (Tailwind tokens cover eve
 src/
   app/                  routes (server page.tsx + metadata; client views in components/), globals.css, carousels.css, opengraph-image
   components/
-    layout/             Navbar (solid white, sentence-case links, scroll hairline, journey chip), BottomTabBar (mobile: Home, Tools, Cart, Offers, Account), MobileNav, Footer (brand block + five link groups, one train crossing the top edge), PageHeader
-    hero/               Hero (centred headline over the navy 3D band, reassurance chips, journey-aware LED line), HeroServices (service switcher: Order food = the three-tab search card, Train status = hand-off to /train-tools?tool=live-status&train=…, Hotels = a labelled coming-soon preview), HeroScene + scene/ (Train, Track, Backdrop, geometry, textures)
+    layout/             Navbar (transparent over the home hero, solid white elsewhere; sentence-case links, scroll hairline, journey chip), BottomTabBar (mobile: Home, Tools, Cart, Offers, Account), MobileNav, Footer (tagline headline, a thali plate that turns with scroll inside a ring of text, five plain link groups), PageHeader
+    hero/               Hero (content block vertically centred over the navy 3D band, reassurance chips, journey-aware info pill), HeroServices (service switcher: Order food = the three-tab search card, Train status = hand-off to /train-tools?tool=live-status&train=…, Hotels = a labelled coming-soon preview), HeroScene + scene/ (Train, Track, Backdrop, geometry, textures)
     pnr/                PnrModule (PNR / train / station modes; `variant="search"` is the wide hero card), PnrLoading (fullscreen discovery overlay), OrderView
     journey/            NetworkMap (shared camera map), JourneyMap, TrainMarker (isometric train), JourneyCard (ticket), StationCard, JourneyStatus, JourneyView
     station/            StationExplorer (regions)

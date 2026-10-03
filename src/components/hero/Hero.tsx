@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { memo, useEffect, useRef, useState } from "react";
 import { Armchair, Radar, Wallet } from "lucide-react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
-import { formatClock, prefersReducedMotion } from "@/lib/utils";
+import { cn, formatClock, prefersReducedMotion } from "@/lib/utils";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useWebGL } from "@/hooks/useWebGL";
@@ -15,10 +15,23 @@ import { MEALS, isWithinWindows } from "@/services";
 import { useDeliveryMoment, useJourneyStore } from "@/stores";
 
 /**
- * First-screen height on md+ (section minimum and the 3D stage): the viewport, but never shorter than the copy plus the
- * train band needs (840px) and never so tall that the train drifts away from the copy (960px, or wider than 21:9 allows).
+ * Layout numbers, as CSS variables on the section (classes, not inline styles, so nothing can differ at hydration):
+ *  --hero-h      first-screen height on md+ (section minimum and the 3D stage): the viewport, but never shorter than the
+ *                copy plus the train band needs (720px) and never so tall that the train drifts away from the copy
+ *                (960px, or wider than 21:9 allows)
+ *  --hero-nav    height of the fixed navbar at the top of the page
+ *  --hero-room   where the copy has to end: above the tab bar on phones, above the train band (the lower 11.5% of the stage) on md+
+ *  --hero-block  height of the copy block with the default PNR card
+ *  --hero-title  headline size on lg+; shrinks on short screens so the block still has air above and below
+ * The block is centred between the navbar and the train band by its top padding, computed from those numbers. It is
+ * anchored at the top on purpose: when the search card grows (train tab, hotels) it grows downward and the headline stays put.
  */
-/* Hero + 3D stage height on md+ is the class `clamp(840px,100svh,max(960px,43vw))`: a class, not an inline style, so nothing can differ at hydration. */
+const heroVars =
+  "[--hero-nav:88px] [--hero-room:calc(100svh_-_56px)] [--hero-block:42rem] " +
+  "sm:[--hero-block:36rem] " +
+  "md:[--hero-h:clamp(720px,calc(100svh_-_56px),max(960px,43vw))] md:[--hero-room:calc(var(--hero-h)_*_0.885)] md:[--hero-block:34rem] " +
+  "lg:[--hero-h:clamp(720px,100svh,max(960px,43vw))] lg:[--hero-nav:100px] lg:[--hero-title:clamp(3rem,calc(12svh_-_2.5rem),3.5rem)] lg:[--hero-block:calc(25.5rem_+_1.92_*_var(--hero-title))] " +
+  "xl:[--hero-title:clamp(3.25rem,calc(12svh_-_2.5rem),4.25rem)]";
 
 const HeroScene = dynamic(() => import("./HeroScene"), { ssr: false, loading: () => null });
 
@@ -82,7 +95,7 @@ const HeroStage = memo(function HeroStage({ use3D, reduced }: { use3D: boolean; 
     return () => io.disconnect();
   }, []);
   return (
-    <div ref={stageRef} className="absolute inset-x-0 top-0 -z-10 h-full md:h-[clamp(840px,100svh,max(960px,43vw))]" aria-hidden>
+    <div ref={stageRef} className="absolute inset-x-0 top-0 -z-10 h-full md:h-(--hero-h)" aria-hidden>
       {use3D ? (
         <HeroScene animate={!reduced && inView} />
       ) : (
@@ -137,25 +150,26 @@ export function Hero() {
   );
 
   return (
-    <section ref={ref} className="relative isolate min-h-[100svh] overflow-hidden gradient-cocoa text-cream-50 md:min-h-[clamp(840px,100svh,max(960px,43vw))]" aria-labelledby="hero-title">
+    // data-hero: the navbar stays transparent while this section is behind it.
+    <section ref={ref} data-hero className={cn("relative isolate min-h-[100svh] overflow-hidden gradient-cocoa text-cream-50 md:min-h-(--hero-h)", heroVars)} aria-labelledby="hero-title">
       <HeroStage use3D={use3D} reduced={reduced} />
 
-      {/* Top padding clears the fixed navbar: 88px below lg, 100px from lg. */}
-      <div className="container-x relative flex flex-col items-center pb-24 pt-[7rem] text-center md:pb-16 lg:pt-[clamp(7.75rem,13.5svh,11rem)]">
-        <h1 id="hero-title" className="max-w-4xl text-balance font-display text-[2.5rem] leading-[0.96] opacity-0 sm:text-6xl lg:text-[3.5rem] xl:text-[4.25rem]">
+      {/* Top padding centres the block between the navbar and the train band; it never drops below the navbar plus 12px. */}
+      <div className="container-x relative flex flex-col items-center pb-24 pt-[max(calc(var(--hero-nav)_+_0.75rem),calc((var(--hero-room)_-_var(--hero-block)_+_var(--hero-nav))_/_2))] text-center md:pb-16">
+        <h1 id="hero-title" className="max-w-4xl text-balance font-display text-[2.5rem] leading-[0.96] opacity-0 sm:text-6xl lg:text-[length:var(--hero-title)]">
           Hot food on your train, handed over <span className="text-gold-400">at your seat.</span>
         </h1>
-        <p data-hero-anim data-hero-copy className="mt-4 max-w-3xl text-pretty text-base leading-relaxed text-cream-50/80 opacity-0 lg:text-[17px]">
+        <p data-hero-anim data-hero-copy className="mt-3 max-w-3xl text-pretty text-base leading-normal text-cream-50/80 opacity-0 sm:mt-4 sm:leading-relaxed lg:max-w-4xl lg:text-[17px]">
           Enter your PNR and pick a halt on your route. A kitchen near that station cooks to your train&apos;s arrival time.
         </p>
 
         {/* z-10: the card's suggestion lists drop over the rows below it */}
-        <div data-hero-anim data-hero-card className="relative z-10 mt-5 w-full max-w-3xl text-left opacity-0">
+        <div data-hero-anim data-hero-card className="relative z-10 mt-4 w-full max-w-3xl text-left opacity-0 sm:mt-5">
           <HeroServices />
         </div>
 
         {/* Chips carry their own navy backing: when the card grows (train tab) they slide over the train band and stay readable. */}
-        <ul className="mt-4 flex flex-wrap items-center justify-center gap-2 text-[13px] font-semibold text-cream-50/90 sm:gap-2.5 sm:text-sm">
+        <ul className="mt-3 flex flex-wrap items-center justify-center gap-2 text-[13px] font-semibold text-cream-50/90 sm:mt-4 sm:gap-2.5 sm:text-sm">
           {promises.map((p) => (
             <li key={p.label} data-hero-anim data-hero-point className="inline-flex items-center gap-2 rounded-full bg-cocoa-950/60 px-3.5 py-1.5 opacity-0 ring-1 ring-cream-50/10">
               <p.icon className="size-4 text-gold-400" aria-hidden />
@@ -164,7 +178,7 @@ export function Hero() {
           ))}
         </ul>
 
-        <div data-hero-anim data-hero-info className="mt-3 flex w-full justify-center opacity-0">
+        <div data-hero-anim data-hero-info className="mt-2.5 flex w-full justify-center opacity-0 sm:mt-3">
           <HeroInfo />
         </div>
       </div>

@@ -25,7 +25,7 @@ export const MobileNav = memo(function MobileNav() {
   return (
     <Modal open={open} onClose={close} variant="drawer" hideClose>
       <div className="flex items-center justify-between px-5 pt-4">
-        <Logo variant="horizontal-color" className="h-11" href={null} />
+        <Logo variant="horizontal-color" priority className="h-11" href={null} />
         <button type="button" onClick={close} className="rounded-full px-3 py-1.5 text-sm font-semibold text-cocoa-700 hover:bg-cocoa-900/6">
           Close
         </button>
