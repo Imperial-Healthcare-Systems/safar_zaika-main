@@ -47,7 +47,7 @@ function Plate() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute right-0 top-38 size-[min(58vw,17rem)] translate-x-1/2 sm:top-1/2 sm:-translate-y-1/2 md:size-80 lg:top-1/2 lg:size-[clamp(21rem,28vw,30rem)]"
+      className="pointer-events-none absolute right-0 top-38 size-[min(58vw,17rem)] translate-x-1/2 sm:top-1/2 sm:-translate-y-1/2 md:size-80 lg:top-1/2 lg:size-[clamp(21rem,26vw,26rem)]"
     >
       <div className="absolute -inset-[55%] rounded-full bg-[radial-gradient(closest-side,rgb(246_130_42/0.2),transparent)]" />
       <svg
@@ -131,20 +131,21 @@ export function Footer() {
         </Reveal>
       </div>
 
-      {/* Site map: brand column, then the four link groups. lg:pr-* keeps the plate off the links. */}
-      <div className="container-x relative border-t border-cream-50/10 pb-[calc(env(safe-area-inset-bottom)+8rem)] pt-10 md:pb-[calc(env(safe-area-inset-bottom)+4rem)] lg:pb-8 lg:pr-56 xl:pr-64">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 lg:grid-cols-[minmax(15rem,1fr)_repeat(4,minmax(0,0.78fr))] lg:gap-x-8">
+      {/* Site map: brand column, then the four link groups, five even columns across the full width.
+          The plate is sized to stay inside the band above, so nothing has to be kept clear here. */}
+      <div className="container-x relative border-t border-cream-50/10 pb-[calc(env(safe-area-inset-bottom)+8rem)] pt-10 md:pb-[calc(env(safe-area-inset-bottom)+4rem)] lg:pb-8">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 lg:grid-cols-[minmax(13.5rem,1fr)_repeat(4,minmax(0,1fr))] lg:gap-x-8">
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <Logo variant="stacked-white" className="h-16" />
             <ul className="mt-4 space-y-1">
               <li>
-                <a href="tel:+919800000000" className={`inline-flex min-h-10 items-center gap-2.5 text-[15px] text-cream-50/80 ${quiet}`}>
+                <a href="tel:+919800000000" className={`inline-flex min-h-10 items-center gap-2.5 whitespace-nowrap text-sm text-cream-50/80 ${quiet}`}>
                   <Phone className="size-4 shrink-0 text-cream-50/45" aria-hidden />
                   Helpline +91 98XXX XXXXX
                 </a>
               </li>
               <li>
-                <a href="mailto:care@safarzaika.in" className={`inline-flex min-h-10 items-center gap-2.5 text-[15px] text-cream-50/80 ${quiet}`}>
+                <a href="mailto:care@safarzaika.in" className={`inline-flex min-h-10 items-center gap-2.5 whitespace-nowrap text-sm text-cream-50/80 ${quiet}`}>
                   <Mail className="size-4 shrink-0 text-cream-50/45" aria-hidden />
                   care@safarzaika.in
                 </a>
