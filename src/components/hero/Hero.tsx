@@ -11,7 +11,7 @@ import { useWebGL } from "@/hooks/useWebGL";
 import { useHydrated } from "@/hooks/useHydrated";
 import { RouteLine } from "@/components/animations/RouteLine";
 import { SplitFlap } from "@/components/animations/SplitFlap";
-import { PnrModule } from "@/components/pnr/PnrModule";
+import { HeroServices } from "./HeroServices";
 import { useJourneyStore, useUIStore } from "@/stores";
 
 /**
@@ -158,7 +158,7 @@ export function Hero() {
       <HeroStage use3D={use3D} reduced={reduced} />
 
       {/* Top padding clears the fixed navbar: 88px below lg, 100px from lg. */}
-      <div className="container-x relative flex flex-col items-center pb-24 pt-[7.25rem] text-center md:pb-16 lg:pt-[clamp(8.5rem,15.5svh,12rem)]">
+      <div className="container-x relative flex flex-col items-center pb-24 pt-[7rem] text-center md:pb-16 lg:pt-[clamp(7.75rem,13.5svh,11rem)]">
         <h1 id="hero-title" className="max-w-4xl text-balance font-display text-[2.5rem] leading-[0.96] opacity-0 sm:text-6xl lg:text-[3.5rem] xl:text-[4.25rem]">
           Hot food on your train, handed over <span className="text-gold-400">at your seat.</span>
         </h1>
@@ -167,12 +167,12 @@ export function Hero() {
         </p>
 
         {/* z-10: the card's suggestion lists drop over the rows below it */}
-        <div data-hero-anim data-hero-card className="relative z-10 mt-6 w-full max-w-3xl text-left opacity-0">
-          <PnrModule variant="search" />
+        <div data-hero-anim data-hero-card className="relative z-10 mt-5 w-full max-w-3xl text-left opacity-0">
+          <HeroServices />
         </div>
 
         {/* Chips carry their own navy backing: when the card grows (train tab) they slide over the train band and stay readable. */}
-        <ul className="mt-5 flex flex-wrap items-center justify-center gap-2 text-[13px] font-semibold text-cream-50/90 sm:gap-2.5 sm:text-sm">
+        <ul className="mt-4 flex flex-wrap items-center justify-center gap-2 text-[13px] font-semibold text-cream-50/90 sm:gap-2.5 sm:text-sm">
           {promises.map((p) => (
             <li key={p.label} data-hero-anim data-hero-point className="inline-flex items-center gap-2 rounded-full bg-cocoa-950/60 px-3.5 py-1.5 opacity-0 ring-1 ring-cream-50/10">
               <p.icon className="size-4 text-gold-400" aria-hidden />
@@ -181,7 +181,7 @@ export function Hero() {
           ))}
         </ul>
 
-        <div data-hero-anim data-hero-board className="mt-4 flex w-full justify-center opacity-0">
+        <div data-hero-anim data-hero-board className="mt-3 flex w-full justify-center opacity-0">
           <HaltBoard />
         </div>
       </div>

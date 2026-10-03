@@ -65,7 +65,7 @@ src/
   app/                  routes (server page.tsx + metadata; client views in components/), globals.css, carousels.css, opengraph-image
   components/
     layout/             Navbar (solid white, competitor-style link row, scroll hairline, journey chip), BottomTabBar (mobile: Home, Tools, Cart, Offers, Account), MobileNav, Footer (departures board), PageHeader, PageTransition, IntroLoader
-    hero/               Hero (centred headline over the navy 3D band, three-tab search card, reassurance chips, journey-aware LED line), HeroScene + scene/ (Train, Track, Backdrop, geometry, textures)
+    hero/               Hero (centred headline over the navy 3D band, reassurance chips, journey-aware LED line), HeroServices (service switcher: Order food = the three-tab search card, Train status = hand-off to /train-tools?tool=live-status&train=…, Hotels = a labelled coming-soon preview), HeroScene + scene/ (Train, Track, Backdrop, geometry, textures)
     pnr/                PnrModule (PNR / train / station modes; `variant="search"` is the wide hero card), PnrLoading (fullscreen discovery overlay), OrderView
     journey/            NetworkMap (shared camera map), JourneyMap, TrainMarker (isometric train), JourneyCard (ticket), StationCard, JourneyStatus, JourneyView
     station/            StationExplorer (regions)

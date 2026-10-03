@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
 import { Radio, RefreshCw } from "lucide-react";
 import { Button, Skeleton } from "@/components/ui";
 import { RouteLine } from "@/components/animations/RouteLine";
@@ -17,9 +18,21 @@ type State = { status: "idle" | "loading" } | { status: "error"; message: string
 const istMinutes = () => Math.floor(Date.now() / 60000 + 330) % 1440;
 
 export function LiveStatusTool() {
-  const [state, setState] = useState<State>({ status: "idle" });
-  const [busy, setBusy] = useState(false);
+  // `?train=12951` (the hero's "Train status" hand-off) opens straight on that train's board.
+  const initial = useSearchParams().get("train");
+  const [state, setState] = useState<State>(() => (initial ? { status: "loading" } : { status: "idle" }));
+  const [busy, setBusy] = useState(Boolean(initial));
   const req = useRef(0);
+
+  useEffect(() => {
+    if (!initial) return;
+    const mine = ++req.current;
+    void getLiveStatus(initial, istMinutes()).then((res) => {
+      if (mine !== req.current) return;
+      setBusy(false);
+      setState(res.ok ? { status: "done", data: res.data } : { status: "error", message: res.error.message });
+    });
+  }, [initial]);
 
   /** `keep`: a refresh leaves the board up and only flips the readouts. */
   const load = async (query: string, keep = false) => {
