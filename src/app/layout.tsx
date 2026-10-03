@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Semi_Condensed } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/Providers";
 import { Navbar } from "@/components/layout/Navbar";
@@ -7,10 +7,11 @@ import { Footer } from "@/components/layout/Footer";
 import { StickyCartBar } from "@/components/cart/StickyCartBar";
 import { BottomTabBar } from "@/components/layout/BottomTabBar";
 
-// The logo's tagline is set in Bahnschrift (a DIN-style railway signage face).
-// Barlow is the closest open superfamily: Semi Condensed for headings, regular for UI.
-const barlow = Barlow({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-barlow", display: "swap" });
-const barlowSemi = Barlow_Semi_Condensed({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-barlow-semi", display: "swap" });
+// Headings in Plus Jakarta Sans, interface text in Inter. The condensed 800-weight face used before
+// read as shouty rather than professional (client, 3 Oct 2026). The logo keeps its own Bahnschrift
+// tagline as artwork — nothing on the page tries to imitate it.
+const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-ui", display: "swap" });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["600", "700"], variable: "--font-head", display: "swap" });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -48,7 +49,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${barlow.variable} ${barlowSemi.variable} h-full`}>
+    <html lang="en-IN" className={`${inter.variable} ${jakarta.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <a
           href="#main"

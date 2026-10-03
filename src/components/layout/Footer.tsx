@@ -112,7 +112,7 @@ export function Footer() {
       <div className="relative">
         <Plate />
         <Reveal variant="letters" className="container-x relative pb-12 pt-16 lg:pb-14 lg:pt-20">
-          <h2 className="text-[clamp(2.75rem,min(8vw,11vh),6rem)] leading-[0.94]">
+          <h2 className="text-[clamp(2.25rem,min(6.5vw,9vh),4.75rem)] leading-[1.06]">
             <span className="block">Your journey.</span>
             <span className="block">
               Our <span className="text-gold-400">zaika.</span>
@@ -133,7 +133,7 @@ export function Footer() {
 
       {/* Site map: brand column, then the four link groups. lg:pr-* keeps the plate off the links. */}
       <div className="container-x relative border-t border-cream-50/10 pb-[calc(env(safe-area-inset-bottom)+8rem)] pt-10 md:pb-[calc(env(safe-area-inset-bottom)+4rem)] lg:pb-8 lg:pr-56 xl:pr-64">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 lg:grid-cols-[minmax(13rem,1fr)_repeat(4,minmax(0,0.8fr))] lg:gap-x-8">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 lg:grid-cols-[minmax(15rem,1fr)_repeat(4,minmax(0,0.78fr))] lg:gap-x-8">
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <Logo variant="stacked-white" className="h-16" />
             <ul className="mt-4 space-y-1">

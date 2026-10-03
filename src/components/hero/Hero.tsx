@@ -30,8 +30,8 @@ const heroVars =
   "[--hero-nav:88px] [--hero-room:calc(100svh_-_56px)] [--hero-block:42rem] " +
   "sm:[--hero-block:36rem] " +
   "md:[--hero-h:clamp(720px,calc(100svh_-_56px),max(960px,43vw))] md:[--hero-room:calc(var(--hero-h)_*_0.885)] md:[--hero-block:34rem] " +
-  "lg:[--hero-h:clamp(720px,100svh,max(960px,43vw))] lg:[--hero-nav:100px] lg:[--hero-title:clamp(3rem,calc(12svh_-_2.5rem),3.5rem)] lg:[--hero-block:calc(25.5rem_+_1.92_*_var(--hero-title))] " +
-  "xl:[--hero-title:clamp(3.25rem,calc(12svh_-_2.5rem),4.25rem)]";
+  "lg:[--hero-h:clamp(720px,100svh,max(960px,43vw))] lg:[--hero-nav:100px] lg:[--hero-title:clamp(2.5rem,calc(10svh_-_2rem),3rem)] lg:[--hero-block:calc(25.5rem_+_2.12_*_var(--hero-title))] " +
+  "xl:[--hero-title:clamp(2.75rem,calc(10svh_-_2rem),3.5rem)]";
 
 const HeroScene = dynamic(() => import("./HeroScene"), { ssr: false, loading: () => null });
 
@@ -156,7 +156,7 @@ export function Hero() {
 
       {/* Top padding centres the block between the navbar and the train band; it never drops below the navbar plus 12px. */}
       <div className="container-x relative flex flex-col items-center pb-24 pt-[max(calc(var(--hero-nav)_+_0.75rem),calc((var(--hero-room)_-_var(--hero-block)_+_var(--hero-nav))_/_2))] text-center md:pb-16">
-        <h1 id="hero-title" className="max-w-4xl text-balance font-display text-[2.5rem] leading-[0.96] opacity-0 sm:text-6xl lg:text-[length:var(--hero-title)]">
+        <h1 id="hero-title" className="max-w-4xl text-balance font-display text-[2.125rem] leading-[1.06] opacity-0 sm:text-[2.75rem] lg:text-[length:var(--hero-title)]">
           Hot food on your train, handed over <span className="text-gold-400">at your seat.</span>
         </h1>
         <p data-hero-anim data-hero-copy className="mt-3 max-w-3xl text-pretty text-base leading-normal text-cream-50/80 opacity-0 sm:mt-4 sm:leading-relaxed lg:max-w-4xl lg:text-[17px]">

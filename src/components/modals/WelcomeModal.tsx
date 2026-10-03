@@ -44,7 +44,7 @@ export function WelcomeModal() {
         <div className="flex items-start gap-4 pr-10">
           <Logo variant="badge" href={null} priority className="h-16 shrink-0" />
           <div className="min-w-0">
-            <h2 className="font-display text-[1.75rem] leading-none sm:text-4xl">Where&apos;s your train headed?</h2>
+            <h2 className="font-display text-2xl leading-[1.12] sm:text-[1.75rem]">Where&apos;s your train headed?</h2>
             <p className="mt-2 text-[15px] leading-snug text-muted">Enter your PNR. Food from kitchens on your route comes to your seat.</p>
           </div>
         </div>

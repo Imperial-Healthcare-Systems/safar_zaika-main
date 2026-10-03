@@ -26,7 +26,7 @@ export function LoginPageView() {
           <div aria-hidden className="absolute inset-0 map-grid-dark opacity-50" />
           <div className="relative">
             <Logo variant="badge" href={null} className="h-24 sm:h-32" />
-            <h1 className="mt-8 text-balance font-display text-4xl leading-[0.95] sm:text-5xl">
+            <h1 className="mt-8 text-balance font-display text-[1.875rem] leading-[1.08] sm:text-[2.25rem]">
               One account. <span className="text-gold-400">Every journey.</span>
             </h1>
             <ul className="mt-8 space-y-4">

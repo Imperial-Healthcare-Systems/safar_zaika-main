@@ -53,7 +53,7 @@ export function PartnerCta() {
     <div className="relative mt-12 overflow-hidden rounded-[2.5rem] gradient-cocoa p-8 text-cream-50 sm:p-12">
       <div aria-hidden className="absolute inset-0 map-grid-dark opacity-50" />
       <div className="relative">
-        <h2 className="text-balance font-display text-4xl leading-[0.95] sm:text-5xl">
+        <h2 className="text-balance font-display text-[1.875rem] leading-[1.08] sm:text-[2.25rem]">
           Cook for every train that <span className="text-gold-400">stops nearby.</span>
         </h2>
         <p className="mt-4 max-w-md text-[15px] leading-relaxed text-cream-50/70">Register interest and we&apos;ll reach out when partner onboarding opens.</p>

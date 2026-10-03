@@ -114,7 +114,7 @@ export function RestaurantMenuView({ id }: { id: string }) {
                     <MapPin className="size-3" /> {station?.name ?? restaurant.stationCode} · {restaurant.distanceKm} km from platform
                   </Badge>
                 </div>
-                <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.02] sm:text-5xl lg:text-6xl">{restaurant.name}</h1>
+                <h1 className="mt-4 font-display text-[1.875rem] font-semibold leading-[1.08] sm:text-[2.25rem] lg:text-[2.75rem]">{restaurant.name}</h1>
                 <p className="mt-2 text-cream-50/70">{restaurant.cuisines.join(" · ")}</p>
                 <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
                   <Rating light value={restaurant.rating} count={restaurant.ratingCount} />

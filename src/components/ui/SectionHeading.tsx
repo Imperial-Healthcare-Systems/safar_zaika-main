@@ -24,15 +24,16 @@ export function SectionHeading({
   as?: "h1" | "h2" | "h3";
   size?: "sm" | "md" | "lg";
 }) {
+  // Plus Jakarta Sans sets about a fifth wider than the condensed face these sizes were drawn for.
   const sizes = {
-    sm: "text-[1.75rem] sm:text-3xl",
-    md: "text-[2.25rem] sm:text-5xl lg:text-[3.25rem]",
-    lg: "text-[2.6rem] sm:text-6xl lg:text-[4.25rem]",
+    sm: "text-2xl sm:text-[1.75rem]",
+    md: "text-[1.875rem] sm:text-[2.5rem] lg:text-[2.75rem]",
+    lg: "text-[2.125rem] sm:text-5xl lg:text-[3.5rem]",
   };
   return (
     <div className={cn("flex flex-col gap-5 md:flex-row md:items-end md:justify-between", align === "center" && "md:flex-col md:items-center md:text-center", className)}>
       <div className={cn("max-w-2xl", align === "center" && "mx-auto text-center")}>
-        <Tag className={cn("text-balance font-display leading-[0.95]", sizes[size], dark ? "text-cream-50" : "text-cocoa-900")}>{title}</Tag>
+        <Tag className={cn("text-balance font-display leading-[1.08]", sizes[size], dark ? "text-cream-50" : "text-cocoa-900")}>{title}</Tag>
         {description && <p className={cn("mt-3 max-w-xl text-pretty text-base leading-relaxed sm:text-lg", align === "center" && "mx-auto", dark ? "text-cream-50/70" : "text-muted")}>{description}</p>}
       </div>
       {action && <div className="shrink-0">{action}</div>}

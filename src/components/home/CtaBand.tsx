@@ -14,7 +14,7 @@ export function CtaBand() {
           <div aria-hidden className="absolute -bottom-32 left-1/3 size-96 rounded-full bg-cocoa-600/35 blur-3xl" />
           <div className="relative grid items-center gap-10 lg:grid-cols-2">
             <div>
-              <h2 id="cta-title" className="text-balance font-display text-4xl leading-[0.95] sm:text-5xl lg:text-6xl">
+              <h2 id="cta-title" className="text-balance font-display text-[1.875rem] leading-[1.08] sm:text-[2.25rem] lg:text-[2.75rem]">
                 Enter your PNR. Eat at your seat.
               </h2>
               <p className="mt-4 max-w-md text-[15px] leading-relaxed text-cream-50/85">

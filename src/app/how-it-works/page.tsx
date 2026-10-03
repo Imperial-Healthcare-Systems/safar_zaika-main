@@ -54,7 +54,7 @@ export default function HowItWorksPage() {
       <LiveJourney />
 
       <section className="container-x py-20 text-center sm:py-24">
-        <h2 className="text-balance font-display text-4xl text-cocoa-900 sm:text-6xl">
+        <h2 className="text-balance font-display text-[1.875rem] text-cocoa-900 sm:text-[2.75rem]">
           Your seat is the <span className="text-copper-600">table.</span>
         </h2>
         <p className="mx-auto mt-4 max-w-md text-muted">Enter a PNR or a train number and we&apos;ll show you every kitchen on the route.</p>
