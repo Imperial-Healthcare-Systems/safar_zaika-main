@@ -91,16 +91,21 @@ public/
 
 ## Design system
 
-Derived from the supplied logo (`assests/SAFAR_ZAIKA_LOGO`):
+Railway blue with a single orange action colour (client direction, 3 Oct 2026; the earlier warm-brown scheme read too close to Swiggy). The token names in `globals.css` are historical, the values are the blue palette, so components inherit the scheme without edits:
 
-| Token | Hex | Origin |
+| Token | Hex | Used for |
 | --- | --- | --- |
-| `cocoa-800` | `#3c1d0b` | wordmark ink |
-| `copper-500` | `#b86e24` | ring / "Zaika" |
-| `gold-500` | `#c47f30` | steam highlight |
-| `cream-200` | `#f3e5cb` | logo field |
-| `leaf-600` | `#4e6826` | leaf accent (veg, success) |
+| `cocoa-900` / `cocoa-800` | `#0d2250` / `#163a7a` | ink, headings, dark sections |
+| `cocoa-950` | `#071634` | deepest navy (hero, boards, footer) |
+| `copper-500` | `#f6822a` | the one action colour: primary buttons, links, active states |
+| `gold-400` | `#ffb457` | warm accents and LED text on navy |
+| `cream-50` / `cream-200` | `#ffffff` / `#dce9fd` | page surface, light blue fields |
+| `line` / `muted` | `#d8e5f7` / `#5b7395` | borders, secondary text |
+| `leaf-500` | `#2f9e5f` | veg dot, success |
+| `chili-500` | `#e04434` | errors |
 | `sign-500` | `#f5c542` | Indian Railways station-board yellow (signboard chips) |
+
+The supplied logo is used exactly as delivered (warm brown on its cream plate): the colour lockup on white surfaces, the white lockup on navy. It is never recoloured.
 
 Type: the logo's tagline is set in Bahnschrift, a DIN-style railway signage face, so the whole UI uses the **Barlow** superfamily: Barlow Semi Condensed 800 for display (`h1`–`h3`, `.font-display`), Barlow for UI (`font-sans`), Barlow Condensed for boards (`font-condensed`). Railway devices: `signboard` (yellow station board with black frame), `led` + `led-panel` (dot-matrix coach indicator), `flap-cell` + `SplitFlap` (split-flap departures board), `ticket-edge` notches, route lines and the train glyph.
 

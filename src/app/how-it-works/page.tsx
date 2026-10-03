@@ -53,7 +53,7 @@ export default function HowItWorksPage() {
 
       <section className="container-x py-20 text-center sm:py-24">
         <h2 className="text-balance font-display text-4xl text-cocoa-900 sm:text-6xl">
-          Your seat is the <span className="text-copper-500">table.</span>
+          Your seat is the <span className="text-copper-600">table.</span>
         </h2>
         <p className="mx-auto mt-4 max-w-md text-muted">Enter a PNR or a train number and we&apos;ll show you every kitchen on the route.</p>
         <Button href="/order" size="xl" className="mt-8" rightIcon={<ArrowRight className="size-4" />}>

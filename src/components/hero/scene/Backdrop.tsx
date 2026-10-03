@@ -10,7 +10,7 @@ import { makeBokehTexture, makeHorizonTexture } from "./textures";
  * Everything behind the route, back to front: a dusk glow on the horizon, far hills, a town with lit
  * windows, a parked silhouette train on a second track, then line-side trees and poles. Each layer sits
  * at its own depth so the camera's pointer parallax and push-in slide them against each other; the
- * scene fog grades them into the cocoa haze.
+ * scene fog grades them into the navy haze.
  */
 export function Backdrop() {
   const a = useMemo(() => ({ ...makeBackdrop(), bokeh: makeBokehTexture(), horizon: makeHorizonTexture() }), []);
@@ -27,29 +27,29 @@ export function Backdrop() {
         <meshBasicMaterial map={a.horizon} transparent depthWrite={false} fog={false} toneMapped={false} />
       </mesh>
       <mesh geometry={a.hills}>
-        <meshBasicMaterial color="#140904" />
+        <meshBasicMaterial color="#10264d" />
       </mesh>
       <mesh geometry={a.town}>
-        <meshBasicMaterial color="#0d0603" />
+        <meshBasicMaterial color="#0a1a3c" />
       </mesh>
       <points>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[a.windows.position, 3]} />
           <bufferAttribute attach="attributes-color" args={[a.windows.color, 3]} />
         </bufferGeometry>
-        <pointsMaterial map={a.bokeh} size={0.2} sizeAttenuation vertexColors transparent opacity={0.9} depthWrite={false} blending={THREE.AdditiveBlending} fog={false} toneMapped={false} />
+        <pointsMaterial map={a.bokeh} size={0.18} sizeAttenuation vertexColors transparent opacity={0.75} depthWrite={false} blending={THREE.AdditiveBlending} fog={false} toneMapped={false} />
       </points>
       <mesh geometry={a.farRails}>
-        <meshStandardMaterial color="#9d8b78" metalness={0.8} roughness={0.35} envMapIntensity={1.2} />
+        <meshStandardMaterial color="#8294b0" metalness={0.8} roughness={0.35} envMapIntensity={1.2} />
       </mesh>
       <mesh geometry={a.farBallast}>
-        <meshStandardMaterial color="#3a2415" roughness={0.95} envMapIntensity={0.2} />
+        <meshStandardMaterial color="#1d2b45" roughness={0.95} envMapIntensity={0.2} />
       </mesh>
       <mesh geometry={a.farTrain}>
-        <meshStandardMaterial color="#2a1a11" roughness={0.55} metalness={0.25} envMapIntensity={0.9} />
+        <meshStandardMaterial color="#132648" roughness={0.55} metalness={0.25} envMapIntensity={0.9} />
       </mesh>
       <mesh geometry={a.trees}>
-        <meshBasicMaterial color="#0c0502" />
+        <meshBasicMaterial color="#050e22" />
       </mesh>
     </group>
   );

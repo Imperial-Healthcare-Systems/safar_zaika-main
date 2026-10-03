@@ -88,7 +88,7 @@ export function TrackOrderEntry() {
             </div>
           ) : orders.length === 0 ? (
             <div className="mt-5 flex flex-col items-center rounded-3xl border border-dashed border-line bg-cream-100 px-6 py-10 text-center">
-              <span className="inline-flex size-14 items-center justify-center rounded-full bg-white text-copper-600 shadow-card">
+              <span className="inline-flex size-14 items-center justify-center rounded-full bg-white text-copper-700 shadow-card">
                 <PackageSearch className="size-6" />
               </span>
               <p className="mt-4 font-display text-xl font-semibold text-cocoa-900">No orders yet</p>

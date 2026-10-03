@@ -229,7 +229,7 @@ export function LoginForm({ onDone, compact }: { onDone?: () => void; compact?: 
               Verify &amp; continue
             </Button>
             <div className="flex items-center justify-between text-sm">
-              <button type="button" onClick={() => onOtpChange(DEMO_OTP)} className="font-semibold text-copper-600 hover:underline">
+              <button type="button" onClick={() => onOtpChange(DEMO_OTP)} className="font-semibold text-copper-700 hover:underline">
                 Use demo code
               </button>
               <button type="button" disabled={resendIn > 0} onClick={() => void sendCode()} className="font-semibold text-muted enabled:hover:text-cocoa-900 disabled:opacity-60">

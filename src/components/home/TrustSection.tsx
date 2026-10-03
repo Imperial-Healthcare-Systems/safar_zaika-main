@@ -59,7 +59,7 @@ export function TrustSection() {
             <span aria-hidden className="led absolute right-4 top-4 text-[11px]">
               0{i + 1}
             </span>
-            <it.icon className="size-6 text-[#ffb648]" aria-hidden />
+            <it.icon className="size-6 text-gold-400" aria-hidden />
             <h3 className="led mt-5 text-lg leading-tight">{it.t}</h3>
             <p className="mt-2 text-[13px] leading-snug text-cream-50/65">{it.d}</p>
           </li>

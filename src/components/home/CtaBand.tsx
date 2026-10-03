@@ -7,9 +7,11 @@ export function CtaBand() {
   return (
     <section className="container-x py-10" aria-labelledby="cta-title">
       <Reveal variant="zoom" scale={0.92}>
-        <div className="relative overflow-hidden rounded-[2.5rem] gradient-brand p-8 text-cream-50 sm:p-12 lg:p-16">
-          <div aria-hidden className="absolute -right-24 -top-24 size-80 rounded-full bg-gold-300/30 blur-3xl" />
-          <div aria-hidden className="absolute -bottom-32 left-1/3 size-96 rounded-full bg-cocoa-900/20 blur-3xl" />
+        {/* Navy band: the orange stays on the CTA button inside the module, never on a full-bleed fill. */}
+        <div className="relative overflow-hidden rounded-[2.5rem] gradient-cocoa p-8 text-cream-50 sm:p-12 lg:p-16">
+          <div aria-hidden className="absolute inset-0 map-grid-dark opacity-50" />
+          <div aria-hidden className="absolute -right-24 -top-24 size-80 rounded-full bg-copper-500/25 blur-3xl" />
+          <div aria-hidden className="absolute -bottom-32 left-1/3 size-96 rounded-full bg-cocoa-600/35 blur-3xl" />
           <div className="relative grid items-center gap-10 lg:grid-cols-2">
             <div>
               <h2 id="cta-title" className="text-balance font-display text-4xl leading-[0.95] sm:text-5xl lg:text-6xl">

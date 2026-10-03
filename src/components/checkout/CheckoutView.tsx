@@ -165,7 +165,7 @@ function CheckoutForm({ placing, setPlacing }: { placing: boolean; setPlacing: (
             ) : (
               <div className="rounded-2xl border border-dashed border-line bg-cream-100 p-4 text-sm text-muted">
                 No journey attached.{" "}
-                <Link href="/order" className="font-semibold text-copper-600 hover:underline">
+                <Link href="/order" className="font-semibold text-copper-700 hover:underline">
                   Add your PNR or train
                 </Link>{" "}
                 so we can time the hand-over to your halt.
@@ -246,12 +246,12 @@ function CheckoutForm({ placing, setPlacing }: { placing: boolean; setPlacing: (
                   {stop && (
                     <dl className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[13px]">
                       <div className="flex items-center gap-1.5">
-                        <Clock className="size-3.5 text-copper-600" />
+                        <Clock className="size-3.5 text-copper-700" />
                         <dt className="text-muted">Arrives</dt>
                         <dd className="font-semibold text-cocoa-900">{formatClock(stop.arrival)}</dd>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <Timer className="size-3.5 text-copper-600" />
+                        <Timer className="size-3.5 text-copper-700" />
                         <dt className="text-muted">Halt</dt>
                         <dd className="font-semibold text-cocoa-900">{stop.halt} min</dd>
                       </div>
@@ -296,11 +296,11 @@ function CheckoutForm({ placing, setPlacing }: { placing: boolean; setPlacing: (
               />
               <span>
                 I agree to the{" "}
-                <Link href="/terms" className="font-semibold text-copper-600 hover:underline">
+                <Link href="/terms" className="font-semibold text-copper-700 hover:underline">
                   Terms of Service
                 </Link>{" "}
                 and the{" "}
-                <Link href="/cancellation" className="font-semibold text-copper-600 hover:underline">
+                <Link href="/cancellation" className="font-semibold text-copper-700 hover:underline">
                   Cancellation policy
                 </Link>
                 . Delivery times depend on the train running on schedule.

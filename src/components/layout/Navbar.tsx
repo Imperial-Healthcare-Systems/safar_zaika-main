@@ -104,8 +104,8 @@ export function Navbar() {
       {/* Platform indicator: collapses once the page scrolls. */}
       <div className={cn("overflow-hidden transition-[height,opacity] duration-500 ease-(--ease-out-quart)", scrolled ? "h-0 opacity-0" : "h-7 opacity-100")}>
         <p className="led-panel led flex h-7 items-center justify-center gap-2.5 overflow-hidden whitespace-nowrap border-x-0 border-t-0 px-4 text-[10.5px] sm:text-[11px]">
-          <span className="size-1.5 shrink-0 animate-blink rounded-full bg-[#ffb648] shadow-[0_0_6px_#ffb648]" aria-hidden />
-          <Link href="/order?mode=pnr" className="transition-colors hover:text-[#ffd27a]">
+          <span className="size-1.5 shrink-0 animate-blink rounded-full bg-gold-400 shadow-[0_0_6px_var(--color-gold-400)]" aria-hidden />
+          <Link href="/order?mode=pnr" className="transition-colors hover:text-gold-300">
             <span className="hidden sm:inline">Platform 1 · </span>Demo PNR 1234567890 · Try it
           </Link>
         </p>

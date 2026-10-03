@@ -46,7 +46,7 @@ const subscribeClock = (cb: () => void) => {
 const readClock = () => new Date().toTimeString().slice(0, 5);
 const serverClock = () => "--:--";
 
-const ledHead = "led text-[10px] tracking-[0.18em] text-[#ffb648]/70 sm:text-[11px]";
+const ledHead = "led text-[10px] tracking-[0.18em] text-gold-400/75 sm:text-[11px]";
 
 /** One departure row. memo: a hover re-renders the two rows whose `hot` changed, not all 16 boards. */
 const Row = memo(function Row({ i, time, label, href, hot, small, onHot }: { i: number; time: string; label: string; href: string; hot: boolean; small: boolean; onHot: (i: number | null) => void }) {
@@ -103,7 +103,7 @@ export function Footer() {
         </div>
 
         {/* Departures board */}
-        <div className="mt-12 overflow-hidden rounded-2xl border border-cream-50/10 bg-[#0d0703] shadow-[inset_0_0_48px_rgba(0,0,0,0.65)]">
+        <div className="mt-12 overflow-hidden rounded-2xl border border-cream-50/10 bg-[#061129] shadow-[inset_0_0_48px_rgba(0,0,0,0.65)]">
           <div className="led-panel flex items-center justify-between gap-4 border-x-0 border-t-0 px-4 py-2.5 sm:px-6">
             <span className="led text-[11px] sm:text-xs">Departures</span>
             <SplitFlap text={clock} length={5} speed={40} className="text-[15px] sm:text-base" />

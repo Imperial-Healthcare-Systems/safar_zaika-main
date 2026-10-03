@@ -24,7 +24,7 @@ export function Badge({ tone = "cream", className, ...rest }: HTMLAttributes<HTM
 }
 
 export function VegDot({ type, className }: { type: "veg" | "non-veg" | "egg"; className?: string }) {
-  const color = type === "veg" ? "border-leaf-600 text-leaf-600" : type === "egg" ? "border-gold-500 text-gold-500" : "border-chili-500 text-chili-500";
+  const color = type === "veg" ? "border-leaf-600 text-leaf-600" : type === "egg" ? "border-gold-600 text-gold-600" : "border-chili-500 text-chili-500";
   const label = type === "veg" ? "Vegetarian" : type === "egg" ? "Contains egg" : "Non-vegetarian";
   return (
     <span role="img" aria-label={label} title={label} className={cn("inline-flex size-4 shrink-0 items-center justify-center rounded-[3px] border-[1.5px] bg-white", color, className)}>

@@ -52,7 +52,7 @@ export function FoodJourney() {
         <div ref={ref} className="relative mt-14">
           <div aria-hidden className="absolute inset-x-0 top-[45px] hidden h-3.5 lg:block">
             <div className="absolute inset-0 text-cream-300" style={TRACK} />
-            <div data-line className="absolute inset-0 text-copper-500" style={TRACK} />
+            <div data-line className="absolute inset-0 text-copper-600" style={TRACK} />
           </div>
           <Reveal y={-64} ease="bounce.out" stagger={0.1} selector="[data-node]" start="top 80%">
             <ol className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-4 lg:grid-cols-7">
@@ -65,7 +65,7 @@ export function FoodJourney() {
                       ) : c.mark ? (
                         <Image src="/brand/mark.svg" alt="" width={64} height={64} className="size-14" />
                       ) : c.icon ? (
-                        <c.icon className="size-9 text-copper-600" />
+                        <c.icon className="size-9 text-copper-700" />
                       ) : null}
                     </div>
                     <span aria-hidden className="signboard absolute -bottom-2 left-1/2 -translate-x-1/2 text-[10px]">

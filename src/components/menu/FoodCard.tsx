@@ -127,7 +127,7 @@ export function FoodCard({
               <Price value={dish.price} mrp={dish.mrp} />
               {dish.rating && (
                 <p className="mt-0.5 flex items-center gap-1 text-[12px] font-semibold text-cocoa-700">
-                  <Star className="size-3 fill-gold-500 text-gold-500" /> {dish.rating.toFixed(1)}
+                  <Star className="size-3 fill-gold-600 text-gold-600" /> {dish.rating.toFixed(1)}
                 </p>
               )}
             </div>
@@ -169,7 +169,7 @@ export function FoodCard({
           <h4 className={cn("font-display text-lg font-semibold leading-tight", dark ? "text-cream-50" : "text-cocoa-900")}>{dish.name}</h4>
           {dish.rating && (
             <span className={cn("inline-flex shrink-0 items-center gap-1 text-[12px] font-semibold", dark ? "text-cream-50/80" : "text-cocoa-700")}>
-              <Star className="size-3 fill-gold-500 text-gold-500" /> {dish.rating.toFixed(1)}
+              <Star className="size-3 fill-gold-600 text-gold-600" /> {dish.rating.toFixed(1)}
             </span>
           )}
         </div>

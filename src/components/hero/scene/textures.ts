@@ -46,17 +46,17 @@ export function atlasLayout({ L, H, D }: Dims): Atlas {
 }
 
 const C = {
-  cream: "#f3e5cb",
-  creamLight: "#f8ecd6",
-  creamDeep: "#e3d0ad",
-  cocoa: "#3c1d0b",
-  cocoaDeep: "#1f0e06",
-  glass: "#1a0d07",
-  copper: "#b86e24",
-  gold: "#e3b461",
-  skirt: "#3a2416",
-  roof: "#d6c4a3",
-  roofEdge: "#c3af8c",
+  body: "#f4f8ff",
+  bodyLight: "#ffffff",
+  bodyDeep: "#dce9fd",
+  navy: "#0d2250",
+  navyDeep: "#071634",
+  glass: "#0b1d3e",
+  orange: "#f6822a",
+  pin: "#c3dafb",
+  skirt: "#0d2250",
+  roof: "#e4eeff",
+  roofEdge: "#c3dafb",
 };
 
 /** Grey levels of the roughness map (three reads the green channel). */
@@ -140,7 +140,7 @@ export function makeBeamTexture() {
   return t;
 }
 
-/** Tileable warm gravel grain for the ballast. Multiplies the material colour. */
+/** Tileable cool gravel grain for the ballast. Multiplies the material colour. */
 export function makeNoiseTexture() {
   const size = 128;
   const c = canvas(size, size);
@@ -149,15 +149,15 @@ export function makeNoiseTexture() {
   const r = rng(7);
   for (let i = 0; i < img.data.length; i += 4) {
     const v = 140 + r() * 115;
-    const warm = r() * 14;
-    img.data[i] = v;
-    img.data[i + 1] = v - warm * 0.6;
-    img.data[i + 2] = v - warm;
+    const cool = r() * 16;
+    img.data[i] = v - cool;
+    img.data[i + 1] = v - cool * 0.5;
+    img.data[i + 2] = v;
     img.data[i + 3] = 255;
   }
   ctx.putImageData(img, 0, 0);
   for (let i = 0; i < 60; i++) {
-    ctx.fillStyle = `rgba(30,18,10,${0.2 + r() * 0.3})`;
+    ctx.fillStyle = `rgba(12,26,50,${0.2 + r() * 0.3})`;
     ctx.beginPath();
     ctx.arc(r() * size, r() * size, 1.5 + r() * 2.5, 0, Math.PI * 2);
     ctx.fill();
@@ -168,8 +168,9 @@ export function makeNoiseTexture() {
 }
 
 /**
- * Equirectangular "studio at dusk" for reflections: warm cocoa sky over a dark ground with a long
- * soft-box streak high up, so every rounded shoulder of the train carries a crisp highlight line.
+ * Equirectangular "studio at dusk" for reflections: deep navy sky over dark ground with a dim blue
+ * horizon glow, a small warm sun blob and a long soft-box streak high up, so every rounded shoulder of
+ * the train carries a crisp highlight line.
  */
 export function makeSkyTexture() {
   const w = 512;
@@ -177,24 +178,24 @@ export function makeSkyTexture() {
   const c = canvas(w, h);
   const ctx = c.getContext("2d")!;
   const g = ctx.createLinearGradient(0, 0, 0, h);
-  g.addColorStop(0, "#1a0c05");
-  g.addColorStop(0.3, "#4a2611");
-  g.addColorStop(0.46, "#a8652a");
-  g.addColorStop(0.5, "#e4a65a");
-  g.addColorStop(0.53, "#3b1f0e");
-  g.addColorStop(0.7, "#160b05");
-  g.addColorStop(1, "#070301");
+  g.addColorStop(0, "#071634");
+  g.addColorStop(0.3, "#0d2250");
+  g.addColorStop(0.46, "#163a7a");
+  g.addColorStop(0.5, "#2d5fae");
+  g.addColorStop(0.53, "#0b1e3f");
+  g.addColorStop(0.7, "#071634");
+  g.addColorStop(1, "#03091a");
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, w, h);
   const s = ctx.createLinearGradient(0, h * 0.21, 0, h * 0.31);
-  s.addColorStop(0, "rgba(255,232,196,0)");
-  s.addColorStop(0.5, "rgba(255,240,214,0.95)");
-  s.addColorStop(1, "rgba(255,232,196,0)");
+  s.addColorStop(0, "rgba(206,226,255,0)");
+  s.addColorStop(0.5, "rgba(228,240,255,0.95)");
+  s.addColorStop(1, "rgba(206,226,255,0)");
   ctx.fillStyle = s;
   ctx.fillRect(0, h * 0.21, w, h * 0.1);
   const sun = ctx.createRadialGradient(w * 0.3, h * 0.2, 0, w * 0.3, h * 0.2, w * 0.16);
-  sun.addColorStop(0, "rgba(255,226,180,0.9)");
-  sun.addColorStop(1, "rgba(255,200,140,0)");
+  sun.addColorStop(0, "rgba(255,196,130,0.42)");
+  sun.addColorStop(1, "rgba(246,130,42,0)");
   ctx.fillStyle = sun;
   ctx.fillRect(0, 0, w, h);
   const t = colorTexture(c);
@@ -246,7 +247,7 @@ function pane(f: Face, u0: number, u1: number, ay0: number, ay1: number, dim = f
   if (f.layer === "rough") return;
   const g = ctx.createLinearGradient(0, y, 0, y + h);
   if (f.layer === "glow") {
-    g.addColorStop(0, dim ? "#8a6238" : "#ffd9a6");
+    g.addColorStop(0, dim ? "#8a6238" : "#ffd199");
     g.addColorStop(1, dim ? "#5a3c22" : "#e89a4c");
   } else {
     g.addColorStop(0, dim ? "#c9a06c" : "#fff3dc");
@@ -259,7 +260,7 @@ function pane(f: Face, u0: number, u1: number, ay0: number, ay1: number, dim = f
   if (f.layer === "color") {
     ctx.fillStyle = "rgba(255,255,255,0.4)";
     ctx.fillRect(x + 2, y + 1, w - 4, 2);
-    ctx.fillStyle = "rgba(60,30,12,0.35)";
+    ctx.fillStyle = "rgba(7,22,52,0.4)";
     ctx.fillRect(x + 1, y + h - 2, w - 2, 1);
   }
 }
@@ -267,10 +268,10 @@ function pane(f: Face, u0: number, u1: number, ay0: number, ay1: number, dim = f
 function door(f: Face, u0: number) {
   const u1 = u0 + 0.045;
   if (f.layer === "color") {
-    f.band(0.13, 0.9, "#eadbbd", u0, u1);
+    f.band(0.13, 0.9, "#eaf1ff", u0, u1);
     f.band(0.42, 0.76, C.glass, u0, u1);
-    f.band(0.29, 0.35, C.copper, u0, u1);
-    f.ctx.strokeStyle = "rgba(40,20,8,0.5)";
+    f.band(0.29, 0.35, C.orange, u0, u1);
+    f.ctx.strokeStyle = "rgba(7,22,52,0.5)";
     f.ctx.lineWidth = 1;
     f.ctx.strokeRect(f.X(u0) + 0.5, f.Y(0.9) + 0.5, (u1 - u0) * f.r.w - 1, 0.77 * f.r.h - 1);
   }
@@ -283,17 +284,18 @@ function paintSide(f: Face, kind: Kind, noseAt: number) {
   const { ctx, r } = f;
   if (f.layer === "color") {
     const g = ctx.createLinearGradient(0, r.y, 0, r.y + r.h);
-    g.addColorStop(0, C.creamLight);
-    g.addColorStop(0.5, C.cream);
-    g.addColorStop(1, C.creamDeep);
+    g.addColorStop(0, C.bodyLight);
+    g.addColorStop(0.5, C.body);
+    g.addColorStop(1, C.bodyDeep);
     f.band(0, 1, g);
-    f.band(0.94, 1, "rgba(0,0,0,0.08)");
+    f.band(0.94, 1, "rgba(7,22,52,0.08)");
+    f.band(0.36, 0.78, C.navy); // deep navy window band the glass sits in
     f.band(0.42, 0.76, C.glass); // continuous glass band
-    f.band(0.405, 0.42, "rgba(255,255,255,0.3)"); // crease catching the light under the glass
-    f.band(0.29, 0.35, C.copper);
-    f.band(0.26, 0.27, C.gold);
+    f.band(0.405, 0.42, "rgba(255,255,255,0.22)"); // crease catching the light under the glass
+    f.band(0.29, 0.345, C.orange);
+    f.band(0.265, 0.277, C.pin);
     f.band(0, 0.13, C.skirt);
-    f.band(0.13, 0.14, C.cocoaDeep);
+    f.band(0.13, 0.14, C.navyDeep);
   } else if (f.layer === "rough") {
     f.band(0, 1, f.grey(R.paint));
     f.band(0.42, 0.76, f.grey(R.glass));
@@ -334,7 +336,7 @@ function paintSide(f: Face, kind: Kind, noseAt: number) {
   if (f.layer === "color") {
     // nose bumper and the brand stripe sweeping down to the chin
     f.band(0, 0.2, C.skirt, u1 - 0.02, 1);
-    ctx.fillStyle = C.copper;
+    ctx.fillStyle = C.orange;
     ctx.beginPath();
     ctx.moveTo(f.X(u1 - 0.1), f.Y(0.35));
     ctx.quadraticCurveTo(f.X(0.985), f.Y(0.35), f.X(1), f.Y(0.24));
@@ -350,7 +352,7 @@ function paintSide(f: Face, kind: Kind, noseAt: number) {
     rrect(ctx, f.X(0.915), f.Y(0.36), 0.05 * r.w, 0.2 * r.h, 3);
     ctx.fill();
     if (f.layer === "color") {
-      ctx.strokeStyle = "rgba(30,15,5,0.6)";
+      ctx.strokeStyle = "rgba(7,22,52,0.65)";
       ctx.lineWidth = 1;
       rrect(ctx, f.X(0.915) - 0.5, f.Y(0.36) - 0.5, 0.05 * r.w + 1, 0.2 * r.h + 1, 3.5);
       ctx.stroke();
@@ -386,9 +388,9 @@ function paintRoof(f: Face, kind: Kind, noseAt: number) {
   if (f.layer === "color") {
     // a soft sky reflection across the glass
     const g = ctx.createLinearGradient(f.X(u0), 0, f.X(u1), 0);
-    g.addColorStop(0, "rgba(255,220,180,0)");
-    g.addColorStop(0.5, "rgba(255,220,180,0.14)");
-    g.addColorStop(1, "rgba(255,220,180,0)");
+    g.addColorStop(0, "rgba(170,205,255,0)");
+    g.addColorStop(0.5, "rgba(170,205,255,0.16)");
+    g.addColorStop(1, "rgba(170,205,255,0)");
     ctx.fillStyle = g;
     ctx.fill();
   }
@@ -402,16 +404,17 @@ function paintEnd(f: Face, tip: boolean) {
     if (!tip) f.band(0.42, 0.76, f.grey(R.glass));
     return;
   }
-  f.band(0, 1, C.cream);
+  f.band(0, 1, C.body);
   if (tip) {
     f.band(0, 0.3, C.skirt);
-    f.band(0.3, 0.33, C.copper);
+    f.band(0.3, 0.335, C.orange);
     return;
   }
+  f.band(0.36, 0.78, C.navy);
   f.band(0.42, 0.76, C.glass);
-  f.band(0.29, 0.35, C.copper);
+  f.band(0.29, 0.345, C.orange);
   f.band(0, 0.13, C.skirt);
-  f.ctx.fillStyle = "#2c1f16";
+  f.ctx.fillStyle = "#0a1b3a";
   rrect(f.ctx, f.X(0.3), f.Y(0.92), 0.4 * f.r.w, 0.8 * f.r.h, 4);
   f.ctx.fill();
 }
@@ -420,7 +423,7 @@ function grain(ctx: CanvasRenderingContext2D, w: number, h: number) {
   const r = rng(99);
   for (let i = 0; i < 9000; i++) {
     const light = r() > 0.5;
-    ctx.fillStyle = light ? `rgba(255,255,255,${0.03 + r() * 0.05})` : `rgba(40,20,8,${0.03 + r() * 0.05})`;
+    ctx.fillStyle = light ? `rgba(255,255,255,${0.03 + r() * 0.05})` : `rgba(7,22,52,${0.03 + r() * 0.05})`;
     ctx.fillRect(Math.floor(r() * w), Math.floor(r() * h), 1, 1);
   }
 }
@@ -428,7 +431,7 @@ function grain(ctx: CanvasRenderingContext2D, w: number, h: number) {
 function paintAtlas(kind: Kind, atlas: Atlas, layer: Layer, noseAt: number) {
   const c = canvas(atlas.w, atlas.h);
   const ctx = c.getContext("2d")!;
-  ctx.fillStyle = layer === "color" ? C.cream : layer === "glow" ? "#000" : `rgb(${R.paint},${R.paint},${R.paint})`;
+  ctx.fillStyle = layer === "color" ? C.body : layer === "glow" ? "#000" : `rgb(${R.paint},${R.paint},${R.paint})`;
   ctx.fillRect(0, 0, atlas.w, atlas.h);
   paintSide(new Face(ctx, atlas.side, layer), kind, noseAt);
   paintRoof(new Face(ctx, atlas.roof, layer), kind, noseAt);
@@ -436,7 +439,7 @@ function paintAtlas(kind: Kind, atlas: Atlas, layer: Layer, noseAt: number) {
   paintEnd(new Face(ctx, atlas.back, layer), false);
   const bottom = new Face(ctx, atlas.bottom, layer);
   if (layer === "color") {
-    bottom.band(0, 1, "#1e130c");
+    bottom.band(0, 1, "#07122a");
     grain(ctx, atlas.w, atlas.h);
   } else if (layer === "rough") bottom.band(0, 1, bottom.grey(R.under));
   return c;
@@ -469,17 +472,18 @@ export function makeBokehTexture() {
   return colorTexture(c);
 }
 
-/** Dusk glow just above the horizon: warm amber at the bottom edge fading to nothing; the plane sits behind the far hills. */
+/** Dusk glow just above the horizon: cool blue fading to nothing, with one faint warm band right on the skyline; the plane sits behind the far hills. */
 export function makeHorizonTexture() {
   const w = 4;
   const h = 128;
   const c = canvas(w, h);
   const ctx = c.getContext("2d")!;
   const g = ctx.createLinearGradient(0, 0, 0, h);
-  g.addColorStop(0, "rgba(255,170,90,0)");
-  g.addColorStop(0.6, "rgba(230,140,70,0.12)");
-  g.addColorStop(0.86, "rgba(236,150,80,0.4)");
-  g.addColorStop(1, "rgba(255,190,120,0.75)");
+  g.addColorStop(0, "rgba(35,80,150,0)");
+  g.addColorStop(0.55, "rgba(45,95,174,0.14)");
+  g.addColorStop(0.84, "rgba(74,124,199,0.4)");
+  g.addColorStop(0.93, "rgba(255,180,100,0.42)");
+  g.addColorStop(1, "rgba(150,190,240,0.72)");
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, w, h);
   const t = colorTexture(c);

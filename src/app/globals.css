@@ -2,63 +2,68 @@
 @import "./carousels.css";
 
 /* ------------------------------------------------------------------
-   Safar Zaika design tokens — derived from the logo kit
-   cocoa  #3c1d0b  (wordmark ink)      copper #b86e24 (ring / "Zaika")
-   gold   #c47f30  (steam highlight)   cream  #f3e5cb (logo field)
-   leaf   #4e6826  (leaf accent)       sign   #f5c542 (station-board yellow)
+   Safar Zaika design tokens — railway blue with a single orange action colour.
+   cocoa  navy scale   (ink, dark sections)   copper orange scale (buttons, links)
+   cream  blue-white surfaces                 gold   warm amber (accents on navy)
+   sign   #f5c542 station-board yellow        leaf   veg / success   chili  errors
+   Token names are historical; the values are the blue palette.
 ------------------------------------------------------------------- */
 @theme {
-  --color-cream-50: #fffaf2;
-  --color-cream-100: #faf0dd;
-  --color-cream-200: #f3e5cb;
-  --color-cream-300: #e9d5b1;
-  --color-cream-400: #d9bf92;
+  /* surfaces: white to light railway blue */
+  --color-cream-50: #ffffff;
+  --color-cream-100: #f2f7ff;
+  --color-cream-200: #dce9fd;
+  --color-cream-300: #c3dafb;
+  --color-cream-400: #9dbdf0;
 
-  --color-cocoa-950: #160a03;
-  --color-cocoa-900: #2a1407;
-  --color-cocoa-800: #3c1d0b;
-  --color-cocoa-700: #4f2a12;
-  --color-cocoa-600: #6b3d1e;
-  --color-cocoa-500: #8a5431;
-  --color-cocoa-400: #a9774f;
-  --color-cocoa-300: #c9a687;
+  /* ink + dark sections: navy */
+  --color-cocoa-950: #071634;
+  --color-cocoa-900: #0d2250;
+  --color-cocoa-800: #163a7a;
+  --color-cocoa-700: #1f4a94;
+  --color-cocoa-600: #2d5fae;
+  --color-cocoa-500: #4a7cc7;
+  --color-cocoa-400: #7ea3d9;
+  --color-cocoa-300: #a9c4e8;
 
-  --color-copper-50: #fdf6ec;
-  --color-copper-100: #f8e7cc;
-  --color-copper-200: #efcf9c;
-  --color-copper-300: #e2b06a;
-  --color-copper-400: #d2913f;
-  --color-copper-500: #b86e24;
-  --color-copper-600: #9d5b1c;
-  --color-copper-700: #7f4817;
-  --color-copper-800: #653913;
+  /* the one action colour: orange */
+  --color-copper-50: #fff4ea;
+  --color-copper-100: #ffe3cb;
+  --color-copper-200: #ffc99c;
+  --color-copper-300: #ffab68;
+  --color-copper-400: #fb9342;
+  --color-copper-500: #f6822a;
+  --color-copper-600: #e06c12;
+  --color-copper-700: #b8550c;
+  --color-copper-800: #8f4209;
 
-  --color-gold-200: #f6e2b8;
-  --color-gold-300: #f0cf8e;
-  --color-gold-400: #e3b461;
-  --color-gold-500: #c47f30;
-  --color-gold-600: #a86a26;
+  /* warm amber: accents and LED text on navy */
+  --color-gold-200: #ffe7c2;
+  --color-gold-300: #ffd199;
+  --color-gold-400: #ffb457;
+  --color-gold-500: #ef9a30;
+  --color-gold-600: #d96c17;
 
   /* Indian Railways station-board yellow, used for signboard chips */
   --color-sign-400: #ffd659;
   --color-sign-500: #f5c542;
   --color-sign-600: #dba91f;
 
-  --color-leaf-50: #f1f6e8;
-  --color-leaf-100: #e2ecd0;
-  --color-leaf-300: #a9c47a;
-  --color-leaf-500: #5f8030;
-  --color-leaf-600: #4e6826;
-  --color-leaf-700: #3f541f;
+  --color-leaf-50: #eef8f1;
+  --color-leaf-100: #d7eedd;
+  --color-leaf-300: #92d2a6;
+  --color-leaf-500: #2f9e5f;
+  --color-leaf-600: #237f4b;
+  --color-leaf-700: #1b6239;
 
-  --color-chili-50: #fdf0ee;
-  --color-chili-100: #f9d9d3;
-  --color-chili-500: #c2412b;
-  --color-chili-600: #a3321f;
+  --color-chili-50: #fdeeec;
+  --color-chili-100: #fbd8d3;
+  --color-chili-500: #e04434;
+  --color-chili-600: #c2301f;
 
-  --color-ink: #2a1407;
-  --color-muted: #7a6350;
-  --color-line: #ead9bf;
+  --color-ink: #0d2250;
+  --color-muted: #5b7395;
+  --color-line: #d8e5f7;
 
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
@@ -67,9 +72,9 @@
   --radius-2xl: 1.75rem;
   --radius-3xl: 2.25rem;
 
-  --shadow-card: 0 1px 2px rgb(42 20 7 / 0.05), 0 12px 32px -14px rgb(42 20 7 / 0.18);
-  --shadow-lift: 0 24px 48px -18px rgb(42 20 7 / 0.32);
-  --shadow-glow: 0 0 0 1px rgb(184 110 36 / 0.25), 0 12px 40px -10px rgb(184 110 36 / 0.55);
+  --shadow-card: 0 1px 2px rgb(13 34 80 / 0.06), 0 12px 32px -14px rgb(13 34 80 / 0.18);
+  --shadow-lift: 0 24px 48px -18px rgb(13 34 80 / 0.28);
+  --shadow-glow: 0 0 0 1px rgb(246 130 42 / 0.3), 0 12px 40px -10px rgb(246 130 42 / 0.5);
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
@@ -148,7 +153,7 @@
     line-height: 1;
   }
   ::selection {
-    background: var(--color-copper-200);
+    background: var(--color-cream-300);
     color: var(--color-cocoa-900);
   }
   :focus-visible {
@@ -159,7 +164,7 @@
   button, [role="button"] { cursor: pointer; }
   input, textarea, select { font: inherit; }
   dialog::backdrop {
-    background: rgb(22 10 3 / 0.55);
+    background: rgb(7 22 52 / 0.6);
     backdrop-filter: blur(6px);
   }
   img { user-select: none; }
@@ -183,32 +188,32 @@ html.lenis, html.lenis body { height: auto; }
 }
 /* 10px blur: a backdrop-filter re-samples everything behind it on every scrolled frame, so the radius is kept small. */
 @utility glass {
-  background: rgb(255 250 242 / 0.08);
-  border: 1px solid rgb(255 250 242 / 0.14);
+  background: rgb(255 255 255 / 0.08);
+  border: 1px solid rgb(255 255 255 / 0.16);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 @utility glass-light {
-  background: rgb(255 255 255 / 0.78);
-  border: 1px solid rgb(234 217 191 / 0.9);
+  background: rgb(255 255 255 / 0.82);
+  border: 1px solid rgb(216 229 247 / 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 @utility gradient-brand {
-  background-image: linear-gradient(135deg, #d2913f 0%, #b86e24 55%, #9d5b1c 100%);
+  background-image: linear-gradient(135deg, #fb9342 0%, #f6822a 55%, #e06c12 100%);
 }
 @utility gradient-cocoa {
-  background-image: radial-gradient(120% 90% at 20% 0%, #4f2a12 0%, #2a1407 45%, #160a03 100%);
+  background-image: radial-gradient(120% 90% at 20% 0%, #1f4a94 0%, #0d2250 45%, #071634 100%);
 }
 @utility gradient-cream {
-  background-image: linear-gradient(180deg, #fffaf2 0%, #f3e5cb 100%);
+  background-image: linear-gradient(180deg, #ffffff 0%, #dce9fd 100%);
 }
 @utility map-grid {
-  background-image: radial-gradient(circle at 1px 1px, rgb(42 20 7 / 0.1) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, rgb(13 34 80 / 0.1) 1px, transparent 0);
   background-size: 22px 22px;
 }
 @utility map-grid-dark {
-  background-image: radial-gradient(circle at 1px 1px, rgb(255 250 242 / 0.09) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.1) 1px, transparent 0);
   background-size: 22px 22px;
 }
 @utility ticket-edge {
@@ -222,7 +227,7 @@ html.lenis, html.lenis body { height: auto; }
   &::-webkit-scrollbar { display: none; }
 }
 @utility skeleton {
-  background: linear-gradient(90deg, #f3e5cb 25%, #faf0dd 50%, #f3e5cb 75%);
+  background: linear-gradient(90deg, #e4eefc 25%, #f4f8ff 50%, #e4eefc 75%);
   background-size: 200% 100%;
   animation: var(--animate-shimmer);
 }
@@ -259,10 +264,10 @@ html.lenis, html.lenis body { height: auto; }
   text-shadow: 0 0 6px rgb(255 160 40 / 0.85), 0 0 16px rgb(255 120 20 / 0.45);
 }
 @utility led-panel {
-  background-color: #120b06;
-  background-image: radial-gradient(circle at 1px 1px, rgb(255 180 80 / 0.12) 0.8px, transparent 1px);
+  background-color: #061129;
+  background-image: radial-gradient(circle at 1px 1px, rgb(255 180 87 / 0.12) 0.8px, transparent 1px);
   background-size: 5px 5px;
-  border: 1px solid rgb(255 182 72 / 0.18);
+  border: 1px solid rgb(255 180 87 / 0.2);
   box-shadow: inset 0 0 24px rgb(0 0 0 / 0.6);
 }
 
@@ -275,8 +280,8 @@ html.lenis, html.lenis body { height: auto; }
   width: 0.92em;
   height: 1.38em;
   border-radius: 0.14em;
-  background: linear-gradient(#2b1d12 0%, #1b1109 48%, #150c05 52%, #22160d 100%);
-  color: #f6e7c9;
+  background: linear-gradient(#17315f 0%, #0c1f44 48%, #091a3b 52%, #12294f 100%);
+  color: #eaf2ff;
   font-family: var(--font-condensed);
   font-weight: 700;
   line-height: 1;

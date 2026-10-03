@@ -80,7 +80,7 @@ export function StationCoverage() {
         <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
           <div ref={mapBox} className="relative">
             <JourneyMap stops={stops} boardingIndex={(live ?? sampleJourney).boardingIndex} selectedCode={selected} onSelect={onSelect} className="aspect-[4/3] lg:aspect-auto lg:h-full" />
-            <div aria-hidden data-veil className="pointer-events-none absolute inset-0 rounded-3xl bg-[radial-gradient(80%_80%_at_50%_50%,rgba(22,10,3,0.55),rgba(22,10,3,0.98))] opacity-0" />
+            <div aria-hidden data-veil className="pointer-events-none absolute inset-0 rounded-3xl bg-[radial-gradient(80%_80%_at_50%_50%,rgba(7,22,52,0.55),rgba(7,22,52,0.98))] opacity-0" />
           </div>
           <Reveal variant="clip-right" delay={0.2}>
             <div className="flex h-full flex-col rounded-3xl bg-cocoa-900 p-5 text-cream-50 sm:p-6">

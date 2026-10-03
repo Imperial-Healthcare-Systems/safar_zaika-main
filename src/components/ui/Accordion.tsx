@@ -14,7 +14,7 @@ export function Accordion({ items, className, dark }: { items: AccordionItem[]; 
         <details key={i} className="group py-1" open={i === 0}>
           <summary className={cn("flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-left text-[15px] font-semibold marker:content-none [&::-webkit-details-marker]:hidden", dark ? "text-cream-50" : "text-cocoa-900")}>
             {item.q}
-            <ChevronDown className={cn("size-5 shrink-0 transition-transform duration-300 group-open:rotate-180", dark ? "text-gold-400" : "text-copper-500")} />
+            <ChevronDown className={cn("size-5 shrink-0 transition-transform duration-300 group-open:rotate-180", dark ? "text-gold-400" : "text-copper-600")} />
           </summary>
           <p className={cn("pb-5 pr-8 text-[15px] leading-relaxed", dark ? "text-cream-50/70" : "text-muted")}>{item.a}</p>
         </details>

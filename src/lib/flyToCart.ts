@@ -39,7 +39,7 @@ export function flyToCart(source: HTMLElement | null, imageSrc: string) {
     backgroundImage: `url(${imageSrc})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
-    boxShadow: "0 12px 30px -10px rgba(42,20,7,.5)",
+    boxShadow: "0 12px 30px -10px rgba(7,22,52,.5)",
     zIndex: "95",
     pointerEvents: "none",
   } satisfies Partial<CSSStyleDeclaration>);

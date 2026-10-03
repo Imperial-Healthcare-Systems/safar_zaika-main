@@ -83,7 +83,7 @@ export function PaymentMethods({ value, onChange }: { value: PaymentMethod; onCh
       ))}
 
       <div className="rounded-2xl border border-dashed border-copper-300 bg-cream-50 p-4">
-        <p className="mb-4 flex items-center gap-1.5 text-[12px] font-semibold text-copper-600">
+        <p className="mb-4 flex items-center gap-1.5 text-[12px] font-semibold text-copper-700">
           <Lock className="size-3.5" /> Demo payment: nothing is charged.
         </p>
         {value === "upi" && <Input label="UPI ID" placeholder="name@upi" value={upi} onChange={(e) => setUpi(e.target.value)} autoComplete="off" hint="Any value works in the demo." />}

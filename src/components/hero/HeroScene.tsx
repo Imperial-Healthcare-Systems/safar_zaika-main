@@ -12,8 +12,8 @@ import { Train } from "./scene/Train";
 
 /**
  * Cinematic hero route: a dual-rail track on wet ground, five lit platforms with canopies, a signal, and a
- * streamlined four-car express in Safar Zaika livery, in front of a town, hills and a dusk glow that fade
- * into the haze. All procedural (no models, no HDRIs). Loaded only on the home hero, only on md+ screens,
+ * streamlined four-car express in Safar Zaika livery, in front of a town, hills and a blue dusk glow that
+ * fade into the haze. All procedural (no models, no HDRIs). Loaded only on the home hero, only on md+ screens,
  * only when WebGL exists.
  */
 
@@ -86,7 +86,7 @@ function makeEnvironment(gl: THREE.WebGLRenderer) {
   return target;
 }
 
-/** Procedural dusk environment so the cream bodywork, rails and wet ground pick up reflections. */
+/** Procedural dusk environment so the light bodywork, rails and wet ground pick up reflections. */
 function Environment() {
   const gl = useThree((s) => s.gl);
   const env = useMemo(() => makeEnvironment(gl), [gl]);
@@ -130,21 +130,21 @@ export default function HeroScene({ animate = true }: { animate?: boolean }) {
       style={{ position: "absolute", inset: 0 }}
       aria-hidden
     >
-      {/* Cocoa haze: clear on the train, half on the far end of the route, full on the hills so each layer back reads a shade lighter. */}
-      <fog attach="fog" args={["#1e0e06", 4, 40]} />
+      {/* Navy haze: clear on the train, half on the far end of the route, full on the hills so each layer back reads a shade lighter. */}
+      <fog attach="fog" args={["#0b1e3f", 4, 40]} />
       <Environment />
-      <hemisphereLight args={["#ffd3a3", "#3a1d0c", 0.45]} />
-      <directionalLight ref={keyLight} castShadow color="#ffe0bb" intensity={2.8} shadow-mapSize={[1024, 1024]} shadow-bias={-0.0003} shadow-normalBias={0.015}>
+      <hemisphereLight args={["#bcd6ff", "#0b1e3f", 0.45]} />
+      <directionalLight ref={keyLight} castShadow color="#dbe8ff" intensity={2.8} shadow-mapSize={[1024, 1024]} shadow-bias={-0.0003} shadow-normalBias={0.015}>
         <orthographicCamera attach="shadow-camera" args={[-4.5, 4.5, 3, -3, 0.5, 20]} />
       </directionalLight>
-      <directionalLight position={[-3, 2.5, -7]} color="#b86e24" intensity={2.2} />
+      <directionalLight position={[-3, 2.5, -7]} color="#2d5fae" intensity={2.2} />
       <CameraRig animate={animate} />
       <Backdrop />
       <Track curve={curve} />
       <Furniture curve={curve} stationTs={stationTs} signalT={signalT} progress={progress} />
       <Train curve={curve} progress={progress} animate={animate} keyLight={keyLight} bounds={bounds} />
-      <Motes animate={animate} count={160} size={0.03} opacity={0.4} color="#e3b461" spread={DUST_SPREAD} offset={DUST_OFFSET} seed={1337} />
-      <Motes animate={animate} count={44} size={0.75} opacity={0.16} color="#e6a25c" spread={BOKEH_SPREAD} offset={BOKEH_OFFSET} seed={77} soft drift={0.005} />
+      <Motes animate={animate} count={160} size={0.03} opacity={0.4} color="#a8c8f5" spread={DUST_SPREAD} offset={DUST_OFFSET} seed={1337} />
+      <Motes animate={animate} count={44} size={0.75} opacity={0.12} color="#ffb457" spread={BOKEH_SPREAD} offset={BOKEH_OFFSET} seed={77} soft drift={0.005} />
     </Canvas>
   );
 }

@@ -83,7 +83,7 @@ export function RestaurantMenuView({ id }: { id: string }) {
   if (!loading && !restaurant) {
     return (
       <section className="container-x pt-40 pb-24 text-center">
-        <span className="inline-flex size-16 items-center justify-center rounded-full bg-cream-200 text-copper-600">
+        <span className="inline-flex size-16 items-center justify-center rounded-full bg-cream-200 text-copper-700">
           <Store className="size-7" />
         </span>
         <h1 className="mt-5 font-display text-3xl font-semibold">We couldn&apos;t find that restaurant.</h1>

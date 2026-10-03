@@ -30,7 +30,7 @@ export function OrderView() {
       <PageHeader
         title={
           <>
-            Order food to <span className="text-copper-500">your seat.</span>
+            Order food to <span className="text-copper-600">your seat.</span>
           </>
         }
         description="Enter your PNR or train number. We map every halt on the route, show the kitchens that can reach it in time, and deliver to your berth."
@@ -57,7 +57,7 @@ export function OrderView() {
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center justify-between gap-2 font-semibold text-cocoa-900">
                       {p.title}
-                      <ArrowRight className="size-4 text-copper-500 transition-transform group-hover:translate-x-1" />
+                      <ArrowRight className="size-4 text-copper-600 transition-transform group-hover:translate-x-1" />
                     </span>
                     <span className="mt-1 block text-[13px] leading-snug text-muted">{p.desc}</span>
                   </span>

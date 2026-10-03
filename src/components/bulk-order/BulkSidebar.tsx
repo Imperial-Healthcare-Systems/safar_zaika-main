@@ -50,7 +50,7 @@ export function BulkSidebar({ groupSize, pkg, preference, className }: { groupSi
           </div>
           <span className="inline-flex items-center gap-0.5" aria-label={`${t.rating} out of 5 stars`}>
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className={cn("size-3.5", i < t.rating ? "fill-gold-500 text-gold-500" : "text-cream-300")} />
+              <Star key={i} className={cn("size-3.5", i < t.rating ? "fill-gold-600 text-gold-600" : "text-cream-300")} />
             ))}
           </span>
         </figcaption>

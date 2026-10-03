@@ -81,7 +81,7 @@ export function RestaurantCard({ restaurant, className, showStation }: { restaur
         <div className="mt-3">
           <div className="flex items-center justify-between text-[11px] font-semibold max-sm:text-xs">
             <span className="text-muted">Delivery confidence</span>
-            <span className={r.deliveryConfidence >= 93 ? "text-leaf-600" : "text-copper-600"}>{r.deliveryConfidence}%</span>
+            <span className={r.deliveryConfidence >= 93 ? "text-leaf-600" : "text-copper-700"}>{r.deliveryConfidence}%</span>
           </div>
           <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-cream-200">
             <div className={cn("h-full rounded-full", r.deliveryConfidence >= 93 ? "bg-leaf-500" : "bg-copper-400")} style={{ width: `${r.deliveryConfidence}%` }} />
@@ -96,7 +96,7 @@ export function RestaurantCard({ restaurant, className, showStation }: { restaur
             ))}
           </ul>
         )}
-        <span className="mt-auto pt-4 text-[13px] font-bold text-copper-600">{dim ? "Browse the menu →" : "View menu →"}</span>
+        <span className="mt-auto pt-4 text-[13px] font-bold text-copper-700">{dim ? "Browse the menu →" : "View menu →"}</span>
       </div>
     </Link>
   );

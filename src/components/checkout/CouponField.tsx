@@ -87,7 +87,7 @@ export function CouponField() {
       />
       <p className="text-[13px] text-muted">
         Looking for a station special?{" "}
-        <Link href="/offers" className="font-semibold text-copper-600 hover:underline">
+        <Link href="/offers" className="font-semibold text-copper-700 hover:underline">
           Browse offers
         </Link>
       </p>

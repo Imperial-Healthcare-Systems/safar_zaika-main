@@ -17,7 +17,7 @@ interface TrackProps {
   curve: THREE.Curve<THREE.Vector3>;
 }
 
-/** Dual rails on instanced sleepers over a gravel ballast ribbon, a faint copper centre line, and a wide wet ground that catches the shadow and the lamps. */
+/** Dual rails on instanced sleepers over a gravel ballast ribbon, a faint cool centre line, and a wide wet ground that catches the shadow and the lamps. */
 export function Track({ curve }: TrackProps) {
   const a = useMemo(
     () => ({
@@ -54,21 +54,21 @@ export function Track({ curve }: TrackProps) {
   return (
     <group>
       <mesh geometry={a.rails} receiveShadow>
-        <meshStandardMaterial color="#cbb9a5" metalness={0.85} roughness={0.26} envMapIntensity={1.5} />
+        <meshStandardMaterial color="#b4c3da" metalness={0.85} roughness={0.26} envMapIntensity={1.5} />
       </mesh>
       <instancedMesh ref={sleepers} args={[a.sleeper, undefined, count]} castShadow receiveShadow frustumCulled={false}>
-        <meshStandardMaterial color="#5c4634" roughness={0.9} envMapIntensity={0.3} />
+        <meshStandardMaterial color="#2a3a55" roughness={0.9} envMapIntensity={0.3} />
       </instancedMesh>
       <mesh geometry={a.ballast} receiveShadow>
-        <meshStandardMaterial map={a.noise} color="#7a5638" roughness={0.95} envMapIntensity={0.3} />
+        <meshStandardMaterial map={a.noise} color="#3c4c68" roughness={0.95} envMapIntensity={0.3} />
       </mesh>
       <mesh geometry={a.glow}>
-        <meshBasicMaterial color="#d2913f" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
+        <meshBasicMaterial color="#7ba7e0" transparent opacity={0.4} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
       </mesh>
       {/* Wet ground: puddle map varies the roughness so the env map and the lamps sheen in patches; it runs to the horizon and takes the train's shadow. */}
       <mesh rotation-x={-Math.PI / 2} position={[0, GROUND_Y, -16]} receiveShadow>
         <planeGeometry args={[220, 100]} />
-        <meshStandardMaterial color="#120804" roughness={1} roughnessMap={a.puddles} metalness={0} envMapIntensity={0.3} />
+        <meshStandardMaterial color="#081731" roughness={1} roughnessMap={a.puddles} metalness={0} envMapIntensity={0.3} />
       </mesh>
     </group>
   );
@@ -118,7 +118,7 @@ export function Furniture({ curve, stationTs, signalT, progress }: FurnitureProp
         <meshBasicMaterial vertexColors />
       </mesh>
       <mesh geometry={a.pools}>
-        <meshBasicMaterial map={a.pool} color="#c99a4e" transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
+        <meshBasicMaterial map={a.pool} color="#ffb457" transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
       </mesh>
       {a.halos.map((h, i) => (
         <sprite

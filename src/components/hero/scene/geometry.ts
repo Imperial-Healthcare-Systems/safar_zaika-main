@@ -412,30 +412,30 @@ export interface Halo {
   scale: number;
 }
 
-const DARK = "#2b211b";
+const DARK = "#121f38";
 const LAMP_X = [-0.32, 0.32];
 
-/** Platform on the far side of the track: slab with a yellow safety line, a canopy, two lamp posts and a generic yellow board. */
+/** Platform on the far side of the track: cool grey-blue slab with a yellow safety line, an orange-fascia canopy, two lamp posts and a station-yellow board. */
 function platform(frame: Frame, structure: THREE.BufferGeometry[], lamps: THREE.BufferGeometry[], pools: THREE.BufferGeometry[], halos: Halo[]) {
   const parts = [
-    tint(box(1.24, 0.05, 0.2, 0, 0.01, -0.31), "#6d4c31"),
-    tint(box(1.24, 0.05, 0.012, 0, 0.01, -0.216), "#4a3222"),
-    tint(box(1.24, 0.004, 0.012, 0, 0.037, -0.228), "#c9a53d"),
+    tint(box(1.24, 0.05, 0.2, 0, 0.01, -0.31), "#56688a"),
+    tint(box(1.24, 0.05, 0.012, 0, 0.01, -0.216), "#3b4a69"),
+    tint(box(1.24, 0.004, 0.012, 0, 0.037, -0.228), "#f5c542"),
     tint(post(-0.42, -0.37, 0.035, 0.34, 0.007), DARK),
     tint(post(0.42, -0.37, 0.035, 0.34, 0.007), DARK),
-    tint(box(1.12, 0.012, 0.21, 0, 0.345, -0.33), "#3b2a1f"),
-    tint(box(1.12, 0.028, 0.008, 0, 0.337, -0.228), "#8a5a2a"),
+    tint(box(1.12, 0.012, 0.21, 0, 0.345, -0.33), "#243552"),
+    tint(box(1.12, 0.028, 0.008, 0, 0.337, -0.228), "#f6822a"),
     tint(post(0.02, -0.352, 0.035, 0.225, 0.004), DARK),
     tint(post(0.18, -0.352, 0.035, 0.225, 0.004), DARK),
-    tint(box(0.13, 0.012, 0.002, 0.1, 0.262, -0.3415), "#2a1a10"),
-    tint(box(0.09, 0.008, 0.002, 0.1, 0.243, -0.3415), "#2a1a10"),
+    tint(box(0.13, 0.012, 0.002, 0.1, 0.262, -0.3415), "#121f38"),
+    tint(box(0.09, 0.008, 0.002, 0.1, 0.243, -0.3415), "#121f38"),
   ];
   for (const x of LAMP_X) {
     parts.push(tint(post(x, -0.37, 0.035, 0.43, 0.006), DARK), tint(box(0.03, 0.012, 0.03, x, 0.436, -0.37), DARK));
     const bulb = new THREE.SphereGeometry(0.014, 8, 6);
     bulb.translate(x, 0.425, -0.37);
     lamps.push(...place([tint(bulb, "#ffe6c0")], frame));
-    halos.push({ position: new THREE.Vector3(x, 0.425, -0.37).applyQuaternion(frame.quaternion).add(frame.position), color: "#e3b461", scale: 0.42 });
+    halos.push({ position: new THREE.Vector3(x, 0.425, -0.37).applyQuaternion(frame.quaternion).add(frame.position), color: "#ffb457", scale: 0.42 });
     // pool of lamplight on the slab (a halo-textured decal just above the yellow line)
     const pool = new THREE.PlaneGeometry(0.5, 0.34);
     pool.rotateX(-Math.PI / 2);
@@ -443,13 +443,13 @@ function platform(frame: Frame, structure: THREE.BufferGeometry[], lamps: THREE.
     pools.push(...place([pool], frame));
   }
   structure.push(...place(parts, frame));
-  lamps.push(...place([tint(box(0.22, 0.06, 0.008, 0.1, 0.25, -0.346), "#f0c04a")], frame));
+  lamps.push(...place([tint(box(0.22, 0.06, 0.008, 0.1, 0.25, -0.346), "#f5c542")], frame));
 }
 
 /** Colour-light signal on the camera side of the line; its green aspect faces the camera so the lamp reads. */
 function signal(frame: Frame, structure: THREE.BufferGeometry[], lamps: THREE.BufferGeometry[], halos: Halo[]) {
   const z = 0.3;
-  structure.push(...place([tint(post(0, z, 0, 0.5, 0.008), DARK), tint(box(0.03, 0.1, 0.045, 0, 0.47, z), "#1a120c"), tint(box(0.05, 0.012, 0.06, -0.005, 0.525, z), "#1a120c")], frame));
+  structure.push(...place([tint(post(0, z, 0, 0.5, 0.008), DARK), tint(box(0.03, 0.1, 0.045, 0, 0.47, z), "#0b1830"), tint(box(0.05, 0.012, 0.06, -0.005, 0.525, z), "#0b1830")], frame));
   const lamp = new THREE.SphereGeometry(0.013, 8, 6);
   lamp.translate(-0.016, 0.455, z + 0.012);
   lamps.push(...place([tint(lamp, "#3ee884")], frame));
@@ -506,7 +506,7 @@ function makeHills(z: number) {
 function makeTown(z: number, seed: number, windows: number[], windowColors: number[]) {
   const r = rng(seed);
   const parts: THREE.BufferGeometry[] = [];
-  const warm = ["#ffd9a6", "#ffc07a", "#ffe6c0", "#e8a860"].map((h) => new THREE.Color(h));
+  const warm = ["#ffd199", "#ffb457", "#ffe6c0", "#e8a860"].map((h) => new THREE.Color(h));
   let x = -SKY_W + r() * 2;
   while (x < SKY_W) {
     const w = 0.5 + r() * 1.9;
@@ -515,11 +515,11 @@ function makeTown(z: number, seed: number, windows: number[], windowColors: numb
     const g = new THREE.PlaneGeometry(w, h + 0.4);
     g.translate(x + w / 2, GROUND_Y + h / 2 - 0.2, z);
     parts.push(g);
-    const n = Math.floor(w * h * 7 * (0.3 + r()));
+    const n = Math.floor(w * h * 4 * (0.3 + r()));
     for (let i = 0; i < n; i++) {
       windows.push(x + 0.08 + r() * (w - 0.16), GROUND_Y + 0.06 + r() * (h - 0.1), z + 0.02);
       const c = warm[Math.floor(r() * warm.length)];
-      const dim = 0.35 + r() * 0.65;
+      const dim = 0.22 + r() * 0.48;
       windowColors.push(c.r * dim, c.g * dim, c.b * dim);
     }
     x += w + r() * 0.9;

@@ -24,7 +24,7 @@ export function CartView() {
         title={
           hydrated && count > 0 ? (
             <>
-              {count} item{count === 1 ? "" : "s"}. <span className="text-copper-500">One hot hand-over.</span>
+              {count} item{count === 1 ? "" : "s"}. <span className="text-copper-600">One hot hand-over.</span>
             </>
           ) : (
             "Nothing in the cart yet."
@@ -39,7 +39,7 @@ export function CartView() {
             <div className="rounded-3xl border border-line bg-white p-5">
               <div className="flex items-center justify-between">
                 <p className="flex items-center gap-2 font-semibold text-cocoa-900">
-                  <Truck className="size-4 text-copper-500" /> Free delivery to seat
+                  <Truck className="size-4 text-copper-600" /> Free delivery to seat
                 </p>
                 <span className="text-sm font-semibold text-muted">
                   {remaining > 0 ? (

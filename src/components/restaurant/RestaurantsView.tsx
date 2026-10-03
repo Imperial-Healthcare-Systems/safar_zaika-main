@@ -125,7 +125,7 @@ export function RestaurantsView() {
             ))}
           </div>
           <p className="mt-6 text-sm text-muted">
-            Looking for another station? <Link href="/stations" className="font-semibold text-copper-600 hover:underline">Browse all stations</Link>.
+            Looking for another station? <Link href="/stations" className="font-semibold text-copper-700 hover:underline">Browse all stations</Link>.
           </p>
         </section>
       </>
@@ -225,7 +225,7 @@ export function RestaurantsView() {
             <SkeletonGrid count={6} />
           ) : shown.length === 0 ? (
             <div className="flex flex-col items-center rounded-3xl border border-dashed border-line bg-white px-6 py-16 text-center">
-              <span className="inline-flex size-16 items-center justify-center rounded-full bg-cream-200 text-copper-600">
+              <span className="inline-flex size-16 items-center justify-center rounded-full bg-cream-200 text-copper-700">
                 <Store className="size-7" />
               </span>
               <h2 className="mt-5 font-display text-2xl font-semibold text-cocoa-900">

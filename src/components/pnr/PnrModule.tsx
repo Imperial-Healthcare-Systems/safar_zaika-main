@@ -270,7 +270,7 @@ export function PnrModule({ dark, defaultMode = "pnr", className, bare }: PnrMod
             </div>
             <div id="pnr-help" className="mt-2 flex items-center justify-between text-xs">
               <span className={dark ? "text-cream-50/55" : "text-muted"}>Found on your ticket, top-left.</span>
-              <button type="button" onClick={() => setPnr(DEMO_PNR)} className={cn("font-semibold underline-offset-2 hover:underline max-lg:inline-flex max-lg:min-h-11 max-lg:items-center", dark ? "text-gold-300" : "text-copper-600")}>
+              <button type="button" onClick={() => setPnr(DEMO_PNR)} className={cn("font-semibold underline-offset-2 hover:underline max-lg:inline-flex max-lg:min-h-11 max-lg:items-center", dark ? "text-gold-300" : "text-copper-700")}>
                 Try demo PNR
               </button>
             </div>

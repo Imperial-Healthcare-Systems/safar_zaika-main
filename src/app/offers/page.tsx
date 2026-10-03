@@ -21,7 +21,7 @@ export default function OffersPage() {
       <PageHeader
         title={
           <>
-            Coupons for the <span className="text-copper-500">long way home.</span>
+            Coupons for the <span className="text-copper-600">long way home.</span>
           </>
         }
         description="Reveal a code, copy it, apply at checkout."

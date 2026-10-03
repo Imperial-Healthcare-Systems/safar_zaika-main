@@ -4,10 +4,10 @@ export const alt = "Safar Zaika — Hot food, delivered to your train seat.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const cocoa = "#2a1407";
-const cream = "#fffaf2";
-const copper = "#b86e24";
-const gold = "#e3b461";
+const cocoa = "#0d2250";
+const cream = "#ffffff";
+const copper = "#f6822a";
+const gold = "#ffb457";
 
 export default function OpenGraphImage() {
   return new ImageResponse(

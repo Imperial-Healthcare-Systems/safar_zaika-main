@@ -199,13 +199,13 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
           <div ref={fxRef} aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
             <div className="absolute left-1/2 top-1/2 size-[90vmin] -translate-x-1/2 -translate-y-1/2">
               {[0, 1, 2].map((i) => (
-                <div key={i} data-pulse className="absolute inset-0 rounded-full border-2 border-copper-300 opacity-0 shadow-[0_0_18px_rgba(226,176,106,0.35)]" />
+                <div key={i} data-pulse className="absolute inset-0 rounded-full border-2 border-copper-300 opacity-0 shadow-[0_0_18px_rgba(255,171,104,0.35)]" />
               ))}
             </div>
             <div
               ref={scanRef}
-              className="absolute inset-x-0 top-0 h-full border-b border-copper-300 shadow-[0_1px_14px_rgba(227,180,97,0.6)] will-change-transform"
-              style={{ background: "linear-gradient(to bottom, transparent 72%, rgba(184,110,36,0.18) 100%)" }}
+              className="absolute inset-x-0 top-0 h-full border-b border-copper-300 shadow-[0_1px_14px_rgba(255,171,104,0.6)] will-change-transform"
+              style={{ background: "linear-gradient(to bottom, transparent 72%, rgba(246,130,42,0.18) 100%)" }}
             />
           </div>
           <NetworkMap className="absolute inset-0 overflow-visible bg-transparent" fit={route} route={route} fitPad={route ? 0.16 : -0.2} spin={!route} draw drawDelay={0.55} flyDuration={1} routePathRef={pathRef}>
@@ -248,7 +248,7 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
             }}
           </NetworkMap>
         </div>
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_50%,transparent_45%,rgba(22,10,3,0.9)_100%)]" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_50%,transparent_45%,rgba(7,22,52,0.9)_100%)]" />
         <div ref={flashRef} aria-hidden className="pointer-events-none absolute inset-0 bg-chili-500 opacity-0" />
 
         {phase === "stamp" && found && (

@@ -93,7 +93,7 @@ export function CartPanel({ onNavigate, inDrawer }: { onNavigate?: () => void; i
   if (items.length === 0) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center">
-        <span className="inline-flex size-16 items-center justify-center rounded-full bg-cream-200 text-copper-600">
+        <span className="inline-flex size-16 items-center justify-center rounded-full bg-cream-200 text-copper-700">
           <ShoppingBag className="size-7" />
         </span>
         <h3 className="mt-5 font-display text-2xl">Your cart is empty</h3>

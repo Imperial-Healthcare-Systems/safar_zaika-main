@@ -122,8 +122,8 @@ const HeroStage = memo(function HeroStage({ use3D, reduced }: { use3D: boolean; 
           <RouteLine dark labels={false} duration={9} stations={[{ label: "" }, { label: "" }, { label: "" }, { label: "" }, { label: "" }]} className="scale-110" />
         </div>
       )}
-      <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_15%_20%,rgba(184,110,36,0.22),transparent_60%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(22,10,3,0.78)_0%,rgba(22,10,3,0.4)_45%,rgba(22,10,3,0)_75%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_15%_20%,rgba(45,95,174,0.35),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,22,52,0.82)_0%,rgba(7,22,52,0.45)_45%,rgba(7,22,52,0)_75%)]" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-cocoa-950/80 to-transparent" />
     </div>
   );

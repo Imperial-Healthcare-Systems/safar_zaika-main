@@ -31,7 +31,7 @@ export function OrderNowModal() {
             <span className="min-w-0 flex-1">
               <span className="flex items-center justify-between gap-2 font-semibold text-cocoa-900">
                 {o.title}
-                <ArrowRight className="size-4 text-copper-500 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="size-4 text-copper-600 transition-transform group-hover:translate-x-1" />
               </span>
               <span className="mt-1 block text-[13px] leading-snug text-muted">{o.desc}</span>
             </span>

@@ -74,7 +74,7 @@ type Assets = ReturnType<typeof buildAssets>;
 type Slot = (el: THREE.Group | null) => void;
 type WheelSlot = (el: THREE.InstancedMesh | null) => void;
 
-/** Cream body with a clearcoat; the roughness map keeps the glass bands glossy and the paint satin. */
+/** White / light-blue body with a clearcoat; the roughness map keeps the glass bands glossy and the paint satin. */
 function Body({ geometry, map, glow, rough, y }: { geometry: THREE.BufferGeometry; map: THREE.Texture; glow: THREE.Texture; rough: THREE.Texture; y: number }) {
   return (
     <mesh geometry={geometry} position-y={y} castShadow>
@@ -86,7 +86,7 @@ function Body({ geometry, map, glow, rough, y }: { geometry: THREE.BufferGeometr
 function Wheels({ a, wheelRef }: { a: Assets; wheelRef: WheelSlot }) {
   return (
     <instancedMesh ref={wheelRef} args={[a.wheel, undefined, WHEEL_SLOTS.length]} castShadow frustumCulled={false}>
-      <meshStandardMaterial color="#8a7c70" metalness={0.6} roughness={0.45} envMapIntensity={0.7} />
+      <meshStandardMaterial color="#7a869c" metalness={0.6} roughness={0.45} envMapIntensity={0.7} />
     </instancedMesh>
   );
 }
@@ -94,7 +94,7 @@ function Wheels({ a, wheelRef }: { a: Assets; wheelRef: WheelSlot }) {
 function Fittings({ geometry }: { geometry: THREE.BufferGeometry }) {
   return (
     <mesh geometry={geometry} castShadow>
-      <meshStandardMaterial color="#3d332c" metalness={0.5} roughness={0.6} envMapIntensity={0.5} />
+      <meshStandardMaterial color="#1b2a46" metalness={0.5} roughness={0.6} envMapIntensity={0.5} />
     </mesh>
   );
 }
@@ -166,7 +166,7 @@ function Coach({ a, carRef, wheelRef }: { a: Assets; carRef: Slot; wheelRef: Whe
       <Body geometry={a.coachShell} map={a.coachMap} glow={a.coachGlow} rough={a.coachRough} y={0} />
       <Fittings geometry={a.coachFittings} />
       <mesh geometry={a.vents} castShadow>
-        <meshStandardMaterial color="#cdbb9b" roughness={0.6} metalness={0.1} envMapIntensity={0.8} />
+        <meshStandardMaterial color="#c3dafb" roughness={0.6} metalness={0.1} envMapIntensity={0.8} />
       </mesh>
       <Wheels a={a} wheelRef={wheelRef} />
       <ContactShadow a={a} L={CAR.L} D={CAR.D} />

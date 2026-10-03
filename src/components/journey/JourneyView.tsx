@@ -106,7 +106,7 @@ export function JourneyView() {
               <label className="flex cursor-pointer items-start justify-between gap-4">
                 <span className="min-w-0">
                   <span className="flex items-center gap-2 font-semibold text-cocoa-900">
-                    <BellRing className="size-4 text-copper-600" /> Remind me before the next halt where I can order
+                    <BellRing className="size-4 text-copper-700" /> Remind me before the next halt where I can order
                   </span>
                   <span className="mt-1 block text-[13px] text-muted">About 60 minutes before each halt with a live kitchen, by SMS or WhatsApp. Only with your consent; switch it off anytime.</span>
                 </span>

@@ -14,7 +14,7 @@ export default function BulkOrderPage() {
       <PageHeader
         title={
           <>
-            Feed the whole group. <span className="text-copper-500">One order.</span>
+            Feed the whole group. <span className="text-copper-600">One order.</span>
           </>
         }
         description="Tell us the headcount, the train and what everyone likes to eat. A coordinator confirms the menu, timing and price, then every pack is handed over together at the platform."

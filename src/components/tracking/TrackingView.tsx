@@ -196,7 +196,7 @@ function NotFound({ id }: { id: string }) {
       <PageHeader compact title="We couldn't find that order." description={`Nothing matches “${id}”. Order IDs look like SZ102948 — check your confirmation and try again.`} />
       <div className="container-x py-10">
         <div className="mx-auto flex max-w-md flex-col items-center rounded-3xl border border-line bg-white p-8 text-center shadow-card">
-          <span className="inline-flex size-16 items-center justify-center rounded-full bg-cream-200 text-copper-600">
+          <span className="inline-flex size-16 items-center justify-center rounded-full bg-cream-200 text-copper-700">
             <PackageSearch className="size-7" />
           </span>
           <h2 className="mt-5 font-display text-2xl font-semibold text-cocoa-900">No order with that ID</h2>

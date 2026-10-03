@@ -83,7 +83,7 @@ export function Categories() {
                         <Image src={c.image} alt="" fill sizes="132px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
                         <span className="absolute inset-0 rounded-full ring-2 ring-inset ring-copper-500/0 transition-[box-shadow] group-hover:ring-copper-500/60" />
                       </span>
-                      <span className="mt-3 block text-sm font-semibold text-cocoa-900 transition-colors group-hover:text-copper-600">{c.label}</span>
+                      <span className="mt-3 block text-sm font-semibold text-cocoa-900 transition-colors group-hover:text-copper-700">{c.label}</span>
                     </Link>
                   </SwiperSlide>
                 );

@@ -22,7 +22,7 @@ function Section({ step, title, children }: { step: string; title: string; child
   return (
     <section className="border-t border-line pt-6 first:border-t-0 first:pt-0">
       <h2 className="font-display text-xl font-semibold text-cocoa-900">
-        <span className="mr-2 text-copper-600">{step}</span>
+        <span className="mr-2 text-copper-700">{step}</span>
         {title}
       </h2>
       <div className="mt-5 space-y-5">{children}</div>
@@ -311,7 +311,7 @@ export function BulkOrderForm() {
                         </span>
                       </span>
                       <span className="text-[13px] leading-snug text-muted">{p.desc}</span>
-                      {active && <CheckCircle2 className="absolute -right-2 -top-2 size-6 rounded-full bg-white text-copper-600" aria-hidden />}
+                      {active && <CheckCircle2 className="absolute -right-2 -top-2 size-6 rounded-full bg-white text-copper-700" aria-hidden />}
                     </label>
                   );
                 })}

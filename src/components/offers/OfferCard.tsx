@@ -8,7 +8,7 @@ import { toast } from "@/stores";
 import type { Offer } from "@/types";
 
 const accents: Record<Offer["accent"], { stub: string; text: string; ring: string }> = {
-  copper: { stub: "gradient-brand", text: "text-copper-600", ring: "ring-copper-500/20" },
+  copper: { stub: "gradient-brand", text: "text-copper-700", ring: "ring-copper-500/20" },
   leaf: { stub: "bg-leaf-600", text: "text-leaf-600", ring: "ring-leaf-500/20" },
   cocoa: { stub: "bg-cocoa-900", text: "text-cocoa-800", ring: "ring-cocoa-900/15" },
   gold: { stub: "bg-gold-500", text: "text-gold-600", ring: "ring-gold-500/25" },
@@ -65,9 +65,9 @@ export function OfferCard({ offer, className }: { offer: Offer; className?: stri
               {offer.code}
             </span>
           ) : (
-            <button type="button" onClick={reveal} className="inline-flex items-center rounded-lg border border-dashed border-cocoa-900/30 bg-cream-100 px-3 py-1.5 font-mono text-sm font-bold tracking-[0.2em] text-cocoa-900/40 transition-colors hover:border-copper-500 hover:text-copper-600 max-lg:h-11">
+            <button type="button" onClick={reveal} className="inline-flex items-center rounded-lg border border-dashed border-cocoa-900/30 bg-cream-100 px-3 py-1.5 font-mono text-sm font-bold tracking-[0.2em] text-cocoa-900/40 transition-colors hover:border-copper-500 hover:text-copper-700 max-lg:h-11">
               {offer.code.replace(/./g, "•")}
-              <span className="ml-2 font-sans text-[11px] font-bold uppercase tracking-wider text-copper-600 max-lg:text-xs">Reveal</span>
+              <span className="ml-2 font-sans text-[11px] font-bold uppercase tracking-wider text-copper-700 max-lg:text-xs">Reveal</span>
             </button>
           )}
           <button type="button" onClick={copy} className="inline-flex size-9 items-center justify-center rounded-full text-cocoa-700 transition-colors hover:bg-cream-100 max-lg:size-11" aria-label={`Copy code ${offer.code}`}>

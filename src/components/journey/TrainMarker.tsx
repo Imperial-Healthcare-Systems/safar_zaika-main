@@ -100,12 +100,12 @@ export function TrainMarker({ scale = 1, className }: { scale?: number; classNam
     <g className={className}>
       <defs>
         <linearGradient id={`${id}beam`} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#f0cf8e" stopOpacity="0.7" />
-          <stop offset="1" stopColor="#f0cf8e" stopOpacity="0" />
+          <stop offset="0" stopColor="#ffb457" stopOpacity="0.7" />
+          <stop offset="1" stopColor="#ffb457" stopOpacity="0" />
         </linearGradient>
         <linearGradient id={`${id}streak`} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#f0cf8e" stopOpacity="0" />
-          <stop offset="1" stopColor="#f0cf8e" stopOpacity="0.45" />
+          <stop offset="0" stopColor="#ffb457" stopOpacity="0" />
+          <stop offset="1" stopColor="#ffb457" stopOpacity="0.45" />
         </linearGradient>
       </defs>
       <g data-car="52">
