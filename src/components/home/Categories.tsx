@@ -41,7 +41,7 @@ export function Categories() {
   const dragGuard = useDragGuard();
 
   return (
-    <section className="py-20 sm:py-24" aria-labelledby="cat-title">
+    <section className="py-14 sm:py-16" aria-labelledby="cat-title">
       <div ref={headRef} className="container-x">
         <Reveal variant="letters">
           <SectionHeading
@@ -51,7 +51,7 @@ export function Categories() {
           />
         </Reveal>
       </div>
-      <div className="mt-10 pl-[max(1rem,calc((100vw-82rem)/2+2.5rem))]">
+      <div className="mt-8 pl-[max(1rem,calc((100vw-82rem)/2+2.5rem))]">
         <div ref={trackRef} {...dragGuard}>
           {/* The key remounts the Swiper (loop <-> free) together with its entrance, so the new circles still pop in. */}
           <Reveal key={live ? "live" : "free"} variant="zoom" scale={0.4} ease="back.out(1.6)" stagger={0.06} selector=".swiper-slide">

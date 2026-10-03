@@ -61,12 +61,12 @@ export function MealTimes() {
   }, [activeId]);
 
   return (
-    <section className="overflow-hidden bg-cocoa-950 py-20 text-cream-50 sm:py-24" aria-labelledby="meals-title">
+    <section className="overflow-hidden bg-cocoa-950 py-14 text-cream-50 sm:py-16" aria-labelledby="meals-title">
       <div className="container-x">
-        <Reveal>
+        <Reveal variant="slide-right">
           <SectionHeading dark title={<span id="meals-title">Breakfast, lunch or dinner, timed to your halt.</span>} description="Every window matches a halt on your route. We only show kitchens that can cook for it." />
         </Reveal>
-        <Reveal className="mt-10">
+        <Reveal variant="clip-up" stagger={0.08} selector="article" className="mt-8">
           <div
             ref={row}
             className={cn(
@@ -87,7 +87,7 @@ export function MealTimes() {
                   onFocus={() => setHover(m.id)}
                   onBlur={() => setHover(null)}
                   className={cn(
-                    "group relative flex h-[460px] w-[76vw] shrink-0 snap-start flex-col justify-end overflow-hidden rounded-3xl bg-cocoa-900 sm:w-[46vw] lg:h-[540px] lg:w-auto",
+                    "group relative flex h-[380px] w-[76vw] shrink-0 snap-start flex-col justify-end overflow-hidden rounded-3xl bg-cocoa-900 sm:w-[46vw] lg:h-[420px] lg:w-auto",
                     active && "max-lg:order-first",
                   )}
                 >

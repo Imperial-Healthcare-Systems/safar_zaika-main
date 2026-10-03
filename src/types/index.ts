@@ -269,3 +269,66 @@ export interface ServiceError {
 }
 
 export type ServiceResult<T> = { ok: true; data: T } | { ok: false; error: ServiceError };
+
+/* ------------------------------------------------------------------
+   Train tools (/train-tools): PNR status, timetable, simulated position.
+------------------------------------------------------------------- */
+
+/** A passenger as shown by the PNR status tool: the name is masked by the service. */
+export interface PnrPassenger {
+  /** masked, e.g. "A**** M****" */
+  name: string;
+  coach: string;
+  berth: string;
+  berthType: string;
+  status: Passenger["status"];
+}
+
+export interface PnrStatus {
+  /** the full journey, so "Order food for this journey" can hand it to the journey store */
+  journey: Journey;
+  train: Train;
+  passengers: PnrPassenger[];
+  chartPrepared: boolean;
+  boardingStation: Station;
+  destinationStation: Station;
+  /** "HH:mm" at the boarding station */
+  departure: string | null;
+  /** "HH:mm" at the destination */
+  arrival: string | null;
+}
+
+export interface ScheduleStop extends RouteStop {
+  station: Station;
+  /** partner kitchens at this stop; 0 = we don't deliver here */
+  restaurantCount: number;
+  foodAvailable: boolean;
+}
+
+export interface TrainSchedule {
+  train: Train;
+  stops: ScheduleStop[];
+}
+
+export type LiveState = "not-started" | "running" | "at-station" | "arrived";
+
+/** Position of a train. In the mock it is SIMULATED from the timetable, never real running data. */
+export interface LiveStatus {
+  train: Train;
+  /** true while the position is derived from the timetable instead of a live feed */
+  simulated: boolean;
+  state: LiveState;
+  /** last station passed (or the one the train is standing at); null before departure */
+  lastStation: Station | null;
+  /** null once the train has arrived */
+  nextStation: Station | null;
+  /** minutes until the next station (until departure when not started); 0 when arrived */
+  minutesToNext: number;
+  /** expected "HH:mm" at the next station, delay included; null when arrived */
+  eta: string | null;
+  delayMinutes: number;
+  /** 0..1 along the route by stop index (stop i of n sits at i / (n - 1)) */
+  progress: number;
+  /** the moment the caller asked about, "HH:mm" */
+  asOf: string;
+}

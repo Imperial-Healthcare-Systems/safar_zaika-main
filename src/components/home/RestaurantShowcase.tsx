@@ -44,7 +44,7 @@ export function RestaurantShowcase() {
   });
 
   return (
-    <section className="py-20 sm:py-24" aria-labelledby="rest-title">
+    <section className="py-14 sm:py-16" aria-labelledby="rest-title">
       <div ref={headRef} className="container-x">
         <Reveal variant="slide-right">
           <SectionHeading
@@ -61,7 +61,7 @@ export function RestaurantShowcase() {
           />
         </Reveal>
       </div>
-      <div ref={trackRef} {...dragGuard} className="mt-10 pl-[max(1rem,calc((100vw-82rem)/2+2.5rem))]">
+      <div ref={trackRef} {...dragGuard} className="mt-8 pl-[max(1rem,calc((100vw-82rem)/2+2.5rem))]">
         {/* max-w keeps loop mode valid on ultrawide screens: loop needs more slides than fit in view. */}
         <Swiper
           onSwiper={(s) => {

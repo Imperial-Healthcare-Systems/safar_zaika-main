@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * First block of every inner page. Carries the top padding the fixed navbar
+ * First block of every inner page. Carries the top padding the fixed navbar (100px on lg, 88px below)
  * needs, so pages never have to think about it. Title + one line, nothing above it.
  */
 export function PageHeader({
@@ -23,7 +23,7 @@ export function PageHeader({
   children?: ReactNode;
 }) {
   return (
-    <section className={cn("relative overflow-hidden", dark ? "gradient-cocoa text-cream-50" : "bg-cream-100", compact ? "pb-8 pt-28 sm:pt-32" : "pb-12 pt-28 sm:pb-16 sm:pt-36", className)}>
+    <section className={cn("relative overflow-hidden", dark ? "gradient-cocoa text-cream-50" : "bg-cream-100", compact ? "pb-8 pt-30 sm:pt-32 lg:pt-36" : "pb-12 pt-30 sm:pb-16 sm:pt-36 lg:pt-40", className)}>
       <div aria-hidden className={cn("absolute inset-0 opacity-60", dark ? "map-grid-dark" : "map-grid")} />
       <div aria-hidden className={cn("absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t to-transparent", dark ? "from-cocoa-950/40" : "from-cream-50")} />
       <div className="container-x relative">

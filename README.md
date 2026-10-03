@@ -24,17 +24,23 @@ Demo data to use while clicking around:
 
 ## Flow
 
-Home (a welcome popup with the PNR form opens once per session) → PNR → fullscreen "journey discovery" sequence (network map tilts, flies to the route, draws it, stamps the ticket) → `/journey` (ticket card + night-mode route map + station picker + reminder consent) → `/restaurants?station=BRC` (kitchens open at your arrival time) → `/restaurant/[id]` (menu, dish time windows, add to cart) → cart drawer / `/cart` → `/checkout` (passenger, delivery, coupon, prepaid vs cash-on-delivery) → `/track-order/[id]?placed=1` (LED status, timeline, cancel while still cancellable).
-Also: `/order` hub, `/stations` explorer (four regions), `/bulk-order`, `/offers`, `/how-it-works`, `/track-order`, `/login`, info pages (`/about`, `/help`, `/terms`, …), branded 404.
+Home (search-first hero: PNR, train number or name, or station) → PNR → fullscreen "journey discovery" sequence (network map tilts, flies to the route, draws it, stamps the ticket) → `/journey` (ticket card + night-mode route map + station picker + reminder consent) → `/restaurants?station=BRC` (kitchens open at your arrival time) → `/restaurant/[id]` (menu, dish time windows, add to cart) → cart drawer / `/cart` → `/checkout` (passenger, delivery, coupon, prepaid vs cash-on-delivery) → `/track-order/[id]?placed=1` (LED status, timeline, cancel while still cancellable).
+Also: `/train-tools` (PNR status, train schedule, simulated live status), `/order` hub, `/stations` explorer (four regions), `/bulk-order`, `/offers`, `/how-it-works`, `/track-order`, `/login`, info pages (`/about`, `/help`, `/terms`, …), branded 404.
 
 ## Brand rules (from the client, 1 Oct 2026)
 
-- Logo usage (`Logo` component): the transparent white horizontal lockup over dark heroes and the transparent colour lockup over light pages and the scrolled pill (navbar, mobile drawer); the transparent white stacked lockup centred in the footer; the cream-plate masters (`public/brand/safar-zaika-*.png`) in the welcome popup, login page and placing overlay. The lockup already carries the wordmark, so the company name is never repeated next to it. Never recreated.
+- Logo usage (`Logo` component): the navbar is solid white on every page and carries the colour lockup; the white stacked lockup sits centred in the navy footer and on the loading curtain; the cream-plate masters (`public/brand/safar-zaika-*.png`) are used in the welcome popup, login page and placing overlay. The lockup already carries the wordmark, so the company name is never repeated next to it. Never recreated or recoloured.
 - Nothing in the UI names a specific train or halt unless the visitor entered that journey: the hero board cycles meal windows until a PNR is loaded, then the real halts; the navbar journey chip only appears for the journey entered in this browser session (the journey store is session-scoped).
 - No eyebrow / kicker text above headings anywhere. Every heading stands alone with at most one supporting line.
 - No italic accent words, no gradient text. One solid copper or gold word at most.
 - Headline voice: direct, product-like ("Hot food on your train, handed over at your seat.").
 - Maps never draw a national boundary (border depiction is sensitive in India); they are station networks on a dark grid. The production map provider handles borders.
+
+## Layout direction (4 Oct 2026)
+
+The client asked for a blend of the direct competitor (railrecipe.com: functional, search-first, familiar) and our own blue design. What was taken from the competitor is structure only: a white navbar with the same link set, a centred hero with a three-tab search card, a four-step strip, a train-tools grid, coupon-style offers, a "why choose" row, a group-order box, a recent-orders ticker, an ordering guide, and a bottom tab bar on phones. What stays ours: the 3D train scene, split-flap and LED boards, the journey map and discovery sequence, the dish and kitchen rails, the palette and type.
+Two things were deliberately not copied: authorisation or certification claims (none are made until approvals exist) and named customers in the recent-orders feed (ours shows coach, dish and station, tagged as sample activity).
+The previous version is preserved as git tag `backup-blue-v1` and branch `backup/blue-v1`.
 
 ## Stack and why
 
@@ -58,9 +64,9 @@ Deliberately **not** installed: **styled-components** (Tailwind tokens cover eve
 src/
   app/                  routes (server page.tsx + metadata; client views in components/), globals.css, carousels.css, opengraph-image
   components/
-    layout/             Navbar (transparent → glass pill, scroll hairline, journey chip), MobileNav, Footer (departures board), PageHeader, PageTransition
-    hero/               Hero (SplitText headline, LED halt board, PNR card), HeroScene + scene/ (Train, Track, geometry, textures)
-    pnr/                PnrModule (PNR + train modes, mini network map), PnrLoading (fullscreen discovery overlay), OrderView
+    layout/             Navbar (solid white, competitor-style link row, scroll hairline, journey chip), BottomTabBar (mobile: Home, Tools, Cart, Offers, Account), MobileNav, Footer (departures board), PageHeader, PageTransition, IntroLoader
+    hero/               Hero (centred headline over the navy 3D band, three-tab search card, reassurance chips, journey-aware LED line), HeroScene + scene/ (Train, Track, Backdrop, geometry, textures)
+    pnr/                PnrModule (PNR / train / station modes; `variant="search"` is the wide hero card), PnrLoading (fullscreen discovery overlay), OrderView
     journey/            NetworkMap (shared camera map), JourneyMap, TrainMarker (isometric train), JourneyCard (ticket), StationCard, JourneyStatus, JourneyView
     station/            StationExplorer (regions)
     restaurant/         RestaurantCard (availability pill), RestaurantsView (open-at-arrival filter)
@@ -72,9 +78,11 @@ src/
     offers/             OfferCard, OffersSection, OffersGrid
     testimonials/       Testimonials (react-slick)
     modals/             WelcomeModal (auto-opens once per session), LoginModal + LoginForm (OTP), OrderNowModal, SearchModal
-    home/               StatsBand (split-flap figures), HowItWorks (pinned ticket stubs, photos on every step, centred track), Categories,
-                        MealTimes (breakfast / lunch / dinner / chai panels, active one follows the delivery moment), FoodDiscovery,
-                        RestaurantShowcase, StationCoverage, LiveJourney, FoodJourney (railway-track chain), BulkCta, TrustSection (LED strip), CtaBand
+    home/               StatsBand, EasySteps (four steps, a train rides the track once), TrainToolsGrid (eight working tiles), Categories,
+                        MealTimes, FoodDiscovery, RestaurantShowcase, TrustSection ("Why choose", light icon grid), BulkCta (group-order panel),
+                        StationCoverage, LiveJourney, RecentOrders (sample-activity ticker, no names), HomeGuide (ordering guide accordions), CtaBand;
+                        HowItWorks (pinned steps) and FoodJourney live on /how-it-works
+    tools/              TrainToolsView + PnrStatusTool, ScheduleTool, LiveStatusTool (mock data, labelled as demo)
     animations/         SplitFlap (departure-board text), RouteLine, TrainIcon, Reveal, Magnetic, AnimatedNumber
     providers/          Providers (stores rehydrate, global modals, toaster), SmoothScroll (Lenis+GSAP)
     ui/                 Button, Input/Textarea/Select, Card, Badge/VegDot/Rating/Price, Modal (native <dialog>), Tabs/Chip,
@@ -152,6 +160,9 @@ Components only import from `src/services/index.ts`. Replace each mock with an A
 | `cancelMockOrder(orderId, reason)` | `POST /orders/:id/cancel` with a mandatory reason; only while status is `confirmed`/`accepted`. Orders carry `payment.status` (`paid` vs `pending-cod`) so the vendor slip shows PREPAID / COD |
 | `submitBulkOrder(req)` | `/bulk-requests` |
 | `sendMockOTP(phone)`, `verifyMockOTP(phone, code)` (`mockAuthService`) | auth endpoints; the demo code shown in the UI must be removed |
+| `getPnrStatus(pnr)` (`mockRailwayService`, `/train-tools`) | `GET /pnr/:pnr/status` → Safar Zaika backend → railway provider, never from the browser. Same PNR rules and error codes as `getPNRJourney`; returns `PnrStatus` with passenger names already masked by the server |
+| `getTrainSchedule(query)` | `GET /trains/:number/schedule` (number or name search first); returns `TrainSchedule`, each stop joined with its partner-kitchen count (`restaurantCount`, `foodAvailable`) |
+| `getLiveStatus(trainNumber, nowMinutes)` / `computeLiveStatus` | `GET /trains/:number/live?date=` from the railway running-status provider. The mock position is simulated from the timetable (fixed per-train delay, most recent daily departure); with real data `nowMinutes` goes away, a start date comes in, `LiveStatus.simulated` becomes `false`, which drops the "Simulated" labels in `LiveStatusTool` |
 
 Payment: `CheckoutView` only collects a method; wire the gateway SDK behind "Confirm order". Map data: `NetworkMap` projects real lat/lng from `data/stations.ts` + `data/network.ts`; a Mapbox/Google layer can replace it using the same coordinates.
 

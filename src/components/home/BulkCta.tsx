@@ -1,43 +1,32 @@
-"use client";
-
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MessageCircleQuestion } from "lucide-react";
 import { Button } from "@/components/ui";
 import { Reveal } from "@/components/animations/Reveal";
 
-const options = ["Fixed meal packages", "Customisable menus", "Veg / Non-veg"];
-
+/** The group-order box: a bordered panel that wipes open from the left; on lg the photo beside it settles from 1.08 to 1. */
 export function BulkCta() {
   return (
-    <section className="container-x py-10" aria-labelledby="bulk-title">
-      {/* The dark card wipes open from the left; inside it the photo settles from 1.08 to 1. */}
+    <section className="container-x py-14 sm:py-16" aria-labelledby="bulk-title">
       <Reveal variant="clip">
-        <div className="relative overflow-hidden rounded-[2.5rem] bg-cocoa-900 text-cream-50">
-          <div className="grid lg:grid-cols-2">
-            <div className="relative p-8 sm:p-12 lg:p-16">
-              <h2 id="bulk-title" className="text-balance font-display text-4xl leading-[0.95] sm:text-5xl lg:text-6xl">
-                Feed the whole group. <span className="text-gold-400">One order.</span>
-              </h2>
-              <p className="mt-4 max-w-md text-[15px] leading-relaxed text-cream-50/70">
-                Families, tour groups, office travel, pilgrimage parties. Tell us the headcount and the train; a coordinator confirms the menu, timing and price.
-              </p>
-              <ul className="mt-6 flex flex-wrap gap-2" aria-label="What you can choose">
-                {options.map((o) => (
-                  <li key={o} className="signboard">
-                    {o}
-                  </li>
-                ))}
-              </ul>
-              <Button href="/bulk-order" variant="light" size="lg" className="mt-8" rightIcon={<ArrowRight className="size-4" />}>
-                Request a bulk order
+        <div className="grid overflow-hidden rounded-3xl border-2 border-line bg-white lg:grid-cols-[1.5fr_1fr]">
+          <div className="flex flex-col items-center px-6 py-10 text-center sm:px-10 lg:py-12">
+            <h2 id="bulk-title" className="max-w-xl text-balance text-[2rem] text-cocoa-900 sm:text-4xl lg:text-[2.75rem]">
+              Travelling as a group of 10 or more?
+            </h2>
+            <p className="mt-3 max-w-md text-pretty text-base leading-relaxed text-muted">Fixed meal packages or a customised menu, veg and non-veg, planned with you for the whole group.</p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Button href="/bulk-order" size="lg" rightIcon={<ArrowRight className="size-4" />}>
+                Plan a group order
+              </Button>
+              <Button href="/help" variant="outline" size="lg" leftIcon={<MessageCircleQuestion className="size-4" />}>
+                Help and support
               </Button>
             </div>
-            <div className="relative min-h-72 lg:min-h-full">
-              <Reveal variant="zoom" scale={1.08} ease="power2.out" className="absolute inset-0">
-                <Image src="/images/food/biryani-platter.jpg" alt="A festive biryani platter for a group" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
-              </Reveal>
-              <div className="absolute inset-0 bg-gradient-to-r from-cocoa-900 via-cocoa-900/20 to-transparent lg:via-transparent" />
-            </div>
+          </div>
+          <div className="relative hidden overflow-hidden lg:block">
+            <Reveal variant="zoom" scale={1.08} ease="power2.out" className="absolute inset-0">
+              <Image src="/images/food/biryani-platter.jpg" alt="A biryani platter laid out for a group" fill sizes="(max-width: 1024px) 0px, 33vw" className="object-cover" />
+            </Reveal>
           </div>
         </div>
       </Reveal>

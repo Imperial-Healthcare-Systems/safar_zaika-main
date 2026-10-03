@@ -40,9 +40,15 @@ export function IntroLoader() {
         done();
         el.animate([{ clipPath: CLIP.covered }, { clipPath: CLIP.lifted }], { duration: 600, easing: EXPO_IN_OUT, fill: "forwards" }).onfinish = () => setShow(false);
         const origin = `50% ${window.innerHeight / 2}px`;
+        const wide = window.matchMedia("(min-width: 1024px)").matches;
         document
           .querySelector("main")
-          ?.animate([{ transform: "scale(1.02)", opacity: 0.6, transformOrigin: origin }, { transform: "none", opacity: 1, transformOrigin: origin }], { duration: 800, easing: "cubic-bezier(0.33, 1, 0.68, 1)" });
+          ?.animate(
+            wide
+              ? [{ transform: "scale(1.02)", opacity: 0.6, transformOrigin: origin }, { transform: "none", opacity: 1, transformOrigin: origin }]
+              : [{ opacity: 0.6 }, { opacity: 1 }],
+            { duration: 800, easing: "cubic-bezier(0.33, 1, 0.68, 1)" },
+          );
       },
       Math.max(0, LIFT_AT_MS - elapsed),
     );

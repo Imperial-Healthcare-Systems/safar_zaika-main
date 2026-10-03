@@ -5,6 +5,7 @@ import { Providers } from "@/components/providers/Providers";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { StickyCartBar } from "@/components/cart/StickyCartBar";
+import { BottomTabBar } from "@/components/layout/BottomTabBar";
 
 // The logo's tagline is set in Bahnschrift (a DIN-style railway signage face).
 // Barlow is the closest open superfamily, so headings, UI and the departure
@@ -65,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
           <Footer />
           <StickyCartBar />
+          <BottomTabBar />
         </Providers>
       </body>
     </html>

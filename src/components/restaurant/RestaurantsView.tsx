@@ -169,7 +169,7 @@ export function RestaurantsView() {
       />
 
       <section className="container-x pb-24 pt-6">
-        <div className="sticky top-16 z-sticky -mx-4 bg-cream-50/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10">
+        <div className="sticky top-[60px] z-sticky -mx-4 lg:top-16 bg-cream-50/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10">
           <div className="flex items-center gap-3">
             <label className="flex shrink-0 cursor-pointer items-center gap-2 text-[13px] font-semibold text-cocoa-800">
               <input type="checkbox" role="switch" checked={showOpenOnly} onChange={(e) => setOpenOnly(e.target.checked)} className={switchClass} />

@@ -135,7 +135,7 @@ export function JourneyView() {
       </section>
 
       {/* Mobile sticky CTA */}
-      <div className={cn("fixed inset-x-3 bottom-3 z-sticky transition-[transform,opacity] duration-500 ease-(--ease-out-expo) lg:hidden", selected ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-24 opacity-0")} style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+      <div className={cn("fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+4.25rem)] z-sticky transition-[transform,opacity] duration-500 ease-(--ease-out-expo) lg:hidden", selected ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-24 opacity-0")}>
         <Button full size="xl" className="shadow-lift uppercase tracking-[0.08em]" onClick={go} rightIcon={<ArrowRight className="size-4" />}>
           Kitchens at {selected?.station.name ?? ""}
         </Button>

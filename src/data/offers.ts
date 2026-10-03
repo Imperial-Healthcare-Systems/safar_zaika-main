@@ -10,3 +10,13 @@ export const offers: Offer[] = [
 ];
 
 export const offerMap: Record<string, Offer> = Object.fromEntries(offers.map((o) => [o.code, o]));
+
+/** Coupon-card copy per code: a short headline and one line of terms that match what evaluateCoupon applies. OfferCard falls back to title / description. */
+export const offerCards: Record<string, { headline: string; terms: string }> = {
+  SAFAR100: { headline: "Flat ₹100 off", terms: "On your first order above ₹399." },
+  ZAIKA20: { headline: "20% off", terms: "Up to ₹150 off on orders above ₹499." },
+  FREERIDE: { headline: "Free delivery", terms: "No delivery fee on orders above ₹299." },
+  BRC50: { headline: "Flat ₹50 off", terms: "Orders above ₹249 delivered at Vadodara Jn." },
+  GROUP15: { headline: "15% off for groups", terms: "Up to ₹600 off on orders above ₹1,500." },
+  CHAI: { headline: "Chai on us", terms: "₹59 off, the price of a chai flask, on orders above ₹350." },
+};

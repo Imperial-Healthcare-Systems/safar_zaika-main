@@ -45,7 +45,7 @@ export function FoodDiscovery() {
   const dragGuard = useDragGuard();
 
   return (
-    <section className="relative overflow-hidden bg-cream-100 py-20 sm:py-24" aria-labelledby="food-title">
+    <section className="relative overflow-hidden bg-cream-100 py-14 sm:py-16" aria-labelledby="food-title">
       <div aria-hidden className="absolute inset-0 map-grid opacity-50" />
       <div ref={headRef} className="container-x relative">
         <Reveal variant="slide-left">
@@ -57,7 +57,7 @@ export function FoodDiscovery() {
         </Reveal>
       </div>
       {/* Below 640px the cards are a centred deck (neighbours peek on both sides); from 640px a left-aligned row that bleeds right. */}
-      <div ref={trackRef} {...dragGuard} className="relative mt-10 sm:pl-[max(1rem,calc((100vw-82rem)/2+2.5rem))]">
+      <div ref={trackRef} {...dragGuard} className="relative mt-8 sm:pl-[max(1rem,calc((100vw-82rem)/2+2.5rem))]">
         <Reveal variant="tilt" stagger={0.08} selector=".swiper-slide">
           {/* Autoplay cannot be switched on after init, so a reduced-motion change remounts (key).
               max-w keeps loop mode valid on ultrawide screens: loop needs more slides than fit in view. */}
@@ -92,7 +92,7 @@ export function FoodDiscovery() {
           </Swiper>
         </Reveal>
       </div>
-      <div className="container-x relative mt-10">
+      <div className="container-x relative mt-8">
         <Button href={halt ? `/restaurants?station=${halt.code}` : "/restaurants"} variant="outline" size="lg" rightIcon={<ArrowRight className="size-4" />}>
           {halt ? `See all kitchens at ${halt.name}` : "See all kitchens"}
         </Button>

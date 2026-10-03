@@ -17,29 +17,26 @@ import { Train } from "./scene/Train";
  * only when WebGL exists.
  */
 
-const CAMERA = new THREE.Vector3(0.6, -0.15, 6.5); // low and close to the near point of the route
+const CAMERA = new THREE.Vector3(0.6, 0.5, 6.5); // close to the near point of the route, high enough that the train runs under the hero copy
 const PUSH = new THREE.Vector3(0.35, 0.3, 1.5); // first-load dolly starts this far out and eases in
 const PUSH_SECONDS = 2.5;
 const SCROLL = new THREE.Vector3(0, -0.45, 1.8); // scroll-out dolly: the camera settles back and down as the hero leaves
-const TARGET = new THREE.Vector3(0.5, -0.72, -3);
+const TARGET = new THREE.Vector3(0.5, -0.07, -3); // raised with the camera: same pitch, so the horizon stays behind the search card
 const STATION_X = [-7, -3.6, -0.2, 3.4, 7];
 const SIGNAL_X = 4.3;
 const _goal = new THREE.Vector3();
 
-/** Low three-quarter view: a 2.5 s push-in on load, a gentle pointer dolly, and a scrubbed dolly-out as the hero scrolls away. */
+/** Three-quarter view from just above the platforms: a 2.5 s push-in on load, a gentle pointer dolly, and a scrubbed dolly-out as the hero scrolls away. */
 function CameraRig({ animate }: { animate: boolean }) {
   const camera = useThree((s) => s.camera);
   const gl = useThree((s) => s.gl);
-  const size = useThree((s) => s.size);
   const scroll = useRef({ k: 0 });
   const pointer = useRef(new THREE.Vector2());
-  // Narrower than 16:10 the PNR card runs lower, so the camera (and its target, keeping the pitch and the horizon) rises until the train clears it.
-  const lift = THREE.MathUtils.clamp((1.6 - size.width / size.height) * 1.8, 0, 0.6);
   useLayoutEffect(() => {
-    camera.position.set(CAMERA.x, CAMERA.y + lift, CAMERA.z);
+    camera.position.copy(CAMERA);
     if (animate) camera.position.add(PUSH);
-    camera.lookAt(TARGET.x, TARGET.y + lift, TARGET.z);
-  }, [camera, lift, animate]);
+    camera.lookAt(TARGET);
+  }, [camera, animate]);
   useEffect(() => {
     if (!animate) return;
     // The hero copy sits over the canvas, so pointer parallax listens on the window rather than the canvas.
@@ -64,11 +61,11 @@ function CameraRig({ animate }: { animate: boolean }) {
     const s = scroll.current.k;
     _goal.set(
       CAMERA.x + pointer.current.x * 0.35 + PUSH.x * out + SCROLL.x * s,
-      CAMERA.y + lift + pointer.current.y * 0.12 + PUSH.y * out + SCROLL.y * s,
+      CAMERA.y + pointer.current.y * 0.12 + PUSH.y * out + SCROLL.y * s,
       CAMERA.z + PUSH.z * out + SCROLL.z * s,
     );
     state.camera.position.lerp(_goal, k < 1 ? 0.25 : 0.035);
-    state.camera.lookAt(TARGET.x, TARGET.y + lift - s * 0.2, TARGET.z);
+    state.camera.lookAt(TARGET.x, TARGET.y - s * 0.2, TARGET.z);
   });
   return null;
 }

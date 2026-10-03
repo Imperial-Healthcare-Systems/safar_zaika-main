@@ -7,7 +7,7 @@ import { useHydrated } from "@/hooks/useHydrated";
 import { cn } from "@/lib/utils";
 import { AnimatedNumber } from "@/components/animations/AnimatedNumber";
 
-/** Mobile-only bottom bar; keeps the cart one tap away while browsing. */
+/** Mobile-only cart summary; sits 8px above the 56px BottomTabBar and keeps the cart one tap away while browsing. */
 export function StickyCartBar() {
   const pathname = usePathname();
   const hydrated = useHydrated();
@@ -20,10 +20,9 @@ export function StickyCartBar() {
   return (
     <div
       className={cn(
-        "fixed inset-x-3 bottom-3 z-sticky transition-[transform,opacity] duration-500 ease-(--ease-out-expo) md:hidden",
+        "fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+4rem)] z-sticky transition-[transform,opacity] duration-500 ease-(--ease-out-expo) md:hidden",
         hidden ? "pointer-events-none translate-y-24 opacity-0" : "translate-y-0 opacity-100",
       )}
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       aria-hidden={hidden}
     >
       <button

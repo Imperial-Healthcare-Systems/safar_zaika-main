@@ -47,7 +47,7 @@ function ToastItem({ toast }: { toast: Toast }) {
 export function Toaster() {
   const toasts = useUIStore((s) => s.toasts);
   return (
-    <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-toast flex flex-col items-center gap-2 md:bottom-6 md:items-end md:px-6">
+    <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+8.5rem)] z-toast flex flex-col items-center gap-2 md:bottom-[calc(env(safe-area-inset-bottom)+4.5rem)] md:items-end md:px-6 lg:bottom-6">
       {toasts.map((t) => (
         <ToastItem key={t.id} toast={t} />
       ))}

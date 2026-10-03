@@ -26,6 +26,15 @@
   --color-cocoa-400: #7ea3d9;
   --color-cocoa-300: #a9c4e8;
 
+  /* bright railway blue: illustration panels, tool tiles, links on white */
+  --color-rail-50: #eef4ff;
+  --color-rail-100: #dce9fd;
+  --color-rail-300: #8fb4f5;
+  --color-rail-400: #5b8ff0;
+  --color-rail-500: #2f6fe4;
+  --color-rail-600: #2459c4;
+  --color-rail-700: #1c479f;
+
   /* the one action colour: orange */
   --color-copper-50: #fff4ea;
   --color-copper-100: #ffe3cb;

@@ -5,7 +5,7 @@ import { PnrModule } from "@/components/pnr/PnrModule";
 
 export function CtaBand() {
   return (
-    <section className="container-x py-10" aria-labelledby="cta-title">
+    <section className="container-x py-14 sm:py-16" aria-labelledby="cta-title">
       <Reveal variant="zoom" scale={0.92}>
         {/* Navy band: the orange stays on the CTA button inside the module, never on a full-bleed fill. */}
         <div className="relative overflow-hidden rounded-[2.5rem] gradient-cocoa p-8 text-cream-50 sm:p-12 lg:p-16">

@@ -44,12 +44,12 @@ export function FoodJourney() {
   );
 
   return (
-    <section className="py-20 sm:py-24" aria-labelledby="chain-title">
+    <section className="py-14 sm:py-16" aria-labelledby="chain-title">
       <div className="container-x">
         <Reveal variant="letters">
           <SectionHeading align="center" title={<span id="chain-title">Kitchen to berth in seven hand-offs.</span>} description="Each one is timed to your train's live position, not the printed timetable." />
         </Reveal>
-        <div ref={ref} className="relative mt-14">
+        <div ref={ref} className="relative mt-10">
           <div aria-hidden className="absolute inset-x-0 top-[45px] hidden h-3.5 lg:block">
             <div className="absolute inset-0 text-cream-300" style={TRACK} />
             <div data-line className="absolute inset-0 text-copper-600" style={TRACK} />

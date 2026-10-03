@@ -95,7 +95,7 @@ export function Footer() {
   return (
     <footer ref={ref} className="relative mt-24 overflow-hidden gradient-cocoa text-cream-50">
       <div aria-hidden className="absolute inset-0 map-grid-dark opacity-60" />
-      <div className="container-x relative pb-24 pt-16 sm:pt-20 lg:pb-10">
+      <div className="container-x relative pb-[calc(env(safe-area-inset-bottom)+9rem)] pt-16 sm:pt-20 md:pb-[calc(env(safe-area-inset-bottom)+5rem)] lg:pb-10">
         {/* Station sign */}
         <div className="flex flex-col items-center text-center">
           <Logo variant="stacked-white" className="h-36 sm:h-44" />

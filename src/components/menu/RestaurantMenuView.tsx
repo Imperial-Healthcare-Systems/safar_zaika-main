@@ -193,7 +193,7 @@ export function RestaurantMenuView({ id }: { id: string }) {
       )}
 
       {/* Sticky category nav */}
-      <div className="sticky top-16 z-sticky border-b border-line bg-cream-50/92 backdrop-blur">
+      <div className="sticky top-[60px] z-sticky border-b lg:top-16 border-line bg-cream-50/92 backdrop-blur">
         <div className="container-x flex items-center gap-3 py-2.5">
           <div className="no-scrollbar flex flex-1 snap-x gap-2 overflow-x-auto">
             {loading

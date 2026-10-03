@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Slider, { type Settings } from "react-slick";
 import { Quote, Star } from "lucide-react";
 import { gsap } from "@/lib/gsap";
+import { cn } from "@/lib/utils";
 import { SectionHeading } from "@/components/ui";
 import { CarouselArrows } from "@/components/ui/CarouselArrows";
 import { Reveal, staggerIn, useReveal } from "@/components/animations/Reveal";
@@ -69,7 +70,7 @@ export function Testimonials() {
   }, []);
 
   return (
-    <section className="py-20 sm:py-24" aria-labelledby="testimonials-title">
+    <section className="py-14 sm:py-16" aria-labelledby="testimonials-title">
       <div ref={headRef} className="container-x">
         <Reveal variant="clip-up">
           <SectionHeading
@@ -79,22 +80,24 @@ export function Testimonials() {
           />
         </Reveal>
       </div>
-      <div ref={sliderBox} className="container-x mt-10">
+      <div ref={sliderBox} className="container-x mt-8">
         <Slider ref={sliderRef} {...settings} {...layout} autoplay={!reduced} className="testimonial-slider">
           {testimonials.map((t) => (
             <div key={t.id} className="flex h-full px-2.5 sm:px-3">
               <figure className="flex flex-1 flex-col rounded-3xl border border-line bg-white p-6 shadow-card">
-                <Quote className="size-6 text-copper-300" aria-hidden />
-                <blockquote className="mt-3 flex-1 text-[15px] leading-relaxed text-cocoa-800">{t.quote}</blockquote>
+                {/* Rating first: big stars and the figure, then the quote. */}
+                <div className="flex items-center justify-between gap-3">
+                  <span className="inline-flex items-center gap-1" role="img" aria-label={`${t.rating} out of 5 stars`}>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className={cn("size-5", i < t.rating ? "fill-sign-500 text-sign-600" : "fill-cream-200 text-cream-300")} />
+                    ))}
+                    <span className="ml-1.5 font-condensed text-lg font-bold leading-none text-cocoa-900">{t.rating.toFixed(1)}</span>
+                  </span>
+                  <Quote className="size-6 text-cream-300" aria-hidden />
+                </div>
+                <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-cocoa-800">{t.quote}</blockquote>
                 <figcaption className="mt-5 border-t border-line pt-4">
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold text-cocoa-900">{t.name}</p>
-                    <span className="inline-flex items-center gap-0.5" role="img" aria-label={`${t.rating} out of 5 stars`}>
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`size-3.5 ${i < t.rating ? "fill-gold-600 text-gold-600" : "text-cream-300"}`} />
-                      ))}
-                    </span>
-                  </div>
+                  <p className="font-semibold text-cocoa-900">{t.name}</p>
                   <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-muted">
                     <span>{t.route}</span>
                     <span className="signboard !text-[10px]">{t.station}</span>

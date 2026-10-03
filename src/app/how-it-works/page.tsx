@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { HowItWorks } from "@/components/home/HowItWorks";
+import { FoodJourney } from "@/components/home/FoodJourney";
 import { LiveJourney } from "@/components/home/LiveJourney";
 import { Accordion, Button, SectionHeading } from "@/components/ui";
 
@@ -41,6 +42,7 @@ export default function HowItWorksPage() {
     <>
       <div className="h-24 sm:h-28" aria-hidden />
       <HowItWorks standalone />
+      <FoodJourney />
 
       <section className="container-x py-20 sm:py-24" aria-labelledby="faq-title">
         <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr]">

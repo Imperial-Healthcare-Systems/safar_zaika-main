@@ -15,23 +15,25 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { OfferCard } from "./OfferCard";
 
 const modules = [Navigation, Mousewheel, Keyboard, Autoplay, A11y];
+/** Four coupons across the container on desktop; fewer below, with the next one peeking on phones. */
+const breakpoints = { 640: { slidesPerView: 2 }, 1024: { slidesPerView: 3 }, 1280: { slidesPerView: 4 } };
 
-/** Looping offer rail that advances itself and pauses on hover / while you interact, like a food app's promo row. */
+/** Looping coupon rail that advances itself and pauses on hover / while you interact. */
 export function OffersSection() {
   const headRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  useHeadingParallax(headRef, { y: -20 });
+  useHeadingParallax(headRef, { y: -14 });
   useScrollSkew(trackRef);
   const dragGuard = useDragGuard();
 
   return (
-    <section className="bg-cream-100 py-20 sm:py-24" aria-labelledby="offers-title">
+    <section className="bg-cream-100 py-14 sm:py-16" aria-labelledby="offers-title">
       <div ref={headRef} className="container-x">
-        <Reveal variant="zoom">
+        <Reveal>
           <SectionHeading
-            title={<span id="offers-title">A little extra for the long way home</span>}
-            description="Reveal a code, copy it, apply at checkout."
+            title={<span id="offers-title">Great offers</span>}
+            description="Tap a code to reveal it, tap again to copy, then apply it at checkout."
             action={
               <div className="flex items-center gap-3">
                 <Button href="/offers" variant="outline" rightIcon={<ArrowRight className="size-4" />}>
@@ -43,14 +45,15 @@ export function OffersSection() {
           />
         </Reveal>
       </div>
-      <div ref={trackRef} {...dragGuard} className="mt-10 pl-[max(1rem,calc((100vw-82rem)/2+2.5rem))]">
+      <div ref={trackRef} {...dragGuard} className="container-x mt-8">
         <Reveal variant="flip" stagger={0.08} selector=".swiper-slide">
           {/* Autoplay cannot be switched on after init, so a reduced-motion change remounts (key).
-              max-w keeps loop mode valid on ultrawide screens: loop needs more slides than fit in view. */}
+              The Swiper is as wide as the container, so six coupons always outnumber the four in view and loop mode stays valid.
+              From 640px the row is clipped to the container (whole coupons only; 4px of padding leaves room for the hover lift). */}
           <Swiper
             key={reduced ? "static" : "auto"}
             modules={modules}
-            className="!mx-0 max-w-[1800px] !overflow-visible"
+            className="!overflow-visible sm:!-my-1 sm:!overflow-hidden sm:!py-1"
             data-lenis-prevent-horizontal
             loop
             loopPreventsSliding={false} /* an arrow click during an autoplay transition must not be swallowed */
@@ -58,13 +61,15 @@ export function OffersSection() {
             navigation={{ prevEl: ".offers-prev", nextEl: ".offers-next" }}
             mousewheel={{ forceToAxis: true, sensitivity: 1, releaseOnEdges: true }}
             keyboard={{ enabled: true, onlyInViewport: true }}
-            slidesPerView="auto"
-            spaceBetween={18}
+            slidesPerView={1.15}
+            breakpoints={breakpoints}
+            spaceBetween={16}
             speed={650}
             grabCursor
+            touchEventsTarget="container" /* a swipe that starts in the gap between two coupons still counts */
           >
             {offers.map((o) => (
-              <SwiperSlide key={o.code} className="!h-auto !w-[320px] sm:!w-[360px]">
+              <SwiperSlide key={o.code} className="!h-auto">
                 <OfferCard offer={o} />
               </SwiperSlide>
             ))}

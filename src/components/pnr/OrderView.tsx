@@ -23,7 +23,8 @@ const reasons = [
 
 export function OrderView() {
   const params = useSearchParams();
-  const mode = params.get("mode") === "train" ? "train" : "pnr";
+  const param = params.get("mode");
+  const mode = param === "train" || param === "station" ? param : "pnr";
 
   return (
     <>
@@ -33,11 +34,15 @@ export function OrderView() {
             Order food to <span className="text-copper-600">your seat.</span>
           </>
         }
-        description="Enter your PNR or train number. We map every halt on the route, show the kitchens that can reach it in time, and deliver to your berth."
+        description="Enter your PNR, your train or a station. We map every halt on the route, show the kitchens that can reach it in time, and deliver to your berth."
       />
-      <section className="container-x -mt-6 grid gap-8 pb-20 lg:grid-cols-[1fr_0.95fr] lg:gap-12">
-        <div className="order-2 lg:order-1">
-          <Reveal stagger={0.06} className="grid gap-3 sm:grid-cols-2">
+      <section className="container-x -mt-6 pb-20">
+        {/* z-10: the card's suggestion lists drop over the blocks below it */}
+        <div className="relative z-10 mx-auto max-w-3xl">
+          <PnrModule key={mode} variant="search" defaultMode={mode} className="border border-line" />
+        </div>
+        <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_0.95fr] lg:gap-12">
+          <Reveal stagger={0.06} className="grid content-start gap-3 sm:grid-cols-2">
             {paths.map((p) => {
               const active = (p.key === "pnr" && mode === "pnr") || (p.key === "train" && mode === "train");
               return (
@@ -66,7 +71,7 @@ export function OrderView() {
             })}
           </Reveal>
 
-          <Reveal className="mt-10 rounded-3xl bg-cocoa-900 p-6 text-cream-50 sm:p-8">
+          <Reveal className="rounded-3xl bg-cocoa-900 p-6 text-cream-50 sm:p-8">
             <h2 className="font-display text-2xl">Why we ask for a PNR</h2>
             <ul className="mt-5 space-y-4">
               {reasons.map((f) => (
@@ -82,9 +87,6 @@ export function OrderView() {
               ))}
             </ul>
           </Reveal>
-        </div>
-        <div className="order-1 lg:order-2 lg:sticky lg:top-28 lg:self-start">
-          <PnrModule key={mode} defaultMode={mode} />
         </div>
       </section>
     </>

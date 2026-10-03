@@ -7,7 +7,7 @@ import { getStation } from "@/data/stations";
 import { restaurantsByStation } from "@/data/restaurants";
 import { getRestaurantAvailability } from "./mockRestaurantService";
 import { hashString, sleep } from "@/lib/utils";
-import type { EligibleStation, Journey, ServiceErrorCode, ServiceResult, Train } from "@/types";
+import type { EligibleStation, Journey, LiveStatus, PnrStatus, ServiceErrorCode, ServiceResult, Station, Train, TrainSchedule } from "@/types";
 
 const ok = <T,>(data: T): ServiceResult<T> => ({ ok: true, data });
 const fail = <T,>(code: ServiceErrorCode, message: string): ServiceResult<T> => ({ ok: false, error: { code, message } });
@@ -123,4 +123,119 @@ export function computeEligibleStations(journey: Journey): EligibleStation[] {
 export async function getEligibleStations(journey: Journey): Promise<ServiceResult<EligibleStation[]>> {
   await latency(500);
   return ok(computeEligibleStations(journey));
+}
+
+/* ------------------------------------------------------------------
+   Train tools (/train-tools). Same envelope and demo rules as above.
+------------------------------------------------------------------- */
+
+const stationOf = (code: string): Station => getStation(code) ?? { code, name: code, city: "", state: "", lat: 0, lng: 0 };
+
+/** "Aarav Mehta" -> "A**** M****": the status tool never shows a full passenger name. */
+const maskName = (name: string) =>
+  name
+    .split(" ")
+    .map((w) => w[0] + "*".repeat(Math.max(1, w.length - 1)))
+    .join(" ");
+
+/** PNR status. Resolves the PNR exactly like `getPNRJourney` (same demo PNRs, same errors). */
+export async function getPnrStatus(pnr: string): Promise<ServiceResult<PnrStatus>> {
+  const res = await getPNRJourney(pnr);
+  if (!res.ok) return res;
+  const journey = res.data;
+  const train = trainMap[journey.trainNumber];
+  if (!train) return fail("TRAIN_NOT_FOUND", "Looks like we can't find that train.");
+  const from = train.stops[journey.boardingIndex];
+  const to = train.stops[journey.destinationIndex];
+  return ok({
+    journey,
+    train,
+    passengers: journey.passengers.map(({ name, coach, berth, berthType, status }) => ({ name: maskName(name), coach, berth, berthType, status })),
+    chartPrepared: journey.chartPrepared,
+    boardingStation: stationOf(from.stationCode),
+    destinationStation: stationOf(to.stationCode),
+    departure: from.departure,
+    arrival: to.arrival,
+  });
+}
+
+/** Timetable of a train (by number or name), every stop, with the partner kitchens we have there. */
+export async function getTrainSchedule(query: string): Promise<ServiceResult<TrainSchedule>> {
+  const res = await getTrain(query);
+  if (!res.ok) return res;
+  const train = res.data;
+  return ok({
+    train,
+    stops: train.stops.map((s) => {
+      const restaurantCount = restaurantsByStation(s.stationCode).length;
+      return { ...s, station: stationOf(s.stationCode), restaurantCount, foodAvailable: restaurantCount > 0 };
+    }),
+  });
+}
+
+const DAY = 24 * 60;
+/** Demo delays in minutes; a train always gets the same one (picked by a hash of its number). */
+const LIVE_DELAYS = [0, 0, 7, 12, 18, 25];
+/** How long after reaching the destination the board still says "arrived" before showing the next departure. */
+const ARRIVED_HOLD = 60;
+const toClock = (min: number) => {
+  const m = ((Math.round(min) % DAY) + DAY) % DAY;
+  return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+};
+
+/**
+ * SIMULATED train position. There is no live running feed in this prototype:
+ * the position is worked out from the demo timetable alone. The train is
+ * assumed to run daily, to leave its origin `delayMinutes` late (a fixed
+ * number derived from the train number) and to keep that delay all the way.
+ * `nowMinutes` is minutes since midnight in the timetable's timezone (IST),
+ * passed in by the caller so this stays a pure function.
+ * The real backend replaces this with the railway's running status.
+ */
+export function computeLiveStatus(train: Train, nowMinutes: number): LiveStatus {
+  const stops = train.stops;
+  const last = stops.length - 1;
+  const origin = toMinutes(stops[0].departure, 1);
+  // minutes from the origin's scheduled departure to each stop
+  const at = stops.map((s) => ({ arr: toMinutes(s.arrival ?? s.departure, s.day) - origin, dep: toMinutes(s.departure ?? s.arrival, s.day) - origin }));
+  const total = at[last].arr;
+  const delayMinutes = LIVE_DELAYS[hashString(train.number) % LIVE_DELAYS.length];
+  const now = ((Math.floor(nowMinutes) % DAY) + DAY) % DAY;
+  // Minutes since the most recent (delayed) departure from the origin, 0..DAY. If that run has
+  // already finished, every earlier run has too, so the board shows the next departure instead.
+  // ponytail: always the most recent departure, so a train that runs longer than 24h (12627) never
+  // shows its last legs. Add a start-date parameter when the real running feed is connected.
+  const t = (((now - origin - delayMinutes) % DAY) + DAY) % DAY;
+  const base = { train, simulated: true, delayMinutes, asOf: toClock(now) };
+
+  if (t > total + ARRIVED_HOLD) {
+    return { ...base, state: "not-started", lastStation: null, nextStation: stationOf(stops[0].stationCode), minutesToNext: DAY - t, eta: toClock(origin + delayMinutes), progress: 0 };
+  }
+  if (t >= total) {
+    return { ...base, state: "arrived", lastStation: stationOf(stops[last].stationCode), nextStation: null, minutesToNext: 0, eta: null, progress: 1 };
+  }
+  let i = 0;
+  while (i < last - 1 && at[i + 1].arr <= t) i++;
+  const standing = t < at[i].dep;
+  const leg = at[i + 1].arr - at[i].dep;
+  const along = standing || leg <= 0 ? 0 : (t - at[i].dep) / leg;
+  return {
+    ...base,
+    state: standing ? "at-station" : "running",
+    lastStation: stationOf(stops[i].stationCode),
+    nextStation: stationOf(stops[i + 1].stationCode),
+    minutesToNext: Math.ceil(at[i + 1].arr - t),
+    eta: toClock(origin + at[i + 1].arr + delayMinutes),
+    progress: (i + along) / last,
+  };
+}
+
+/**
+ * "Live" status of a train: SIMULATED from the timetable (see `computeLiveStatus`), not live data.
+ * `nowMinutes` = minutes since midnight IST, read from the clock by the caller.
+ */
+export async function getLiveStatus(trainNumber: string, nowMinutes: number): Promise<ServiceResult<LiveStatus>> {
+  const res = await getTrain(trainNumber);
+  if (!res.ok) return res;
+  return ok(computeLiveStatus(res.data, nowMinutes));
 }

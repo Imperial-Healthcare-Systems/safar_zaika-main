@@ -1,33 +1,37 @@
 "use client";
 
+import { ChefHat, MapPin, Route, Timer } from "lucide-react";
 import { SplitFlap } from "@/components/animations/SplitFlap";
 import { Reveal } from "@/components/animations/Reveal";
 
 // Figures from the operating plan, not live metrics.
 const stats = [
-  { value: "450", label: "Stations planned" },
-  { value: "2", label: "Kitchens live per station at launch" },
-  { value: "2-3 KM", label: "From the platform" },
-  { value: "20-30", label: "Minutes to prepare" },
+  { value: "450", label: "Stations planned", icon: MapPin },
+  { value: "2", label: "Kitchens live per station at launch", icon: ChefHat },
+  { value: "2-3 KM", label: "From the platform", icon: Route },
+  { value: "20-30", label: "Minutes to prepare", icon: Timer },
 ];
 
-/** Departure-board style figures; overlaps the hero like the old count-up band did. Cells pop in one by one while the flaps spin. */
+/** Compact white strip directly under the hero: four departure-board figures, each with its icon. */
 export function StatsBand() {
   return (
-    <div className="container-x relative z-10 -mt-10">
-      {/* start "top 100%": the band peeks under the hero fold on load, so it pops in right away. */}
-      <Reveal variant="zoom" scale={0.7} ease="back.out(1.8)" stagger={0.1} start="top 100%">
-        <dl className="grid grid-cols-2 divide-line overflow-hidden rounded-3xl border border-line bg-white shadow-lift md:grid-cols-4 md:divide-x">
+    <section aria-label="Service at a glance" className="border-b border-line bg-white py-6">
+      {/* start "top 100%": the strip sits right at the hero fold, so it comes in as soon as its top edge shows. */}
+      <Reveal className="container-x" y={14} start="top 100%">
+        <ul className="grid grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4 md:gap-x-0 md:divide-x md:divide-line">
           {stats.map((s, i) => (
-            <div key={s.label} className="px-3 py-6 text-center md:px-2 md:py-7 lg:px-6">
-              <dd className="flex justify-center">
-                <SplitFlap text={s.value} delay={i * 140} className="text-[1.35rem] sm:text-3xl md:text-2xl lg:text-3xl xl:text-4xl" />
-              </dd>
-              <dt className="mt-2 text-[13px] font-semibold text-muted">{s.label}</dt>
-            </div>
+            <li key={s.label} className="flex items-center gap-3 md:justify-center md:px-4">
+              <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-rail-50 text-rail-600" aria-hidden>
+                <s.icon className="size-5" />
+              </span>
+              <div className="min-w-0">
+                <SplitFlap text={s.value} delay={i * 140} className="text-lg lg:text-xl" />
+                <p className="mt-1 text-[13px] font-semibold leading-tight text-muted">{s.label}</p>
+              </div>
+            </li>
           ))}
-        </dl>
+        </ul>
       </Reveal>
-    </div>
+    </section>
   );
 }
