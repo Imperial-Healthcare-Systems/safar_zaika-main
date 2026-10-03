@@ -54,26 +54,26 @@ function Timetable({ data: { train, stops } }: { data: TrainSchedule }) {
       {/* Sticks under the navbar while the stops scroll. */}
       <header className="sticky top-[68px] z-10 flex flex-wrap items-center gap-x-6 gap-y-3 rounded-2xl bg-cocoa-900 px-4 py-3.5 text-cream-50 shadow-lift sm:px-6 lg:top-[76px]">
         <div className="min-w-0">
-          <h2 className="font-condensed text-2xl font-bold tracking-normal sm:text-3xl">
-            <span className="text-gold-400">{train.number}</span> {train.name}
+          <h2 className="font-display text-xl sm:text-2xl">
+            {train.number} {train.name}
           </h2>
-          <p className="mt-2 flex items-center gap-2">
-            <span className="signboard text-[10px]">{train.from}</span>
+          <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="tag-dark">{train.from}</span>
             <ArrowRight className="size-3.5 text-cream-50/60" aria-hidden />
-            <span className="signboard text-[10px]">{train.to}</span>
-            <span className="ml-1 text-xs text-cream-50/60">
+            <span className="tag-dark">{train.to}</span>
+            <span className="ml-1 text-xs text-cream-50/65">
               {stops.length} stops &middot; {stops[last].distanceKm.toLocaleString("en-IN")} km
             </span>
           </p>
         </div>
-        <dl className="flex gap-6 font-condensed sm:ml-auto">
-          <div className="flex flex-col-reverse">
-            <dt className="mt-1 font-sans text-xs text-cream-50/55">Runs on</dt>
-            <dd className="text-lg font-bold leading-none">{train.runsOn}</dd>
+        <dl className="flex gap-6 sm:ml-auto">
+          <div>
+            <dt className="text-xs text-cream-50/65">Runs on</dt>
+            <dd className="mt-0.5 text-[15px] font-bold leading-tight">{train.runsOn}</dd>
           </div>
-          <div className="flex flex-col-reverse">
-            <dt className="mt-1 font-sans text-xs text-cream-50/55">Classes</dt>
-            <dd className="text-lg font-bold leading-none">{train.classes.join(" · ")}</dd>
+          <div>
+            <dt className="text-xs text-cream-50/65">Classes</dt>
+            <dd className="mt-0.5 text-[15px] font-bold leading-tight">{train.classes.join(" · ")}</dd>
           </div>
         </dl>
       </header>
@@ -126,7 +126,7 @@ function Stop({ stop, first, last }: { stop: ScheduleStop; first: boolean; last:
       <div className="min-w-0">
         <p className="flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold text-cocoa-900">
           {station.name}
-          <span className="signboard text-[10px]">{station.code}</span>
+          <span className="tag">{station.code}</span>
         </p>
         {place && <p className="mt-0.5 truncate text-xs text-muted">{place}</p>}
       </div>
@@ -162,7 +162,7 @@ function Figure({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <dt className="text-xs text-muted lg:sr-only">{label}</dt>
-      <dd className="font-condensed text-lg font-bold leading-tight tabular-nums text-cocoa-900">{value}</dd>
+      <dd className="text-[15px] font-bold leading-tight tabular-nums text-cocoa-900">{value}</dd>
     </div>
   );
 }

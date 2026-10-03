@@ -1,45 +1,44 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, type CSSProperties } from "react";
-import { CreditCard, MapPin, Ticket, Utensils, Armchair } from "lucide-react";
+import { useRef, useState } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { RouteLine } from "@/components/animations/RouteLine";
 import { Reveal } from "@/components/animations/Reveal";
-import { SplitFlap } from "@/components/animations/SplitFlap";
 import { SectionHeading } from "@/components/ui";
 
-/** Small props laid over the step photos: a PNR stub, a route with the chosen halt lit, the payment signboard. */
+const chip = "absolute bottom-4 right-4 rounded-full bg-white px-3.5 py-2 text-[13px] font-semibold text-cocoa-900 shadow-card";
+
+/** Small white chips laid over the step photos: a sample PNR, a route with the chosen halt lit, the payment options. */
 const overlays = {
   pnr: (
-    <span className="ticket-edge absolute bottom-4 right-4 flex flex-col bg-cream-50 px-5 py-1.5 shadow-card" style={{ "--n": "6px" } as CSSProperties}>
-      <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted">PNR</span>
-      <span className="font-condensed text-xl font-bold leading-none tracking-[0.14em] text-cocoa-900">123 ... 890</span>
+    <span className={chip}>
+      <span className="font-medium text-muted">PNR</span> 123 ... 890
     </span>
   ),
   route: (
-    <span className="absolute bottom-4 right-4 flex items-center gap-2.5 rounded-full bg-cocoa-950/85 py-2 pl-3 pr-3.5">
+    <span className={cn(chip, "flex items-center gap-2.5")}>
       <svg width="64" height="16" viewBox="0 0 64 16" aria-hidden className="block">
-        <line x1="8" y1="8" x2="56" y2="8" className="stroke-cream-50/35" strokeWidth="2" strokeLinecap="round" />
-        <circle cx="8" cy="8" r="3.5" className="fill-cream-50/50" />
-        <circle cx="32" cy="8" r="7" className="fill-copper-500/35" />
-        <circle cx="32" cy="8" r="4" className="fill-gold-400" />
-        <circle cx="56" cy="8" r="3.5" className="fill-cream-50/50" />
+        <line x1="8" y1="8" x2="56" y2="8" className="stroke-cream-300" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="8" cy="8" r="3.5" className="fill-cream-400" />
+        <circle cx="32" cy="8" r="7" className="fill-copper-500/25" />
+        <circle cx="32" cy="8" r="4" className="fill-copper-500" />
+        <circle cx="56" cy="8" r="3.5" className="fill-cream-400" />
       </svg>
-      <span className="led text-[10px]">BRC 9:08 PM</span>
+      BRC, 9:08 PM
     </span>
   ),
-  pay: <span className="signboard absolute bottom-4 right-4 text-[11px]">Prepaid / COD</span>,
+  pay: <span className={chip}>Prepaid or cash on delivery</span>,
 };
 
-export const steps: { n: string; title: string; desc: string; icon: typeof Ticket; image: string; overlay?: keyof typeof overlays; accent: string }[] = [
-  { n: "01", title: "Enter PNR", desc: "We read your train, date, coach and berth from the ticket — no typing station names.", icon: Ticket, image: "/images/stations/new-delhi.jpg", overlay: "pnr", accent: "bg-copper-500" },
-  { n: "02", title: "Choose a station", desc: "See every upcoming halt with arrival time, halt duration and which kitchens are ready there.", icon: MapPin, image: "/images/stations/mumbai.jpg", overlay: "route", accent: "bg-cocoa-800" },
-  { n: "03", title: "Pick your food", desc: "Thalis, biryanis, Jain meals, chai flasks. Real menus from verified local kitchens.", icon: Utensils, image: "/images/food/thali-overhead.jpg", accent: "bg-leaf-600" },
-  { n: "04", title: "Pay your way", desc: "UPI, card, net banking, or cash at your seat. Prices shown are exactly what you pay.", icon: CreditCard, image: "/images/scenes/restaurant-serving.jpg", overlay: "pay", accent: "bg-gold-500" },
-  { n: "05", title: "Enjoy at your seat", desc: "Our partner tracks your train live and hands over a sealed, hot meal at your berth.", icon: Armchair, image: "/images/scenes/friends-eating.jpg", accent: "bg-copper-600" },
+const steps: { title: string; desc: string; image: string; overlay?: keyof typeof overlays }[] = [
+  { title: "Enter PNR", desc: "We read your train, date, coach and berth from the ticket — no typing station names.", image: "/images/stations/new-delhi.jpg", overlay: "pnr" },
+  { title: "Choose a station", desc: "See every upcoming halt with arrival time, halt duration and which kitchens are ready there.", image: "/images/stations/mumbai.jpg", overlay: "route" },
+  { title: "Pick your food", desc: "Thalis, biryanis, Jain meals, chai flasks. Real menus from verified local kitchens.", image: "/images/food/thali-overhead.jpg" },
+  { title: "Pay your way", desc: "UPI, card, net banking, or cash at your seat. Prices shown are exactly what you pay.", image: "/images/scenes/restaurant-serving.jpg", overlay: "pay" },
+  { title: "Enjoy at your seat", desc: "Our partner tracks your train live and hands over a sealed, hot meal at your berth.", image: "/images/scenes/friends-eating.jpg" },
 ];
 
 const stations = steps.map((s) => ({ label: s.title }));
@@ -116,11 +115,16 @@ export function HowItWorks({ standalone }: { standalone?: boolean }) {
             title={<span id="hiw-title">Five stops to a hot meal.</span>}
             description="Scroll. The train follows."
             action={
-              <div className="led-panel hidden rounded-2xl px-5 py-4 lg:block">
-                <SplitFlap text={current.title} length={18} trigger="mount" className="text-2xl" />
-                <p className="led mt-2 text-[11px]">
-                  Stop {current.n} of {steps[steps.length - 1]?.n}
+              <div className="hidden w-72 lg:block">
+                <p className="flex items-baseline justify-between gap-3">
+                  <span className="truncate font-display text-xl text-cocoa-900">{current.title}</span>
+                  <span className="shrink-0 text-sm font-semibold text-muted">
+                    Step {step + 1} of {steps.length}
+                  </span>
                 </p>
+                <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-cream-200" aria-hidden>
+                  <div className="h-full rounded-full bg-copper-500 transition-[width] duration-500 ease-(--ease-out-quart)" style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
+                </div>
               </div>
             }
           />
@@ -140,7 +144,7 @@ export function HowItWorks({ standalone }: { standalone?: boolean }) {
       <div className={cn("mt-4 hidden lg:block", pinned ? "overflow-hidden" : "no-scrollbar overflow-x-auto")}>
         <div ref={track} className={cn("flex w-max gap-6", !pinned && "px-[max(1rem,calc((100vw-82rem)/2+2.5rem))]")}>
           {steps.map((s, i) => (
-            <StepCard key={s.n} step={s} index={i} active={i === step} />
+            <StepCard key={s.title} step={s} index={i} active={i === step} />
           ))}
         </div>
       </div>
@@ -148,7 +152,7 @@ export function HowItWorks({ standalone }: { standalone?: boolean }) {
       {/* Mobile / tablet vertical */}
       <div className="container-x mt-10 grid gap-4 sm:grid-cols-2 lg:hidden">
         {steps.map((s, i) => (
-          <Reveal key={s.n} delay={i * 0.05}>
+          <Reveal key={s.title} delay={i * 0.05}>
             <StepCard step={s} index={i} active compact />
           </Reveal>
         ))}
@@ -157,23 +161,27 @@ export function HowItWorks({ standalone }: { standalone?: boolean }) {
   );
 }
 
-/** A ticket stub: picture on the top half, perforation + notches at the middle, details below. */
+/** A photo card: picture on the top half with its step number, details below. */
 function StepCard({ step, index, active, compact }: { step: (typeof steps)[number]; index: number; active: boolean; compact?: boolean }) {
   return (
     <article
       className={cn(
-        "ticket-edge relative flex flex-col overflow-hidden rounded-3xl border border-line bg-white transition-[transform,opacity] duration-500 ease-(--ease-out-quart)",
+        "relative flex flex-col overflow-hidden rounded-3xl border border-line bg-white transition-[transform,opacity] duration-500 ease-(--ease-out-quart)",
         compact ? "h-[340px]" : "h-[380px] w-[min(500px,70vw)]",
         !compact && (active ? "scale-100 opacity-100" : "scale-[0.96] opacity-70"),
       )}
       aria-current={active ? "step" : undefined}
     >
       <div className="relative h-1/2 shrink-0 overflow-hidden">
-        <Image src={step.image} alt="" fill sizes="520px" className="object-cover" />
-        <span className="signboard absolute left-5 top-5">Stop {step.n}</span>
+        {/* The first card is above the fold on /how-it-works, so its photo is not lazy. */}
+        <Image src={step.image} alt="" fill sizes="520px" loading={index === 0 ? "eager" : "lazy"} className="object-cover" />
+        <span className="absolute left-4 top-4 flex size-9 items-center justify-center rounded-full bg-white text-[15px] font-bold text-cocoa-900 shadow-card">
+          <span className="sr-only">Step </span>
+          {index + 1}
+        </span>
         {step.overlay && overlays[step.overlay]}
       </div>
-      <div className="flex flex-1 flex-col border-t-2 border-dashed border-line p-5 pt-4">
+      <div className="flex flex-1 flex-col p-5 pt-4">
         <h3 className="font-display text-2xl text-cocoa-900">{step.title}</h3>
         <p className="mt-1.5 text-[14px] leading-snug text-muted">{step.desc}</p>
         <div className="mt-auto flex items-center gap-1.5 pt-4" aria-hidden>

@@ -89,9 +89,9 @@ export function Testimonials() {
                 <div className="flex items-center justify-between gap-3">
                   <span className="inline-flex items-center gap-1" role="img" aria-label={`${t.rating} out of 5 stars`}>
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className={cn("size-5", i < t.rating ? "fill-sign-500 text-sign-600" : "fill-cream-200 text-cream-300")} />
+                      <Star key={i} className={cn("size-5", i < t.rating ? "fill-gold-400 text-gold-500" : "fill-cream-200 text-cream-300")} />
                     ))}
-                    <span className="ml-1.5 font-condensed text-lg font-bold leading-none text-cocoa-900">{t.rating.toFixed(1)}</span>
+                    <span className="ml-1.5 text-base font-bold leading-none text-cocoa-900">{t.rating.toFixed(1)}</span>
                   </span>
                   <Quote className="size-6 text-cream-300" aria-hidden />
                 </div>
@@ -100,7 +100,7 @@ export function Testimonials() {
                   <p className="font-semibold text-cocoa-900">{t.name}</p>
                   <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-muted">
                     <span>{t.route}</span>
-                    <span className="signboard !text-[10px]">{t.station}</span>
+                    <span className="tag">{t.station}</span>
                     <span className="font-semibold text-copper-700">{t.dish}</span>
                   </p>
                 </figcaption>

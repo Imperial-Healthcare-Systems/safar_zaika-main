@@ -71,6 +71,7 @@ export function TrackingView({ id }: { id: string }) {
               ]}
               steps={cancelled ? [{ headline: "Order cancelled", sub: `Reason: ${order.cancelReason ?? "not given"}. The kitchen has been told; nothing is being prepared.`, progress: 0 }] : statusSteps}
               stepIndex={cancelled ? 0 : stepIndex}
+              live={!cancelled && order.status !== "delivered"}
             />
             <OrderTimeline order={order} stepIndex={cancelled ? -1 : stepIndex} />
           </div>

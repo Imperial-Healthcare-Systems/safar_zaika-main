@@ -71,7 +71,7 @@ export function TrackOrderEntry() {
             >
               Try the demo order {DEMO_ID}
             </Chip>
-            <Button type="submit" full size="xl" className="uppercase tracking-[0.1em]" rightIcon={<ArrowRight className="size-4" />}>
+            <Button type="submit" full size="xl" rightIcon={<ArrowRight className="size-4" />}>
               Track
             </Button>
           </form>

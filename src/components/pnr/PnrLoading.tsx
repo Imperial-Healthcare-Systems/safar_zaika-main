@@ -1,22 +1,25 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { AlertCircle, Check, Loader2 } from "lucide-react";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { SplitFlap } from "@/components/animations/SplitFlap";
-import { NetworkMap, Ping, SignLabel, layoutLabels, projectRoute, signWidth, toScreen } from "@/components/journey/NetworkMap";
+import { NetworkMap, Ping, StationLabel, labelWidth, layoutLabels, projectRoute, toScreen } from "@/components/journey/NetworkMap";
 import { TrainMarker, pathFractions, placeTrain } from "@/components/journey/TrainMarker";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { smoothPath } from "@/lib/svgPath";
+import { cn, formatClock } from "@/lib/utils";
 import type { EligibleStation, Journey, ServiceError, ServiceErrorCode } from "@/types";
 
-const MESSAGES = ["CONTACTING RAILWAY", "READING PNR", "MAPPING YOUR ROUTE", "FINDING KITCHENS ON THE WAY"];
-const ERROR_LED: Partial<Record<ServiceErrorCode, string>> = {
-  INVALID_PNR: "INVALID PNR",
-  NOT_FOUND: "PNR NOT FOUND",
-  TRAIN_NOT_FOUND: "TRAIN NOT FOUND",
-  SERVICE_UNAVAILABLE: "RAILWAY NOT RESPONDING",
+const MESSAGES = ["Contacting the railway", "Reading your PNR", "Mapping your route", "Finding kitchens on the way"];
+const ERROR_TEXT: Partial<Record<ServiceErrorCode, string>> = {
+  INVALID_PNR: "That PNR is not valid",
+  NOT_FOUND: "PNR not found",
+  TRAIN_NOT_FOUND: "Train not found",
+  SERVICE_UNAVAILABLE: "The railway is not responding",
 };
+const PNR_LENGTH = 10;
+const LABEL = 13; // station label text size, px (the tilted table shrinks it a little)
 const TRAIN = 1.2; // marker px per glyph unit
 const TRAIL = 150; // glowing trail behind the loco, screen px
 
@@ -26,11 +29,11 @@ export interface PnrFound {
 }
 
 export interface PnrLoadingProps {
-  /** set when the service resolved: the camera flies to the route and the stamp lands */
+  /** set when the service resolved: the camera flies to the route and the result card lands */
   found?: PnrFound | null;
   /** set when the service failed: red flash, then `onError` */
   error?: ServiceError | null;
-  /** the stamp has been held long enough; navigate */
+  /** the result card has been held long enough; navigate */
   onComplete?: () => void;
   /** the error flash is over; close the overlay */
   onError?: () => void;
@@ -38,7 +41,7 @@ export interface PnrLoadingProps {
   pnr?: string;
 }
 
-// ponytail: reads the field until PnrModule passes `pnr`; train mode has no PNR, so the ticket stays hidden there.
+// ponytail: reads the field until PnrModule passes `pnr`; train mode has no PNR, so the PNR card stays hidden there.
 const pnrOnPage = () =>
   Array.from(document.querySelectorAll<HTMLInputElement>("#pnr-input"))
     .map((i) => i.value)
@@ -46,10 +49,10 @@ const pnrOnPage = () =>
 
 /**
  * Fullscreen PNR discovery sequence: a tilted, slowly turning rail network is
- * scanned (sweeping line, pulses from the centre, the PNR read onto a ticket)
+ * scanned (a soft sweep, pulses from the centre, the PNR filling in on a card)
  * while the railway is contacted; when the journey resolves the camera flies
- * to the route, stations ping and get their boards, the train rides the line
- * with a glowing trail and a ticket stamp lands. Rendered in a top-layer
+ * to the route, stations ping and get their names, the train rides the line
+ * with a glowing trail and a result card scales in. Rendered in a top-layer
  * <dialog> via a portal so it sits above any modal that hosted the form.
  */
 export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadingProps) {
@@ -60,7 +63,7 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
   const fxRef = useRef<HTMLDivElement>(null);
   const scanRef = useRef<HTMLDivElement>(null);
   const flashRef = useRef<HTMLDivElement>(null);
-  const stampRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const trainRef = useRef<SVGGElement>(null);
   const trailRef = useRef<SVGGElement>(null);
@@ -92,7 +95,7 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
     return () => clearInterval(t);
   }, [phase]);
 
-  // The PNR is read digit by digit onto the ticket.
+  // The PNR is read digit by digit onto its card.
   useEffect(() => {
     const full = pnr ?? pnrOnPage();
     if (!full) return;
@@ -105,18 +108,18 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
     return () => clearInterval(t);
   }, [pnr, reduced]);
 
-  // (a) fade in from above with the tilt; scan line and pulses while we search.
+  // (a) fade in from above with the tilt; a soft sweep and pulses while we search.
   useGSAP(
     () => {
       if (reduced) return;
       gsap.fromTo(tableRef.current, { autoAlpha: 0, rotateX: 72, scale: 1.1 }, { autoAlpha: 1, rotateX: 55, scale: 1, duration: 0.7, ease: "power2.out" });
       gsap.fromTo(scanRef.current, { yPercent: -100 }, { yPercent: 0, duration: 2.2, repeat: -1, ease: "none" });
-      gsap.fromTo("[data-pulse]", { scale: 0.05, opacity: 0.7 }, { scale: 1, opacity: 0, duration: 2.6, ease: "power1.out", stagger: { each: 0.85, repeat: -1 } });
+      gsap.fromTo("[data-pulse]", { scale: 0.05, opacity: 0.6 }, { scale: 1, opacity: 0, duration: 2.6, ease: "power1.out", stagger: { each: 0.85, repeat: -1 } });
     },
     { scope: rootRef },
   );
 
-  // (b)-(d) the camera fly lives in NetworkMap (fit changed); here: un-tilt, boards, the ride, stamp.
+  // (b)-(d) the camera fly lives in NetworkMap (fit changed); here: un-tilt, station names, the ride, the result.
   useGSAP(
     () => {
       if (!found || !route || reduced) return;
@@ -137,7 +140,7 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
       const tl = gsap.timeline();
       tl.to(tableRef.current, { rotateX: 20, duration: 1, ease: "power3.inOut" }, 0);
       tl.to(fxRef.current, { autoAlpha: 0, duration: 0.5 }, 0.3);
-      tl.fromTo("[data-sign]", { y: -16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, stagger: 0.07, ease: "back.out(2)" }, 0.8);
+      tl.fromTo("[data-label]", { y: -8, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.07, ease: "power3.out" }, 0.8);
       // the draw-in (0.55s + 1.1s, power2.out) is past the boarding halt well before the train pulls out
       tl.call(ride, [], 0.9);
       tl.to([trainRef.current, trailRef.current], { autoAlpha: 1, duration: 0.25 }, 0.9);
@@ -148,11 +151,11 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
     { scope: rootRef, dependencies: [found, route] },
   );
 
+  // The result card scales in softly.
   useGSAP(
     () => {
       if (phase !== "stamp" || reduced) return;
-      gsap.fromTo(stampRef.current, { scale: 1.4, autoAlpha: 0, rotation: -6 }, { scale: 1, autoAlpha: 1, rotation: -6, duration: 0.45, ease: "back.out(2.5)" });
-      gsap.fromTo(tableRef.current, { scale: 1 }, { scale: 0.985, duration: 0.12, yoyo: true, repeat: 1, delay: 0.1 });
+      gsap.fromTo(resultRef.current, { scale: 0.94, y: 14, autoAlpha: 0 }, { scale: 1, y: 0, autoAlpha: 1, duration: 0.4, ease: "power3.out" });
     },
     { scope: rootRef, dependencies: [phase] },
   );
@@ -163,7 +166,7 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
     return () => clearTimeout(t);
   }, [phase]);
 
-  // (e) errors: flash chili, shake, hand back to the card.
+  // (e) errors: a brief red wash and a small shake, then hand back to the card.
   useGSAP(
     () => {
       if (!error) return;
@@ -172,7 +175,7 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
         return () => clearTimeout(t);
       }
       const tl = gsap.timeline({ onComplete: () => callbacks.current.onError?.() });
-      tl.fromTo(flashRef.current, { autoAlpha: 0 }, { autoAlpha: 0.5, duration: 0.1, yoyo: true, repeat: 3 }, 0);
+      tl.fromTo(flashRef.current, { autoAlpha: 0 }, { autoAlpha: 0.35, duration: 0.1, yoyo: true, repeat: 3 }, 0);
       tl.fromTo(rootRef.current, { x: -14 }, { x: 0, duration: 0.7, ease: "elastic.out(1, 0.3)" }, 0);
       tl.to({}, { duration: 0.3 });
     },
@@ -181,9 +184,11 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
 
   if (typeof document === "undefined") return null;
 
-  const led = error ? (ERROR_LED[error.code] ?? "SOMETHING WENT WRONG") : phase === "search" ? MESSAGES[msg] : phase === "route" ? "ROUTE LOCKED" : "JOURNEY FOUND";
+  // train and station lookups have no PNR to read, so that line is skipped there
+  const messages = read ? MESSAGES : MESSAGES.filter((m) => m !== "Reading your PNR");
+  const statusText = error ? (ERROR_TEXT[error.code] ?? "Something went wrong") : phase === "search" ? messages[msg % messages.length] : phase === "route" ? "Route found" : "Taking you to your stations";
   const boarding = found?.stops[found.journey.boardingIndex];
-  const boardingTime = boarding?.stop.departure ?? boarding?.stop.arrival ?? "";
+  const boardingTime = boarding?.stop.departure ?? boarding?.stop.arrival ?? null;
 
   return createPortal(
     <dialog
@@ -195,25 +200,21 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
     >
       <div ref={rootRef} className="relative h-full w-full" style={{ perspective: "1400px" }}>
         <div ref={tableRef} className="absolute inset-0 will-change-transform">
-          {/* search effects, tilted with the table: pulses from the network centre and a scan line */}
+          {/* search effects, tilted with the table: pulses from the network centre and a soft sweep */}
           <div ref={fxRef} aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
             <div className="absolute left-1/2 top-1/2 size-[90vmin] -translate-x-1/2 -translate-y-1/2">
               {[0, 1, 2].map((i) => (
-                <div key={i} data-pulse className="absolute inset-0 rounded-full border-2 border-copper-300 opacity-0 shadow-[0_0_18px_rgba(255,171,104,0.35)]" />
+                <div key={i} data-pulse className="absolute inset-0 rounded-full border border-rail-300/70 opacity-0" />
               ))}
             </div>
-            <div
-              ref={scanRef}
-              className="absolute inset-x-0 top-0 h-full border-b border-copper-300 shadow-[0_1px_14px_rgba(255,171,104,0.6)] will-change-transform"
-              style={{ background: "linear-gradient(to bottom, transparent 72%, rgba(246,130,42,0.18) 100%)" }}
-            />
+            <div ref={scanRef} className="absolute inset-x-0 top-0 h-full border-b border-rail-300/50 will-change-transform" style={{ background: "linear-gradient(to bottom, transparent 72%, rgba(91,143,240,0.14) 100%)" }} />
           </div>
           <NetworkMap className="absolute inset-0 overflow-visible bg-transparent" fit={route} route={route} fitPad={route ? 0.16 : -0.2} spin={!route} draw drawDelay={0.55} flyDuration={1} routePathRef={pathRef}>
             {({ view, size, k }) => {
               if (!route || !found) return null;
               const labels = layoutLabels(
                 route.map((p) => toScreen(view, size, p)),
-                found.stops.map((s) => signWidth(s.station.name)),
+                found.stops.map((s) => labelWidth(s.station.name, LABEL)),
                 size,
                 14,
               );
@@ -227,8 +228,8 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
                         <Ping x={p.x} y={p.y} k={k} delay={0.75 + i * 0.07} />
                         <g transform={`translate(${p.x} ${p.y}) scale(${k})`}>
                           <circle r="5" className="fill-cocoa-950 stroke-copper-300" strokeWidth="2" />
-                          <g data-sign style={{ opacity: 0 }}>
-                            <SignLabel text={s.station.name} x={right ? 14 : -14} y={dy - 14} anchor={right ? "start" : "end"} />
+                          <g data-label style={{ opacity: 0 }}>
+                            <StationLabel text={s.station.name} size={LABEL} x={right ? 14 : -14} y={dy - 14} anchor={right ? "start" : "end"} />
                           </g>
                         </g>
                       </g>
@@ -253,36 +254,46 @@ export function PnrLoading({ found, error, onComplete, onError, pnr }: PnrLoadin
 
         {phase === "stamp" && found && (
           <div className="absolute inset-0 flex items-center justify-center p-6">
-            <div ref={stampRef} className="w-full max-w-md drop-shadow-[0_30px_40px_rgba(0,0,0,0.65)]" style={{ transform: "rotate(-6deg)" }}>
-              <div className="ticket-edge bg-cream-50 px-7 py-7 text-cocoa-900 max-sm:px-5 sm:px-9">
-                <SplitFlap text="JOURNEY FOUND" trigger="mount" className="text-xl sm:text-2xl" />
-                <p className="mt-5 font-display text-2xl uppercase leading-none">
-                  {found.journey.trainNumber} {found.journey.trainName}
-                </p>
-                <p className="mt-3 font-condensed text-sm font-semibold uppercase tracking-[0.18em] text-cocoa-600">
-                  Boarding {found.journey.from} {boardingTime}
-                </p>
-              </div>
+            <div ref={resultRef} className="w-full max-w-sm rounded-3xl bg-white px-6 py-7 text-center text-cocoa-900 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.65)] sm:px-8 sm:py-8">
+              <span aria-hidden className="mx-auto inline-flex size-14 items-center justify-center rounded-full bg-leaf-100 text-leaf-600">
+                <Check className="size-7" strokeWidth={3} />
+              </span>
+              <p className="mt-4 font-display text-3xl">Journey found</p>
+              <p className="mt-3 text-lg font-bold leading-snug">
+                {found.journey.trainNumber} {found.journey.trainName}
+              </p>
+              <p className="mt-1 text-sm text-muted">
+                Boarding at {boarding?.station.name ?? found.journey.from}
+                {boardingTime && ` · ${formatClock(boardingTime)}`}
+              </p>
             </div>
           </div>
         )}
 
-        {/* the PNR being read, on a small ticket above the status line */}
-        {read && phase !== "stamp" && (
-          <div aria-hidden className="absolute inset-x-0 bottom-24 flex justify-center px-4">
-            <div className="ticket-edge flex items-center gap-3 bg-cream-50 px-6 py-2.5 text-cocoa-900 shadow-[0_20px_40px_rgba(0,0,0,0.5)]" style={{ "--n": "7px" } as CSSProperties}>
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cocoa-500">PNR</span>
-              <SplitFlap text={read} length={10} trigger="mount" className="text-base sm:text-lg" />
+        <div className="absolute inset-x-0 bottom-8 flex flex-col items-center gap-3 px-4" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+          {/* the PNR being read, on a small card above the status row; it steps aside once the route takes the stage */}
+          {read && (phase === "search" || phase === "error") && (
+            <div aria-hidden className="flex items-center gap-3 rounded-2xl bg-white px-5 py-3 text-cocoa-900 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.6)]">
+              <span className="text-xs font-semibold text-muted">PNR</span>
+              <span className="font-display text-xl tabular-nums sm:text-2xl">
+                {Array.from({ length: Math.max(PNR_LENGTH, read.length) }, (_, i) => (
+                  <span key={i} className={cn("inline-block w-[0.85em] text-center", i >= read.length && "text-cocoa-300")}>
+                    {read[i] ?? "•"}
+                  </span>
+                ))}
+              </span>
             </div>
-          </div>
-        )}
-
-        <div className="absolute inset-x-0 bottom-8 flex justify-center px-4" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-          <div role="status" aria-live="polite" className="led-panel rounded-md px-4 py-2">
-            <span className="led text-sm sm:text-base">{led}</span>
-            <span aria-hidden className="led ml-1 animate-blink text-sm sm:text-base">
-              _
-            </span>
+          )}
+          <div role="status" aria-live="polite" className="inline-flex items-center gap-2.5 rounded-full border border-cream-50/15 bg-cocoa-900/90 px-4 py-2.5 text-sm font-semibold sm:text-[15px]">
+            {error ? (
+              <AlertCircle className="size-4 shrink-0 text-chili-500" aria-hidden />
+            ) : phase === "stamp" ? (
+              <Check className="size-4 shrink-0 text-leaf-300" strokeWidth={3} aria-hidden />
+            ) : (
+              <Loader2 className="size-4 shrink-0 animate-spin text-copper-400" aria-hidden />
+            )}
+            {phase === "stamp" && <span className="sr-only">Journey found.</span>}
+            {statusText}
           </div>
         </div>
       </div>

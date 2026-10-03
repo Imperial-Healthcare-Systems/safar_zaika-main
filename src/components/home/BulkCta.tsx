@@ -8,7 +8,7 @@ export function BulkCta() {
   return (
     <section className="container-x py-14 sm:py-16" aria-labelledby="bulk-title">
       <Reveal variant="clip">
-        <div className="grid overflow-hidden rounded-3xl border-2 border-line bg-white lg:grid-cols-[1.5fr_1fr]">
+        <div className="grid overflow-hidden rounded-3xl border border-line bg-white shadow-card lg:grid-cols-[1.5fr_1fr]">
           <div className="flex flex-col items-center px-6 py-10 text-center sm:px-10 lg:py-12">
             <h2 id="bulk-title" className="max-w-xl text-balance text-[2rem] text-cocoa-900 sm:text-4xl lg:text-[2.75rem]">
               Travelling as a group of 10 or more?

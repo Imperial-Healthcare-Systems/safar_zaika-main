@@ -25,7 +25,7 @@ const COLS: Record<MealId, string> = {
   snacks: "lg:grid-cols-[1fr_1fr_1fr_1.6fr]",
 };
 
-/** "06:00".."11:00" -> "6-11 AM"; "11:30".."15:30" -> "11:30 AM-3:30 PM"; all day -> "All day". */
+/** "06:00".."11:00" -> "6 to 11 AM"; "11:30".."15:30" -> "11:30 AM to 3:30 PM"; all day -> "All day". */
 function windowLabel(w: TimeWindow) {
   if (w.from === "00:00" && w.to === "23:59") return "All day";
   const short = (hhmm: string) => {
@@ -33,11 +33,11 @@ function windowLabel(w: TimeWindow) {
     return m ? `${h % 12 || 12}:${String(m).padStart(2, "0")}` : String(h % 12 || 12);
   };
   const ampm = (hhmm: string) => (Number(hhmm.slice(0, 2)) >= 12 ? "PM" : "AM");
-  return ampm(w.from) === ampm(w.to) ? `${short(w.from)}-${short(w.to)} ${ampm(w.to)}` : `${short(w.from)} ${ampm(w.from)}-${short(w.to)} ${ampm(w.to)}`;
+  return ampm(w.from) === ampm(w.to) ? `${short(w.from)} to ${short(w.to)} ${ampm(w.to)}` : `${short(w.from)} ${ampm(w.from)} to ${short(w.to)} ${ampm(w.to)}`;
 }
 
 /**
- * Four image-led meal panels. The one covering the delivery moment (arrival at
+ * Four photo meal panels. The one covering the delivery moment (arrival at
  * the chosen halt, else the clock) is tagged and widened; hovering or focusing
  * another panel widens that one instead. Mobile: a snap-scroll row, active first.
  */
@@ -94,8 +94,13 @@ export function MealTimes() {
                   <Image src={m.image} alt="" fill sizes="(max-width: 1024px) 76vw, 40vw" className={cn("object-cover transition-transform duration-700 ease-(--ease-out-quart)", open ? "scale-100" : "scale-105")} />
                   <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-cocoa-950 via-cocoa-950/55 to-cocoa-950/10" />
                   <div className="absolute left-4 top-4 flex flex-wrap items-center gap-2 lg:left-5 lg:top-5">
-                    <span className="signboard">{windowLabel(m.window)}</span>
-                    {active && <span className="led-panel led rounded-md px-2 py-1 text-[10px]">{tag}</span>}
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-cocoa-900 shadow-card">{windowLabel(m.window)}</span>
+                    {active && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-cocoa-950/75 px-3 py-1 text-xs font-semibold text-cream-50 ring-1 ring-cream-50/15">
+                        <span className="size-1.5 rounded-full bg-leaf-300" aria-hidden />
+                        {tag}
+                      </span>
+                    )}
                   </div>
                   <div className="relative p-4 lg:p-5">
                     <h3 className="font-display text-3xl text-cream-50 lg:text-4xl">{m.label}</h3>

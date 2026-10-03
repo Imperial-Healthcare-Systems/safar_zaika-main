@@ -75,7 +75,7 @@ export function StationExplorer() {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-cocoa-950/90 via-cocoa-950/40 to-transparent" />
                   <div className="relative">
-                    <span className="signboard">{s.code}</span>
+                    <span className="tag-dark backdrop-blur-sm">{s.code}</span>
                     <p className="mt-2 font-display text-2xl font-semibold leading-tight">{s.name}</p>
                     <p className="text-[13px] text-cream-50/70">{s.tagline ?? s.city}</p>
                     <p className="mt-2 flex items-center gap-1.5 text-[12px] font-semibold text-gold-300">
@@ -111,8 +111,8 @@ export function StationExplorer() {
                               <Link href={`/restaurants?station=${s.code}`} className="flex items-center gap-3 py-2.5 text-sm transition-colors hover:text-copper-700">
                                 <MapPin className={cn("size-4 shrink-0", count ? "text-copper-600" : "text-cocoa-300")} />
                                 <span className="min-w-0 flex-1 truncate font-semibold">{s.name}</span>
-                                <span className="font-mono text-[11px] text-muted max-sm:text-xs">{s.code}</span>
-                                <span className={cn("text-[11px] font-semibold max-sm:text-xs", count ? "text-leaf-600" : "text-muted")}>{count ? `${count} kitchens` : "Coming soon"}</span>
+                                <span className="tag">{s.code}</span>
+                                <span className={cn("text-[11px] font-semibold max-sm:text-xs", count ? "text-leaf-600" : "text-muted")}>{count ? `${count} kitchen${count === 1 ? "" : "s"}` : "Coming soon"}</span>
                               </Link>
                             </li>
                           );

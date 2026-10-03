@@ -68,8 +68,8 @@ export function FoodJourney() {
                         <c.icon className="size-9 text-copper-700" />
                       ) : null}
                     </div>
-                    <span aria-hidden className="signboard absolute -bottom-2 left-1/2 -translate-x-1/2 text-[10px]">
-                      0{i + 1}
+                    <span aria-hidden className="absolute -bottom-2 left-1/2 flex size-7 -translate-x-1/2 items-center justify-center rounded-full bg-cocoa-900 text-xs font-bold text-cream-50 ring-2 ring-white">
+                      {i + 1}
                     </span>
                   </div>
                   <h3 className="mt-5 font-display text-lg text-cocoa-900">{c.title}</h3>

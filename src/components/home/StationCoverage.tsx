@@ -12,7 +12,6 @@ import { gsap } from "@/lib/gsap";
 import { cn, formatClock } from "@/lib/utils";
 import { Button, SectionHeading } from "@/components/ui";
 import { Reveal, useReveal } from "@/components/animations/Reveal";
-import { SplitFlap } from "@/components/animations/SplitFlap";
 import { JourneyMap } from "@/components/journey/JourneyMap";
 import type { EligibleStation } from "@/types";
 
@@ -21,12 +20,14 @@ const sampleStops = computeEligibleStations(sampleJourney);
 const popular = stations.filter((s) => s.popular);
 
 const stateLabel: Record<EligibleStation["availability"], string> = {
-  available: "",
+  available: "Taking orders",
   "too-soon": "Too soon to deliver",
   "no-food": "No kitchens yet",
   passed: "Boarding",
   destination: "Destination",
 };
+
+const kitchens = (n: number) => `${n} ${n === 1 ? "kitchen" : "kitchens"}`;
 
 /**
  * "Food stops on your route": the journey entered in this session (store,
@@ -84,12 +85,22 @@ export function StationCoverage() {
           </div>
           <Reveal variant="clip-right" delay={0.2}>
             <div className="flex h-full flex-col rounded-3xl bg-cocoa-900 p-5 text-cream-50 sm:p-6">
-              {/* Departure-board readout of the halt picked on the map */}
-              <div className="led-panel rounded-2xl px-4 py-3">
-                <SplitFlap text={halt?.station.name ?? "Pick a halt"} length={14} trigger="mount" className="text-xl sm:text-2xl" />
-                <p className="led mt-2 text-[11px]">
-                  {halt ? `${halt.station.code} · arrives ${formatClock(halt.stop.arrival)} · ${halt.restaurantCount} kitchens` : "Tap a station on the map"}
-                </p>
+              {/* The halt picked on the map */}
+              <div className="panel-dark min-h-[7.25rem] p-4" aria-live="polite">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="min-w-0 truncate font-display text-2xl sm:text-[1.75rem]">{halt?.station.name ?? "Pick a halt"}</p>
+                  {halt && <span className="tag-dark shrink-0">{halt.station.code}</span>}
+                </div>
+                <p className="mt-1.5 text-sm text-cream-50/70">{halt ? `Arrives ${formatClock(halt.stop.arrival)} · ${kitchens(halt.restaurantCount)}` : "Tap a station on the map."}</p>
+                {halt && (
+                  <p className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-cream-50/10 px-2.5 py-1 text-xs font-semibold">
+                      <span className={cn("size-1.5 rounded-full", halt.availability === "available" ? "bg-leaf-300" : "bg-cream-50/40")} aria-hidden />
+                      {stateLabel[halt.availability]}
+                    </span>
+                    {!live && <span className="text-xs text-cream-50/60">Sample route</span>}
+                  </p>
+                )}
               </div>
 
               {live ? (
@@ -106,11 +117,11 @@ export function StationCoverage() {
                       );
                       const inner = (
                         <>
-                          <span className="signboard shrink-0 text-[10px]">{e.station.code}</span>
+                          <span className="tag-dark min-w-12 shrink-0 justify-center">{e.station.code}</span>
                           <span className="min-w-0 flex-1">
                             <span className="block truncate font-semibold">{e.station.name}</span>
-                            <span className={cn("block text-[11px]", ok ? "text-gold-300" : "text-cream-50/60")}>
-                              {formatClock(e.stop.arrival)} · {ok ? `${e.restaurantCount} kitchens` : stateLabel[e.availability]}
+                            <span className={cn("block text-xs", ok ? "text-gold-300" : "text-cream-50/60")}>
+                              {formatClock(e.stop.arrival)} · {ok ? kitchens(e.restaurantCount) : stateLabel[e.availability]}
                             </span>
                           </span>
                         </>
@@ -148,7 +159,7 @@ export function StationCoverage() {
                           href={`/restaurants?station=${s.code}`}
                           className="flex items-center gap-2.5 rounded-xl border border-cream-50/10 bg-cream-50/5 px-2.5 py-2 text-sm transition-colors hover:border-gold-400/50 hover:bg-cream-50/10"
                         >
-                          <span className="signboard shrink-0 text-[10px]">{s.code}</span>
+                          <span className="tag-dark min-w-12 shrink-0 justify-center">{s.code}</span>
                           <span className="truncate font-semibold">{s.name}</span>
                         </Link>
                       </li>

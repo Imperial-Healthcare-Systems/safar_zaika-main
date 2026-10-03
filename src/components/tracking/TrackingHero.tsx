@@ -7,22 +7,22 @@ import { Badge } from "@/components/ui";
 import { orderStatusSteps } from "@/data/orders";
 import { getStation } from "@/data/stations";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { formatClock, prefersReducedMotion } from "@/lib/utils";
+import { cn, formatClock, prefersReducedMotion } from "@/lib/utils";
 import type { Order, OrderStatus } from "@/types";
 
-/** Coach-indicator wording for the LED strip. */
-const LED: Record<OrderStatus, string> = {
-  confirmed: "RECEIVED",
-  accepted: "SENT TO KITCHEN",
-  preparing: "PREPARING",
-  ready: "PACKED",
-  "partner-assigned": "EN ROUTE",
-  "at-station": "ON PLATFORM",
-  delivered: "DELIVERED",
-  cancelled: "CANCELLED",
+/** Where the order is, in two or three words, for the status pill. */
+const STATE: Record<OrderStatus, string> = {
+  confirmed: "Order received",
+  accepted: "Sent to the kitchen",
+  preparing: "Being prepared",
+  ready: "Packed",
+  "partner-assigned": "On the way to the station",
+  "at-station": "On your platform",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
 };
 
-/** Dark hero: current step as the headline, an LED status strip, plus the four facts a traveller checks first. */
+/** Dark hero: current step as the headline, a status row (state pill + small facts), plus the four facts a traveller checks first. */
 export function TrackingHero({ order, stepIndex }: { order: Order; stepIndex: number }) {
   const cancelled = order.status === "cancelled";
   const paid = order.payment.status === "paid";
@@ -31,7 +31,6 @@ export function TrackingHero({ order, stepIndex }: { order: Order; stepIndex: nu
     : orderStatusSteps[stepIndex];
   const station = getStation(order.deliveryStationCode);
   const live = !cancelled && order.status !== "delivered";
-  const ledText = [LED[order.status], live ? "ON TIME" : null, `${order.passenger.coach}/${order.passenger.berth}`].filter(Boolean).join(" · ");
   const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -65,34 +64,39 @@ export function TrackingHero({ order, stepIndex }: { order: Order; stepIndex: nu
           </span>
         }
         actions={
-          <Badge tone={cancelled ? "chili" : live ? "glass" : "leaf"}>
-            {live && (
-              <span className="relative mr-0.5 flex size-2">
+          // Only a moving order is "live"; delivered and cancelled are said once, by the status pill below.
+          live && (
+            <Badge tone="glass" className="gap-2 px-3 py-1.5 text-[13px] normal-case tracking-normal lg:text-[13px]">
+              <span aria-hidden className="relative flex size-2">
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-leaf-300 opacity-70" />
                 <span className="relative inline-flex size-2 rounded-full bg-leaf-300" />
               </span>
-            )}
-            {cancelled ? "Cancelled" : live ? "Live" : "Delivered"}
-          </Badge>
+              Live
+            </Badge>
+          )
         }
       >
-        <div data-swap className="mt-6 flex flex-wrap items-center gap-3">
-          <p className="led-panel inline-flex max-w-full rounded-lg px-4 py-2.5" aria-label={`Status board: ${ledText}`}>
-            <span className="led truncate text-base max-sm:whitespace-normal sm:text-lg">{ledText}</span>
+        <div data-swap className="mt-6 flex flex-wrap items-center gap-2.5">
+          <p className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 text-sm font-bold text-cocoa-900">
+            <span aria-hidden className={cn("size-2 rounded-full", cancelled ? "bg-chili-500" : live ? "bg-copper-500" : "bg-leaf-500")} />
+            {STATE[order.status]}
           </p>
-          <span className="signboard" title="Delivery station">
+          <span className="tag-dark" title="Delivery station">
             {order.deliveryStationCode}
           </span>
-          <span className="rounded-full glass px-3 py-1.5 text-[13px] font-semibold">Order {order.id}</span>
+          <span className="tag-dark">
+            Coach {order.passenger.coach} · Berth {order.passenger.berth}
+          </span>
+          <span className="tag-dark">Order {order.id}</span>
         </div>
         <dl className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {facts.map((f) => (
-            <div key={f.label} className="glass rounded-2xl p-4">
-              <dt className="flex items-center gap-1.5 text-[12px] font-semibold text-cream-50/60">
-                <f.icon className="size-3.5 text-gold-400" />
+            <div key={f.label} className="panel-dark p-4">
+              <dt className="flex items-center gap-1.5 text-[13px] font-medium text-cream-50/65">
+                <f.icon className="size-3.5" aria-hidden />
                 {f.label}
               </dt>
-              <dd className="mt-1.5 truncate font-display text-lg font-semibold max-sm:whitespace-normal sm:text-xl">{f.value}</dd>
+              <dd className="mt-1.5 truncate text-base font-bold max-sm:whitespace-normal sm:text-lg">{f.value}</dd>
             </div>
           ))}
         </dl>

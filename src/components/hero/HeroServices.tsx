@@ -43,7 +43,7 @@ export function HeroServices() {
             >
               <Icon className={cn("hidden size-4 min-[400px]:block", active ? "text-copper-600" : "text-gold-400")} aria-hidden />
               {label}
-              {soon && <span className={cn("rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em]", active ? "bg-sign-500 text-cocoa-950" : "bg-sign-500/90 text-cocoa-950")}>Soon</span>}
+              {soon && <span className={cn(active ? "tag" : "tag-dark", "rounded-full text-[11px]")}>Soon</span>}
             </button>
           );
         })}
@@ -69,7 +69,7 @@ export function HeroServices() {
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-display text-xl sm:text-2xl">Hotels near your station</h2>
-            <span className="signboard">Coming soon</span>
+            <span className="tag">Coming soon</span>
           </div>
           <p className="mt-1 text-sm text-muted">A preview of what is on the way: rooms near major stations, booked alongside your journey. Bookings are not open yet.</p>
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-[1.5fr_1fr_1fr_0.9fr]">

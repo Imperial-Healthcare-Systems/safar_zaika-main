@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Condensed, Barlow_Semi_Condensed } from "next/font/google";
+import { Barlow, Barlow_Semi_Condensed } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/Providers";
 import { Navbar } from "@/components/layout/Navbar";
@@ -8,11 +8,9 @@ import { StickyCartBar } from "@/components/cart/StickyCartBar";
 import { BottomTabBar } from "@/components/layout/BottomTabBar";
 
 // The logo's tagline is set in Bahnschrift (a DIN-style railway signage face).
-// Barlow is the closest open superfamily, so headings, UI and the departure
-// boards all share the signage DNA of the brand mark.
+// Barlow is the closest open superfamily: Semi Condensed for headings, regular for UI.
 const barlow = Barlow({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-barlow", display: "swap" });
 const barlowSemi = Barlow_Semi_Condensed({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-barlow-semi", display: "swap" });
-const barlowCondensed = Barlow_Condensed({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-barlow-condensed", display: "swap" });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -50,7 +48,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${barlow.variable} ${barlowSemi.variable} ${barlowCondensed.variable} h-full`}>
+    <html lang="en-IN" className={`${barlow.variable} ${barlowSemi.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <a
           href="#main"

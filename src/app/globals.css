@@ -5,7 +5,7 @@
    Safar Zaika design tokens — railway blue with a single orange action colour.
    cocoa  navy scale   (ink, dark sections)   copper orange scale (buttons, links)
    cream  blue-white surfaces                 gold   warm amber (accents on navy)
-   sign   #f5c542 station-board yellow        leaf   veg / success   chili  errors
+   leaf   veg / success                       chili  errors
    Token names are historical; the values are the blue palette.
 ------------------------------------------------------------------- */
 @theme {
@@ -53,11 +53,6 @@
   --color-gold-500: #ef9a30;
   --color-gold-600: #d96c17;
 
-  /* Indian Railways station-board yellow, used for signboard chips */
-  --color-sign-400: #ffd659;
-  --color-sign-500: #f5c542;
-  --color-sign-600: #dba91f;
-
   --color-leaf-50: #eef8f1;
   --color-leaf-100: #d7eedd;
   --color-leaf-300: #92d2a6;
@@ -94,8 +89,6 @@
   --animate-pulse-ring: pulse-ring 1.8s var(--ease-out-quart) infinite;
   --animate-float: float 6s ease-in-out infinite;
   --animate-steam: steam 3.2s ease-in-out infinite;
-  --animate-flap: flap 0.1s linear infinite;
-  --animate-blink: blink 1.1s steps(2, start) infinite;
 
   @keyframes marquee {
     from { transform: translateX(0); }
@@ -118,21 +111,12 @@
     30% { opacity: 0.6; }
     100% { transform: translateY(-18px) scaleX(1.4); opacity: 0; }
   }
-  @keyframes flap {
-    0% { transform: rotateX(0deg); }
-    50% { transform: rotateX(-88deg); }
-    100% { transform: rotateX(0deg); }
-  }
-  @keyframes blink {
-    to { opacity: 0.25; }
-  }
 }
 
 @theme inline {
-  /* Display = Barlow Semi Condensed (signage, like the logo tagline), UI = Barlow, boards = Barlow Condensed */
+  /* Display = Barlow Semi Condensed, UI = Barlow */
   --font-display: var(--font-barlow-semi), "Arial Narrow", ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
-  --font-condensed: var(--font-barlow-condensed), "Arial Narrow", ui-sans-serif, sans-serif;
 }
 
 /* z-index scale */
@@ -241,91 +225,44 @@ html.lenis, html.lenis body { height: auto; }
   animation: var(--animate-shimmer);
 }
 
-/* Railway signage devices ------------------------------------------- */
-
-/* Station name board: yellow face, black frame, condensed caps. */
-@utility signboard {
+/* Clean labels: station codes, states, small facts. `tag` on light surfaces, `tag-dark` on navy. */
+@utility tag {
   display: inline-flex;
   align-items: center;
-  gap: 0.4em;
-  padding: 0.18em 0.6em;
-  background: var(--color-sign-500);
-  color: #1a1208;
-  font-family: var(--font-condensed);
+  gap: 0.35em;
+  padding: 0.2em 0.6em;
+  border-radius: 0.5rem;
+  background: var(--color-rail-50);
+  color: var(--color-rail-700);
+  font-family: var(--font-sans);
   font-weight: 700;
-  font-size: 0.8125rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  line-height: 1.3;
-  border: 2px solid #1a1208;
-  box-shadow: inset 0 0 0 2px var(--color-sign-500), inset 0 0 0 3px #1a1208;
-  border-radius: 3px;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
   white-space: nowrap;
 }
-
-/* Dot-matrix LED text, as on coach indicator boards. */
-@utility led {
-  font-family: var(--font-condensed);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: #ffb648;
-  text-shadow: 0 0 6px rgb(255 160 40 / 0.85), 0 0 16px rgb(255 120 20 / 0.45);
-}
-@utility led-panel {
-  background-color: #061129;
-  background-image: radial-gradient(circle at 1px 1px, rgb(255 180 87 / 0.12) 0.8px, transparent 1px);
-  background-size: 5px 5px;
-  border: 1px solid rgb(255 180 87 / 0.2);
-  box-shadow: inset 0 0 24px rgb(0 0 0 / 0.6);
-}
-
-/* One character of a split-flap departure board (see SplitFlap.tsx). */
-@utility flap-cell {
-  position: relative;
+@utility tag-dark {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 0.92em;
-  height: 1.38em;
-  border-radius: 0.14em;
-  background: linear-gradient(#17315f 0%, #0c1f44 48%, #091a3b 52%, #12294f 100%);
-  color: #eaf2ff;
-  font-family: var(--font-condensed);
+  gap: 0.35em;
+  padding: 0.2em 0.6em;
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 0.12);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  color: #fff;
+  font-family: var(--font-sans);
   font-weight: 700;
-  line-height: 1;
-  text-transform: uppercase;
-  /* no preserve-3d / backface-visibility: the flap never turns past 88deg, and a 3D context on every
-     cell (hundreds in the footer) would drag each one into its own compositing decision */
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 1px 1px rgb(0 0 0 / 0.5);
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    height: 1px;
-    background: rgb(0 0 0 / 0.65);
-  }
-  &[data-flapping="true"] {
-    animation: var(--animate-flap);
-  }
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  white-space: nowrap;
 }
-
-/* Intro / route curtain (PageTransition.tsx): the logo settles, the rail grows and one train
-   crosses left to right. Plain classes so they never depend on the source scanner. */
-.curtain-logo-on { animation: curtain-logo 0.6s cubic-bezier(0.25, 1, 0.5, 1) both; }
-.curtain-train-on { animation: curtain-train 1s cubic-bezier(0.45, 0, 0.55, 1) both; }
-.curtain-rail-on { animation: curtain-rail 1s cubic-bezier(0.45, 0, 0.55, 1) both; }
-.curtain-led-on { animation: curtain-led 0.5s cubic-bezier(0.25, 1, 0.5, 1) both; }
-.curtain-leave { animation-delay: 350ms; }
-@keyframes curtain-logo { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
-@keyframes curtain-train { from { opacity: 1; transform: translateX(-100%); } to { opacity: 1; transform: translateX(100vw); } }
-@keyframes curtain-rail { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes curtain-led { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-/* Route lines pause their SVG ring animations while off screen (RouteLine sets the flag) */
-svg[data-offscreen="true"] * { animation-play-state: paused !important; }
+/* Quiet card on navy sections (status, summaries). */
+@utility panel-dark {
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 1rem;
+}
 
 @utility z-nav { z-index: var(--z-nav); }
 @utility z-sticky { z-index: var(--z-sticky); }
@@ -345,6 +282,4 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  /* The intro curtain (IntroLoader) is server-rendered covering the page; reduced-motion users never see it. */
-  [data-intro] { display: none !important; }
 }

@@ -34,7 +34,7 @@ export function StationCard({ item, selected, onSelect, className }: { item: Eli
         <div className="min-w-0">
           <p className="flex items-center gap-2 font-semibold text-cocoa-900">
             <span className="truncate">{station.name}</span>
-            <span className="signboard shrink-0">{station.code}</span>
+            <span className="tag shrink-0">{station.code}</span>
           </p>
           <p className={cn("mt-1 flex items-center gap-1.5 text-[13px] font-medium", status.tone)}>
             <Icon className="size-3.5" /> {status.text}

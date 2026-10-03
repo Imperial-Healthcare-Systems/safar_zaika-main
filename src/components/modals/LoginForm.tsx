@@ -61,7 +61,7 @@ function OtpInput({ value, onChange, error }: { value: string; onChange: (v: str
           onPaste={onPaste}
           onFocus={(e) => e.target.select()}
           className={cn(
-            "h-14 w-full rounded-xl border bg-white text-center font-condensed text-3xl font-bold text-cocoa-900 outline-none transition-[border-color,box-shadow,transform] focus:border-copper-500 focus:ring-4 focus:ring-copper-500/15",
+            "h-14 w-full rounded-xl border bg-white text-center text-2xl font-bold text-cocoa-900 outline-none transition-[border-color,box-shadow,transform] focus:border-copper-500 focus:ring-4 focus:ring-copper-500/15",
             error ? "border-chili-500" : d ? "border-copper-400" : "border-line",
           )}
         />

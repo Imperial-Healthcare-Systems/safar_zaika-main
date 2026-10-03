@@ -3,8 +3,6 @@
 import { useEffect, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { SmoothScroll } from "./SmoothScroll";
-import { PageTransition } from "@/components/layout/PageTransition";
-import { IntroLoader } from "@/components/layout/IntroLoader";
 import { Toaster } from "@/components/ui/Toaster";
 import { LoginModal } from "@/components/modals/LoginModal";
 import { OrderNowModal } from "@/components/modals/OrderNowModal";
@@ -34,8 +32,6 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <>
       <SmoothScroll />
-      {/* Before the page in DOM order so the server-rendered curtain is parsed (and painted) ahead of the content it covers. */}
-      <IntroLoader />
       {children}
       <Toaster />
       <LoginModal />
@@ -44,7 +40,6 @@ export function Providers({ children }: { children: ReactNode }) {
       <SearchModal />
       <CartDrawer />
       <ReplaceCartModal />
-      <PageTransition />
     </>
   );
 }

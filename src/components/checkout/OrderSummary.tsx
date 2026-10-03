@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { Button, Price, VegDot } from "@/components/ui";
+import { Badge, Button, Price, VegDot } from "@/components/ui";
 import { CartSummaryRows, DeliveringTo } from "@/components/cart/CartPanel";
 import { useCartStore } from "@/stores";
 import { cn } from "@/lib/utils";
@@ -24,10 +24,11 @@ export function OrderSummary({ method, onConfirm, loading, className }: { method
             {restaurantName}
           </Link>
         </div>
-        {/* The kitchen sees the same board: prepaid vs collect at the seat. */}
-        <span className="signboard shrink-0" title={cod ? "Cash on delivery, collected by the partner at your seat" : "Paid online before the kitchen starts"}>
-          {cod ? "COD · Pay at seat" : "Prepaid"}
-        </span>
+        {/* The kitchen sees the same split: paid online vs collect at the seat. */}
+        <Badge tone={cod ? "copper" : "leaf"} className="shrink-0 gap-1.5 normal-case tracking-normal" title={cod ? "Cash on delivery, collected by the partner at your seat" : "Paid online before the kitchen starts"}>
+          <span aria-hidden className="size-1.5 rounded-full bg-current" />
+          {cod ? "Pay at your seat" : "Pay online"}
+        </Badge>
       </div>
 
       <ul className="mt-4 divide-y divide-line">
@@ -52,7 +53,7 @@ export function OrderSummary({ method, onConfirm, loading, className }: { method
       <DeliveringTo compact className="mt-4" />
 
       {/* Mobile uses the fixed bottom bar instead. */}
-      <Button size="xl" full onClick={onConfirm} loading={loading} rightIcon={<ArrowRight className="size-4" />} className="mt-5 hidden uppercase tracking-[0.1em] md:inline-flex">
+      <Button size="xl" full onClick={onConfirm} loading={loading} rightIcon={<ArrowRight className="size-4" />} className="mt-5 hidden md:inline-flex">
         {cod ? "Place order · pay at seat" : "Confirm order"}
       </Button>
       <p className="mt-3 hidden text-center text-[12px] text-muted md:block">Demo checkout · no real payment is taken.</p>

@@ -1,13 +1,12 @@
 "use client";
 
-import { ArrowRight, BadgeCheck, UserRound } from "lucide-react";
-import { Badge } from "@/components/ui";
+import { ArrowRight, UserRound } from "lucide-react";
 import { getStation } from "@/data/stations";
 import { trainMap } from "@/data/trains";
 import { cn, formatClock, formatDate } from "@/lib/utils";
 import type { Journey } from "@/types";
 
-/** Ticket-style journey summary: cocoa stock, notched edges, condensed figures like a printed ticket. */
+/** Ticket-shaped journey summary on navy: train, the two ends with their times, the ticket facts, then the passengers. */
 export function JourneyCard({ journey, className, compact }: { journey: Journey; className?: string; compact?: boolean }) {
   const train = trainMap[journey.trainNumber];
   const from = train?.stops[journey.boardingIndex];
@@ -18,74 +17,75 @@ export function JourneyCard({ journey, className, compact }: { journey: Journey;
 
   return (
     <article className={cn("ticket-edge relative overflow-hidden rounded-3xl bg-cocoa-900 text-cream-50", className)} aria-label="Journey details">
-      <div aria-hidden className="absolute inset-0 map-grid-dark opacity-40" />
-      <div className={cn("relative grid gap-6 p-6 sm:p-7", !compact && "lg:grid-cols-[1fr_auto]")}>
+      <div className={cn("relative grid gap-6 p-6 sm:p-7", !compact && "lg:grid-cols-[1fr_auto] lg:gap-8")}>
         <div>
-          <div className="flex flex-wrap items-end gap-x-7 gap-y-3 font-condensed">
-            <Field value={journey.pnr ? `${journey.pnr.slice(0, 3)} ••• ${journey.pnr.slice(-3)}` : "Guest journey"} label="PNR" />
-            <Field value={formatDate(journey.date)} label="Date of journey" />
-            <Field value={journey.travelClass} label="Class" />
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+            <p className="font-display text-2xl sm:text-3xl">
+              {journey.trainNumber} {journey.trainName}
+            </p>
             {journey.chartPrepared && (
-              <Badge tone="glass" className="mb-0.5">
-                <BadgeCheck className="size-3" /> Chart prepared
-              </Badge>
+              <span className="tag-dark">
+                <span aria-hidden className="size-1.5 rounded-full bg-leaf-300" />
+                Chart prepared
+              </span>
             )}
           </div>
-          <p className="mt-5 font-condensed text-3xl font-bold sm:text-4xl">
-            <span className="text-gold-400">{journey.trainNumber}</span> {journey.trainName}
-          </p>
 
-          <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+          <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-start gap-3">
             <div>
-              <p className="whitespace-nowrap font-condensed text-[1.75rem] font-bold tabular-nums sm:text-5xl">{formatClock(from?.departure ?? null)}</p>
-              <p className="mt-2">
-                <span className="signboard text-[10px]">{journey.from}</span>
+              <p className="whitespace-nowrap font-display text-[1.75rem] tabular-nums sm:text-[2.5rem]">{formatClock(from?.departure ?? null)}</p>
+              <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold">
+                <span className="tag-dark">{journey.from}</span>
+                {fromStation?.name ?? journey.from}
               </p>
-              <p className="mt-1.5 text-sm font-semibold">{fromStation?.name ?? journey.from}</p>
             </div>
-            <div className="flex flex-col items-center px-1 text-center font-condensed text-sm font-semibold text-cream-50/60 sm:px-2">
+            <div className="flex flex-col items-center px-1 pt-0.5 text-center text-xs font-medium text-cream-50/65 sm:px-2 sm:pt-1.5 sm:text-[13px]">
               <span>{duration ? `${Math.floor(duration / 60)}h ${duration % 60}m` : ""}</span>
-              <span className="my-1 flex items-center gap-1">
-                <span className="size-1.5 rounded-full bg-gold-400" />
-                <span className="h-px w-10 bg-gradient-to-r from-gold-400 to-cream-50/30 sm:w-20" />
+              <span aria-hidden className="my-1.5 flex items-center gap-1">
+                <span className="size-1.5 rounded-full bg-cream-50/60" />
+                <span className="h-px w-8 bg-cream-50/30 sm:w-20" />
                 <ArrowRight className="size-3.5 text-cream-50/60" />
               </span>
               <span>{train ? `${train.stops.length - 2} stops` : ""}</span>
             </div>
             <div className="text-right">
-              <p className="whitespace-nowrap font-condensed text-[1.75rem] font-bold tabular-nums sm:text-5xl">{formatClock(to?.arrival ?? null)}</p>
-              <p className="mt-2">
-                <span className="signboard text-[10px]">{journey.to}</span>
-                {to && from && to.day > from.day && <span className="ml-2 font-condensed text-sm font-semibold text-cream-50/60">+{to.day - from.day} day</span>}
+              <p className="whitespace-nowrap font-display text-[1.75rem] tabular-nums sm:text-[2.5rem]">{formatClock(to?.arrival ?? null)}</p>
+              <p className="mt-2 flex flex-wrap items-center justify-end gap-x-2 gap-y-1 text-sm font-semibold">
+                {toStation?.name ?? journey.to}
+                <span className="tag-dark">{journey.to}</span>
               </p>
-              <p className="mt-1.5 text-sm font-semibold">{toStation?.name ?? journey.to}</p>
+              {to && from && to.day > from.day && <p className="mt-1 text-xs font-medium text-cream-50/65">+{to.day - from.day} day</p>}
             </div>
           </div>
+
+          <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-3 border-t border-cream-50/10 pt-5">
+            <Field label="PNR" value={journey.pnr ? `${journey.pnr.slice(0, 3)} ••• ${journey.pnr.slice(-3)}` : "Guest journey"} />
+            <Field label="Date of journey" value={formatDate(journey.date)} />
+            <Field label="Class" value={journey.travelClass} />
+          </dl>
         </div>
 
-        <div className={cn("flex flex-col gap-3 border-t border-dashed border-cream-50/20 pt-5", !compact && "lg:min-w-56 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0")}>
-          <p className="text-sm font-semibold text-cream-50/60">Passengers</p>
+        <div className={cn("flex flex-col gap-3 border-t border-dashed border-cream-50/20 pt-5", !compact && "lg:min-w-64 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0")}>
+          <p className="text-sm font-semibold text-cream-50/65">Passengers</p>
           {journey.passengers.length === 0 ? (
             <p className="text-sm text-cream-50/70">No ticket details yet. Add your coach and berth at checkout.</p>
           ) : (
             journey.passengers.map((p) => (
-              <div key={p.name + p.berth} className="flex items-center gap-3 rounded-xl bg-cream-50/6 px-3 py-2">
-                <span className="inline-flex size-8 items-center justify-center rounded-full bg-copper-500 text-cream-50">
+              <div key={p.name + p.berth} className="panel-dark flex items-center gap-3 px-3 py-2.5">
+                <span aria-hidden className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-cream-50/10 text-cream-50/85">
                   <UserRound className="size-4" />
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">{p.name}</p>
-                  <p className="text-xs text-cream-50/60">
+                  <p className="text-xs text-cream-50/65">
                     {p.age} · {p.gender} · {p.berthType}
                   </p>
                 </div>
-                <div className="text-right font-condensed">
-                  <p className="text-2xl font-bold leading-none text-gold-300">
-                    {p.coach}
-                    <span className="text-cream-50/40">/</span>
-                    {p.berth}
+                <div className="text-right">
+                  <p className="text-base font-bold leading-tight tabular-nums">
+                    {p.coach} / {p.berth}
                   </p>
-                  <p className="mt-1 text-xs text-cream-50/55">
+                  <p className="mt-0.5 text-xs text-cream-50/65">
                     Coach / berth · <span className="font-bold text-leaf-300">{p.status}</span>
                   </p>
                 </div>
@@ -98,12 +98,12 @@ export function JourneyCard({ journey, className, compact }: { journey: Journey;
   );
 }
 
-/** Value on top, tiny sentence-case label under it, like the printed fields on a ticket. */
+/** Small sentence-case label over its value. */
 function Field({ value, label }: { value: string; label: string }) {
   return (
     <div>
-      <p className="text-xl font-bold leading-none">{value}</p>
-      <p className="mt-1 text-xs text-cream-50/55">{label}</p>
+      <dt className="text-xs text-cream-50/65">{label}</dt>
+      <dd className="mt-0.5 text-base font-bold leading-tight">{value}</dd>
     </div>
   );
 }

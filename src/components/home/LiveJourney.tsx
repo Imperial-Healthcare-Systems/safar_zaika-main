@@ -8,7 +8,7 @@ import { JourneyStatus } from "@/components/journey/JourneyStatus";
 // A generic sample order: no train, halt or person is named, so it never reads as the visitor's own journey.
 const demoSteps = [
   { headline: "Food is being prepared", sub: "Cooking starts so the order is ready just before the train arrives.", progress: 0.1 },
-  { headline: "Train approaching the halt", sub: "Running on time. The delivery partner is leaving the kitchen.", progress: 0.42 },
+  { headline: "Train approaching the halt", sub: "The delivery partner is leaving the kitchen with the order.", progress: 0.42 },
   { headline: "Partner waiting on the platform", sub: "Standing where the coach stops, order in hand.", progress: 0.78 },
   { headline: "Delivered at the seat", sub: "Handed over during the halt.", progress: 1, tone: "success" as const },
 ];
@@ -45,7 +45,7 @@ export function LiveJourney() {
           </Button>
         </Reveal>
         <Reveal variant="flip" delay={0.15}>
-          <span className="signboard mb-3">Sample order</span>
+          <span className="tag-dark mb-3">Sample order</span>
           <JourneyStatus dark autoCycleMs={3800} steps={demoSteps} stations={demoStations} />
         </Reveal>
       </div>

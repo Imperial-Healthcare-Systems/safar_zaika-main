@@ -98,7 +98,7 @@ export function FoodCard({
           onClick={handleAdd}
           disabled={blocked}
           title={reason}
-          className="inline-flex h-10 items-center gap-1.5 rounded-full border border-copper-500 bg-white px-4 max-lg:h-11 text-[13px] font-bold uppercase tracking-[0.1em] text-copper-700 transition-[background-color,color,transform] duration-200 hover:bg-copper-500 hover:text-cream-50 active:scale-95 disabled:cursor-not-allowed disabled:border-line disabled:bg-cream-100 disabled:text-muted disabled:hover:bg-cream-100 disabled:hover:text-muted disabled:active:scale-100"
+          className="inline-flex h-10 items-center gap-1.5 rounded-full border border-copper-500 bg-white px-4 max-lg:h-11 text-sm font-bold text-copper-700 transition-[background-color,color,transform] duration-200 hover:bg-copper-500 hover:text-cream-50 active:scale-95 disabled:cursor-not-allowed disabled:border-line disabled:bg-cream-100 disabled:text-muted disabled:hover:bg-cream-100 disabled:hover:text-muted disabled:active:scale-100"
           aria-label={blocked ? `${dish.name} unavailable: ${reason ?? "not available for this delivery"}` : `Add ${dish.name} to cart`}
         >
           <Plus className="size-4" /> Add

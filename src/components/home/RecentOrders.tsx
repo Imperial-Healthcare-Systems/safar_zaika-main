@@ -58,18 +58,18 @@ export function RecentOrders() {
     <section className="bg-cream-100 py-14 sm:py-16" aria-labelledby="recent-title">
       <div className="container-x grid items-center gap-8 lg:grid-cols-[1fr_1.3fr] lg:gap-12">
         <Reveal>
-          <span className="signboard">Sample activity</span>
-          <SectionHeading className="mt-4" title={<span id="recent-title">Orders on the move</span>} description="Demo data shown until live orders start." />
+          <SectionHeading title={<span id="recent-title">Orders on the move</span>} description="Demo data shown until live orders start." />
+          <span className="tag mt-4 bg-white">Sample activity</span>
         </Reveal>
         <Reveal variant="tilt">
-          <div ref={box} className="h-[300px] overflow-hidden rounded-3xl border border-line bg-white px-4 motion-reduce:h-auto sm:px-6">
+          <div ref={box} className="h-[300px] overflow-hidden rounded-3xl border border-line bg-white px-4 shadow-card motion-reduce:h-auto sm:px-6">
             <div className="h-full [mask-image:linear-gradient(transparent,#000_14%,#000_86%,transparent)] motion-reduce:[mask-image:none]">
               <ul>
                 {[...entries, ...entries].map((e, i) => {
                   const copy = i >= entries.length;
                   return (
                     <li key={i} aria-hidden={copy || undefined} className={`flex items-center gap-3 border-b border-line py-3.5 sm:gap-4 ${copy ? "motion-reduce:hidden" : ""}`}>
-                      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-rail-50 font-condensed text-[15px] font-bold text-rail-700">{e.coach}</span>
+                      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-rail-50 text-sm font-bold text-rail-700">{e.coach}</span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-[15px] font-semibold text-cocoa-900">
                           {e.qty} × {e.dish}
@@ -78,7 +78,7 @@ export function RecentOrders() {
                           {e.station} · {e.time}
                         </span>
                       </span>
-                      <span className="hidden shrink-0 text-[11px] font-bold uppercase tracking-[0.14em] text-muted sm:block">Sample</span>
+                      <span className="tag max-sm:hidden">Sample</span>
                     </li>
                   );
                 })}

@@ -245,7 +245,7 @@ export function PnrModule({ dark: darkProp, defaultMode = "pnr", className, bare
       full={!search}
       size="xl"
       loading={status === "loading"}
-      className={cn("uppercase tracking-[0.1em]", search && "max-sm:w-full sm:col-start-2 sm:row-start-1")}
+      className={cn(search && "max-sm:w-full sm:col-start-2 sm:row-start-1")}
       rightIcon={<ArrowRight className="size-4" />}
     >
       {label}
@@ -316,7 +316,7 @@ export function PnrModule({ dark: darkProp, defaultMode = "pnr", className, bare
                   tabIndex={selected ? 0 : -1}
                   onClick={() => switchMode(t.value)}
                   className={cn(
-                    "relative flex h-12 shrink-0 items-center gap-2 px-3 text-[13px] font-bold uppercase tracking-[0.08em] transition-colors focus-visible:-outline-offset-2 sm:h-13 sm:px-4 sm:text-sm",
+                    "relative flex h-12 shrink-0 items-center gap-2 px-3 text-sm font-semibold transition-colors focus-visible:-outline-offset-2 sm:h-13 sm:px-4 sm:text-sm",
                     "after:absolute after:inset-x-3 after:bottom-0 after:h-[3px] after:rounded-full after:bg-copper-500 after:transition-transform after:duration-300 sm:after:inset-x-4",
                     selected ? "text-cocoa-900 after:scale-x-100" : "text-muted after:scale-x-0 hover:text-cocoa-800",
                   )}
@@ -501,7 +501,7 @@ export function PnrModule({ dark: darkProp, defaultMode = "pnr", className, bare
                     )}
                   </NetworkMap>
                   {train && (
-                    <span className="signboard absolute left-2 top-2 text-[10px]">
+                    <span className="tag-dark absolute left-2 top-2">
                       {train.number} &middot; {train.from} &ndash; {train.to}
                     </span>
                   )}
@@ -588,7 +588,7 @@ export function PnrModule({ dark: darkProp, defaultMode = "pnr", className, bare
                           <span className="font-semibold">{s.name}</span>
                           <span className="text-muted"> &middot; {s.city}</span>
                         </span>
-                        <span className="signboard shrink-0 text-[10px]">{s.code}</span>
+                        <span className="tag shrink-0">{s.code}</span>
                       </li>
                     ))}
                     {matches.length === 0 && <li className="px-4 py-3 text-sm text-muted">No station matches. Try the city or the station code.</li>}

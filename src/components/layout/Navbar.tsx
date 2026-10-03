@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
-import { ArrowRight, Menu, Search, ShoppingBag, UserRound } from "lucide-react";
+import { ArrowRight, Menu, Search, ShoppingBag, TrainFront, UserRound } from "lucide-react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn, formatClock } from "@/lib/utils";
 import { useHydrated } from "@/hooks/useHydrated";
@@ -22,8 +22,8 @@ export const navLinks = [
 ];
 
 /**
- * Saved-journey context, as a station signboard: "12951 -> BRC 9:08 PM" once a
- * delivery station is chosen, else "12951 MUMBAI RAJDHANI" (+ "Choose station" with `hint`).
+ * Saved-journey context as a small chip: "12951 -> BRC 9:08 PM" once a
+ * delivery station is chosen, else "12951 Mumbai Rajdhani" (+ "Choose station" with `hint`).
  * Between lg and xl the navbar is tight, so the time / train name drop out there.
  * Renders nothing until the persisted store is hydrated / when there is no journey.
  */
@@ -40,16 +40,17 @@ export function JourneyChip({ className, hint, onClick }: { className?: string; 
       aria-label={selected ? `Your journey: train ${journey.trainNumber}, delivery at ${selected.station.name} ${time}` : `Your journey: train ${journey.trainNumber} ${journey.trainName}, choose a delivery station`}
       className={cn("group inline-flex items-center gap-2.5 rounded-md", className)}
     >
-      <span className="signboard">
+      <span className="inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full border border-rail-100 bg-rail-50 px-3 text-[13px] font-bold text-cocoa-900 transition-colors group-hover:border-rail-300">
+        <TrainFront className="size-4 text-rail-600" aria-hidden />
         {journey.trainNumber}
         {selected ? (
           <>
-            <ArrowRight className="size-3.5" aria-hidden />
+            <ArrowRight className="size-3.5 text-rail-600" aria-hidden />
             {selected.station.code}
-            <span className="lg:max-xl:hidden">{time}</span>
+            <span className="font-medium text-cocoa-700 lg:max-xl:hidden">{time}</span>
           </>
         ) : (
-          <span className="max-w-[9rem] truncate lg:max-xl:hidden">{journey.trainName}</span>
+          <span className="max-w-[9rem] truncate font-medium text-cocoa-700 lg:max-xl:hidden">{journey.trainName}</span>
         )}
       </span>
       {hint && !selected && (
@@ -104,10 +105,9 @@ export function Navbar() {
 
       {/* Utility strip: collapses once the page scrolls. */}
       <div className={cn("overflow-hidden bg-cocoa-900 transition-[height] duration-300 ease-(--ease-out-quart)", scrolled ? "h-0" : "h-7")}>
-        <p className="led flex h-7 items-center justify-center gap-2.5 whitespace-nowrap px-4 text-[10.5px] sm:text-[11px]">
-          <span className="size-1.5 shrink-0 animate-blink rounded-full bg-gold-400" aria-hidden />
-          <Link href="/order?mode=pnr" className="transition-colors hover:text-gold-200">
-            <span className="hidden sm:inline">Platform 1 · </span>Demo PNR 1234567890 · Try it
+        <p className="flex h-7 items-center justify-center whitespace-nowrap px-4 text-xs text-cream-50/75">
+          <Link href="/order?mode=pnr" className="transition-colors hover:text-cream-50">
+            Prototype preview. Try the demo PNR <span className="font-semibold text-cream-50">1234567890</span>
           </Link>
         </p>
       </div>
@@ -130,7 +130,7 @@ export function Navbar() {
                     href={l.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "relative block whitespace-nowrap px-1.5 py-2 font-condensed text-[13px] font-semibold uppercase tracking-[0.06em] text-cocoa-900 xl:px-3 xl:text-[15px] xl:tracking-[0.07em]",
+                      "relative block whitespace-nowrap px-1.5 py-2 text-[13px] font-semibold text-cocoa-900 xl:px-3 xl:text-sm",
                       "after:absolute after:inset-x-1.5 after:bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:bg-copper-500 after:transition-transform after:duration-300 hover:after:scale-x-100 xl:after:inset-x-3",
                       active && "after:scale-x-100",
                     )}
@@ -161,11 +161,11 @@ export function Navbar() {
                 <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-leaf-500 ring-2 ring-cream-50" />
               </button>
             ) : (
-              <Button variant="outline" size="sm" onClick={() => openLogin()} className="hidden h-10 border-cocoa-900/25 bg-cream-50 font-condensed text-[14px] uppercase tracking-[0.07em] lg:inline-flex xl:text-[15px]">
+              <Button variant="outline" size="sm" onClick={() => openLogin()} className="hidden h-10 border-cocoa-900/25 bg-cream-50 text-sm lg:inline-flex">
                 Login
               </Button>
             )}
-            <Button size="md" onClick={() => setOrderNowOpen(true)} className={cn("hidden h-10 px-4 uppercase tracking-[0.08em] sm:inline-flex xl:ml-1 xl:px-5", showChip && "lg:hidden")}>
+            <Button size="md" onClick={() => setOrderNowOpen(true)} className={cn("hidden h-10 px-4 sm:inline-flex xl:ml-1 xl:px-5", showChip && "lg:hidden")}>
               Order now
             </Button>
           </div>

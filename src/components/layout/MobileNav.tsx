@@ -41,7 +41,7 @@ export const MobileNav = memo(function MobileNav() {
               onClick={close}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex items-center justify-between border-b border-line py-3.5 font-condensed text-[1.375rem] font-semibold uppercase leading-none tracking-[0.06em] transition-colors",
+                "flex min-h-12 items-center justify-between border-b border-line font-display text-xl transition-colors",
                 active ? "text-copper-700" : "text-cocoa-900 hover:text-copper-700",
               )}
             >
@@ -72,7 +72,7 @@ export const MobileNav = memo(function MobileNav() {
             Log in / Sign up
           </Button>
         )}
-        <Button full size="lg" className="uppercase tracking-[0.08em]" onClick={() => setOrderNowOpen(true)}>
+        <Button full size="lg" onClick={() => setOrderNowOpen(true)}>
           Order now
         </Button>
       </div>

@@ -365,7 +365,7 @@ export function BulkOrderForm() {
           </Section>
 
           <div className="pt-2">
-            <Button type="submit" size="xl" full loading={loading} className="uppercase tracking-[0.1em]" rightIcon={<ArrowRight className="size-4" />}>
+            <Button type="submit" size="xl" full loading={loading} rightIcon={<ArrowRight className="size-4" />}>
               Request bulk order
             </Button>
             <p className="mt-3 text-center text-[13px] text-muted">No payment now. A coordinator confirms the menu, timing and final price with you first.</p>

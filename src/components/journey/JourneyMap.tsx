@@ -5,7 +5,7 @@ import { gsap } from "@/lib/gsap";
 import { clamp, cn, formatClock, prefersReducedMotion } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import type { EligibleStation } from "@/types";
-import { NetworkMap, SignLabel, layoutLabels, projectRoute, signWidth, toScreen } from "./NetworkMap";
+import { NetworkMap, StationLabel, labelWidth, layoutLabels, projectRoute, toScreen } from "./NetworkMap";
 import { TrainMarker, pathFractions, placeTrain } from "./TrainMarker";
 
 const availabilityLabel: Record<EligibleStation["availability"], string> = {
@@ -27,7 +27,7 @@ const TRAIN = 0.9; // marker px per glyph unit
 
 /**
  * Night-mode route map: the shared NetworkMap zoomed to the journey, with
- * signboard station labels and an isometric train that rides the drawn route
+ * clean station name pills and an isometric train that rides the drawn route
  * to whichever station is selected. Mapbox/Google can replace the SVG later;
  * the data shape stays the same.
  */
@@ -91,7 +91,7 @@ export function JourneyMap({
           const fs = size.w < 480 ? 10 : 11;
           const labels = layoutLabels(
             scr,
-            stops.map((s) => signWidth(s.station.name, fs)),
+            stops.map((s) => labelWidth(s.station.name, fs)),
             size,
           );
           const tip = hover !== null && stops[hover] ? { s: stops[hover], p: points[hover], at: scr[hover] } : null;
@@ -109,7 +109,7 @@ export function JourneyMap({
                   <g
                     key={s.station.code}
                     transform={`translate(${p.x} ${p.y})`}
-                    className={cn("group outline-none", selectable && "cursor-pointer", dim && "opacity-60")}
+                    className={cn("group outline-none", selectable && "cursor-pointer", dim && "opacity-75")}
                     onMouseEnter={() => setHover(i)}
                     onMouseLeave={() => setHover(null)}
                     onFocus={() => setHover(i)}
@@ -144,13 +144,14 @@ export function JourneyMap({
                       {selectable && !selected && <circle r="3" className="fill-copper-400" />}
                       {boarding && !selected && <circle r="3" className="fill-cocoa-950" />}
                       {selected && <path d="M-4 0 l3 3 l6 -6" fill="none" className="stroke-cream-50" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />}
-                      {/* invisible bridge between dot and board so the whole label is a target */}
+                      {/* invisible bridge between dot and label so the whole label is a target */}
                       <rect x={right ? 0 : -16} y="-12" width="16" height="24" fill="transparent" />
-                      <SignLabel text={s.station.name} x={lx} y={dy - 6} size={fs} anchor={right ? "start" : "end"} className={cn(dim && "opacity-70")} />
-                      {/* narrow maps keep only the boards; the station cards carry the timings */}
+                      <StationLabel text={s.station.name} x={lx} y={dy - 6} size={fs} anchor={right ? "start" : "end"} tone={selected ? "selected" : selectable ? "available" : boarding ? "default" : "muted"} />
+                      {/* narrow maps keep only the names; the station cards carry the timings */}
                       {size.w >= 480 && (
-                        <text x={lx} y={dy + 15} textAnchor={right ? "start" : "end"} fontSize={fs - 1} letterSpacing="0.1em" className={cn("pointer-events-none font-condensed font-bold uppercase", selectable || selected ? "fill-gold-300" : "fill-cream-50/60")}>
-                          {s.stop.arrival ? formatClock(s.stop.arrival) : "Boarding"} · {availabilityLabel[s.availability]}
+                        <text x={right ? lx + 4 : lx - 4} y={dy + 17} textAnchor={right ? "start" : "end"} fontSize={fs} className={cn("pointer-events-none font-sans font-medium", selectable || selected ? "fill-cream-50/85" : "fill-cream-50/60")}>
+                          {s.stop.arrival && `${formatClock(s.stop.arrival)} · `}
+                          {availabilityLabel[s.availability]}
                         </text>
                       )}
                     </g>
@@ -165,15 +166,16 @@ export function JourneyMap({
 
               {tip && (
                 <g transform={`translate(${tip.p.x} ${tip.p.y})`} className="pointer-events-none hidden [@media(hover:hover)]:block" role="tooltip">
-                  <g transform={`scale(${k}) translate(${clamp(tip.at.x, 112, size.w - 112) - tip.at.x - 104} ${tip.at.y > 136 ? -120 : 22})`}>
-                    <rect width="208" height="96" rx="10" className="fill-cocoa-900 stroke-copper-500/60" strokeWidth="1" />
-                    <text x="14" y="26" fontSize="13" className="font-sans font-bold fill-cream-50">
-                      {tip.s.station.name} <tspan className="fill-cream-50/50">({tip.s.station.code})</tspan>
+                  <g transform={`scale(${k}) translate(${clamp(tip.at.x, 128, size.w - 128) - tip.at.x - 120} ${tip.at.y > 136 ? -120 : 22})`}>
+                    <rect width="240" height="96" rx="14" className="fill-white" style={{ filter: "drop-shadow(0 10px 18px rgb(7 22 52 / 0.45))" }} />
+                    <text x="16" y="28" fontSize="14" className="font-sans font-bold fill-cocoa-900">
+                      {tip.s.station.name} <tspan className="font-semibold fill-muted">{tip.s.station.code}</tspan>
                     </text>
-                    <text x="14" y="50" fontSize="11" letterSpacing="0.08em" className="font-condensed font-semibold uppercase fill-cream-50/65">
+                    <text x="16" y="50" fontSize="11.5" className="font-sans font-medium fill-muted">
                       Arr {formatClock(tip.s.stop.arrival)} · Dep {formatClock(tip.s.stop.departure)} · Halt {tip.s.stop.halt ? `${tip.s.stop.halt} min` : "—"}
                     </text>
-                    <text x="14" y="76" fontSize="12" className={cn("font-sans font-bold", tip.s.availability === "available" ? "fill-leaf-300" : "fill-cream-50/60")}>
+                    <circle cx="20" cy="72" r="4" className={tip.s.availability === "available" ? "fill-leaf-500" : "fill-cocoa-300"} />
+                    <text x="31" y="76" fontSize="12" className={cn("font-sans font-semibold", tip.s.availability === "available" ? "fill-leaf-700" : "fill-muted")}>
                       {tip.s.availability === "available" ? `${tip.s.restaurantCount} kitchens ready` : availabilityLabel[tip.s.availability]}
                     </text>
                   </g>
@@ -184,14 +186,14 @@ export function JourneyMap({
         }}
       </NetworkMap>
 
-      <div className="pointer-events-none absolute bottom-3 left-3 hidden flex-wrap gap-1.5 sm:flex">
+      <ul aria-label="Map legend" className="pointer-events-none absolute bottom-3 left-3 hidden flex-wrap gap-x-4 gap-y-1 rounded-full border border-cream-50/10 bg-cocoa-950/70 px-3.5 py-1.5 sm:flex">
         {legend.map(([dot, text]) => (
-          <span key={text} className="led-panel led inline-flex items-center gap-1.5 rounded px-2 py-1 text-[10px]">
-            <span className={cn("size-1.5 rounded-full", dot)} />
+          <li key={text} className="inline-flex items-center gap-1.5 text-xs font-medium text-cream-50/80">
+            <span aria-hidden className={cn("size-2 rounded-full", dot)} />
             {text}
-          </span>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

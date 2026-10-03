@@ -35,7 +35,7 @@ export function StickyCartBar() {
             <ShoppingBag className="size-4" />
           </span>
           <span className="text-left">
-            <span className="block text-[12px] uppercase tracking-[0.14em] text-cream-50/60">
+            <span className="block text-[12px] text-cream-50/65">
               {count} item{count === 1 ? "" : "s"}
             </span>
             <span className="block text-sm font-bold">
@@ -43,7 +43,7 @@ export function StickyCartBar() {
             </span>
           </span>
         </span>
-        <span className="text-sm font-bold uppercase tracking-[0.08em] text-gold-300">View cart →</span>
+        <span className="text-sm font-bold text-gold-300">View cart →</span>
       </button>
     </div>
   );

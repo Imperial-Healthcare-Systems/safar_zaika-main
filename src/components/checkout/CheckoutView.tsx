@@ -326,7 +326,7 @@ function CheckoutForm({ placing, setPlacing }: { placing: boolean; setPlacing: (
               <AnimatedNumber value={totals.total} format={(n) => `₹${Math.round(n)}`} />
             </p>
           </div>
-          <Button size="lg" onClick={confirm} loading={placing} className="flex-1 uppercase tracking-[0.1em]">
+          <Button size="lg" onClick={confirm} loading={placing} className="flex-1">
             Confirm order
           </Button>
         </div>

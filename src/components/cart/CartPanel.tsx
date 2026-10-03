@@ -48,7 +48,7 @@ export function CartSummaryRows({ className }: { className?: string }) {
       </div>
       <div className="flex justify-between border-t border-line pt-3 text-base">
         <dt className="font-bold">To pay</dt>
-        <dd className="font-condensed text-2xl font-bold tabular-nums">
+        <dd className="font-display text-2xl tabular-nums">
           <AnimatedNumber value={totals.total} format={fmt} />
         </dd>
       </div>
@@ -66,23 +66,21 @@ export function DeliveringTo({ className, compact }: { className?: string; compa
   return (
     <div className={cn("rounded-2xl border border-line bg-cream-100 p-4", className)}>
       <p className="text-sm font-semibold text-muted">Delivering to</p>
-      <div className="mt-2 flex items-start gap-3">
-        <span className="signboard mt-1 shrink-0 text-[10px]">{station.code}</span>
-        <div className="min-w-0">
-          <p className="font-condensed text-xl font-bold text-cocoa-900">{station.name}</p>
-          {journey && (
-            <p className="text-[13px] text-muted">
-              {journey.trainNumber} {journey.trainName}
-              {selected?.stop.arrival && ` · arrives ${formatClock(selected.stop.arrival)}`}
-            </p>
-          )}
-          {!compact && passenger && (
-            <p className="mt-1 text-[13px] text-muted">
-              Coach <span className="font-semibold text-cocoa-800">{passenger.coach}</span> · Berth <span className="font-semibold text-cocoa-800">{passenger.berth}</span>
-            </p>
-          )}
-        </div>
-      </div>
+      <p className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-base font-bold text-cocoa-900">
+        {station.name}
+        <span className="tag bg-white">{station.code}</span>
+      </p>
+      {journey && (
+        <p className="mt-0.5 text-[13px] text-muted">
+          {journey.trainNumber} {journey.trainName}
+          {selected?.stop.arrival && ` · arrives ${formatClock(selected.stop.arrival)}`}
+        </p>
+      )}
+      {!compact && passenger && (
+        <p className="mt-1 text-[13px] text-muted">
+          Coach <span className="font-semibold text-cocoa-800">{passenger.coach}</span> · Berth <span className="font-semibold text-cocoa-800">{passenger.berth}</span>
+        </p>
+      )}
     </div>
   );
 }
@@ -131,7 +129,7 @@ export function CartPanel({ onNavigate, inDrawer }: { onNavigate?: () => void; i
                 <p className="truncate text-sm font-semibold text-cocoa-900">{dish.name}</p>
               </div>
               <Price value={dish.price * quantity} size="sm" className="mt-1" />
-              <button type="button" onClick={(e) => vanish(e.currentTarget.closest("li"), () => remove(dish.id))} className="mt-1 inline-flex min-h-8 items-center text-[12px] font-medium text-muted hover:text-chili-600">
+              <button type="button" onClick={(e) => vanish(e.currentTarget.closest("li"), () => remove(dish.id))} className="ml-3 mt-1 inline-flex min-h-8 items-center text-[12px] font-medium text-muted hover:text-chili-600">
                 Remove
               </button>
             </div>
@@ -159,7 +157,7 @@ export function CartPanel({ onNavigate, inDrawer }: { onNavigate?: () => void; i
       </div>
 
       <div className={cn("mt-4", inDrawer && "sticky bottom-0 bg-cream-50 pt-2")}>
-        <Button href="/checkout" full size="lg" onClick={onNavigate} rightIcon={<ArrowRight className="size-4" />} className="uppercase tracking-[0.08em]">
+        <Button href="/checkout" full size="lg" onClick={onNavigate} rightIcon={<ArrowRight className="size-4" />}>
           Proceed to checkout
         </Button>
       </div>

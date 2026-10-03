@@ -1,33 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { memo, useRef, useState, useSyncExternalStore } from "react";
-import { ScrollTrigger, useGSAP } from "@/lib/gsap";
-import { cn } from "@/lib/utils";
+import { useRef } from "react";
+import { Apple, Mail, Phone, Play } from "lucide-react";
+import { gsap } from "@/lib/gsap";
 import { Logo } from "@/components/ui";
-import { RouteLine } from "@/components/animations/RouteLine";
-import { SplitFlap } from "@/components/animations/SplitFlap";
-import { useIsMobile, useMediaQuery } from "@/hooks/useMediaQuery";
+import { useReveal } from "@/components/animations/Reveal";
+import { TrainIcon } from "@/components/animations/TrainIcon";
 import { toast } from "@/stores";
 
-/** The site map, read as a departures board. Times step like a timetable; platforms rotate 1-4. */
-const departures: ReadonlyArray<readonly [time: string, label: string, href: string]> = [
-  ["06:10", "Order Food", "/order"],
-  ["06:45", "Track Order", "/track-order"],
-  ["07:20", "Bulk Orders", "/bulk-order"],
-  ["07:55", "Offers", "/offers"],
-  ["08:30", "Stations", "/stations"],
-  ["09:05", "Restaurants", "/restaurants"],
-  ["09:40", "How It Works", "/how-it-works"],
-  ["10:15", "Help Center", "/help"],
-  ["10:50", "About", "/about"],
-  ["11:25", "Partner With Us", "/partner"],
-  ["12:00", "Careers", "/careers"],
-  ["12:35", "Terms", "/terms"],
-  ["13:10", "Privacy", "/privacy"],
-  ["13:45", "Refund Policy", "/refund"],
-  ["14:20", "Cancellation", "/cancellation"],
-  ["14:55", "Contact", "/contact"],
+/** The site map, grouped the way a visitor looks for things. */
+const groups: ReadonlyArray<{ title: string; links: ReadonlyArray<readonly [label: string, href: string]> }> = [
+  { title: "Order", links: [["Order food", "/order"], ["Track order", "/track-order"], ["Group order", "/bulk-order"], ["Offers", "/offers"]] },
+  { title: "Explore", links: [["Stations", "/stations"], ["Restaurants", "/restaurants"], ["Train tools", "/train-tools"], ["How it works", "/how-it-works"]] },
+  { title: "Support", links: [["Help centre", "/help"], ["Contact", "/contact"], ["Cancellation", "/cancellation"], ["Refunds", "/refund"]] },
+  { title: "Company", links: [["About", "/about"], ["Careers", "/careers"], ["Partner with us", "/partner"]] },
+  { title: "Legal", links: [["Privacy", "/privacy"], ["Terms", "/terms"]] },
 ];
 
 const socials = [
@@ -37,147 +25,115 @@ const socials = [
   { label: "YouTube", path: "M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3L10 15z" },
 ];
 
-// Board clock: HH:MM (24h) read from the wall clock in a store snapshot, so it is
-// never computed during render and the server markup stays "--:--".
-const subscribeClock = (cb: () => void) => {
-  const id = window.setInterval(cb, 15_000);
-  return () => window.clearInterval(id);
-};
-const readClock = () => new Date().toTimeString().slice(0, 5);
-const serverClock = () => "--:--";
+const stores = [
+  { name: "App Store", icon: Apple },
+  { name: "Google Play", icon: Play },
+];
 
-const ledHead = "led text-[10px] tracking-[0.18em] text-gold-400/75 sm:text-[11px]";
+const contact = "inline-flex min-h-10 items-center gap-2.5 text-[15px] text-cream-50/85";
 
-/** One departure row. memo: a hover re-renders the two rows whose `hot` changed, not all 16 boards. */
-const Row = memo(function Row({ i, time, label, href, hot, small, onHot }: { i: number; time: string; label: string; href: string; hot: boolean; small: boolean; onHot: (i: number | null) => void }) {
-  return (
-    <li>
-      <Link
-        href={href}
-        aria-label={label}
-        onMouseEnter={() => onHot(i)}
-        onMouseLeave={() => onHot(null)}
-        onFocus={() => onHot(i)}
-        onBlur={() => onHot(null)}
-        className="grid grid-cols-[1fr_2.25rem] items-center gap-x-3 rounded-md px-1 py-[7px] outline-none transition-colors hover:bg-cream-50/4 focus-visible:bg-cream-50/8 sm:grid-cols-[3.5rem_1fr_2.5rem_auto]"
-      >
-        <span className="led hidden text-[13px] tabular-nums sm:block">{time}</span>
-        <SplitFlap text={label} length={15} delay={i * 55} trigger={small && i >= 8 ? "static" : "view"} className="text-[13px] sm:text-[15px]" />
-        <span className="led text-center text-[13px]">{(i % 4) + 1}</span>
-        <SplitFlap text={hot ? "Boarding" : "On time"} length={8} delay={i * 55 + 220} className="hidden text-[13px] sm:inline-flex" cellClassName={hot ? "text-gold-400" : "text-leaf-300"} />
-      </Link>
-    </li>
-  );
-});
-
+/**
+ * Brand block, five plain link groups, bottom bar. The one flourish: the footer's top edge is a
+ * track, and a small train crosses it once when the footer scrolls into view, then stays parked
+ * (its CSS resting place, so reduced motion simply shows it parked).
+ */
 export function Footer() {
-  const ref = useRef<HTMLElement>(null);
-  const [progress, setProgress] = useState(0);
-  const [boarding, setBoarding] = useState<number | null>(null);
-  const isMobile = useIsMobile();
-  // Phones: the whole board is on screen at once, so only the first 8 rows flip; the rest show their text at once.
-  const small = useMediaQuery("(max-width: 639px)");
-  const clock = useSyncExternalStore(subscribeClock, readClock, serverClock);
+  const track = useRef<HTMLDivElement>(null);
 
-  useGSAP(
-    () => {
-      const st = ScrollTrigger.create({
-        trigger: ref.current,
-        start: "top 85%",
-        onEnter: () => setProgress(1),
-        onLeaveBack: () => setProgress(0),
-      });
-      return () => st.kill();
-    },
-    { scope: ref },
-  );
+  useReveal(track, (el) => {
+    const train = el.querySelector<HTMLElement>("[data-train]");
+    if (!train) return;
+    gsap.set(train, { autoAlpha: 0 });
+    // starts just off the left edge of the viewport
+    return () => gsap.fromTo(train, { x: -train.getBoundingClientRect().right, autoAlpha: 1 }, { x: 0, autoAlpha: 1, duration: 2.8, ease: "power2.inOut", clearProps: "transform,opacity,visibility" });
+  });
 
   return (
-    <footer ref={ref} className="relative mt-24 overflow-hidden gradient-cocoa text-cream-50">
-      <div aria-hidden className="absolute inset-0 map-grid-dark opacity-60" />
-      <div className="container-x relative pb-[calc(env(safe-area-inset-bottom)+9rem)] pt-16 sm:pt-20 md:pb-[calc(env(safe-area-inset-bottom)+5rem)] lg:pb-10">
-        {/* Station sign */}
-        <div className="flex flex-col items-center text-center">
-          <Logo variant="stacked-white" className="h-36 sm:h-44" />
-          <p className="mt-5 max-w-md text-[15px] leading-relaxed text-cream-50/65">Hot food from local kitchens, handed over at your seat.</p>
-        </div>
+    <footer className="relative mt-24 bg-cocoa-950 text-cream-50">
+      <div ref={track} aria-hidden className="pointer-events-none absolute inset-x-0 top-0 border-t-2 border-dashed border-cream-50/25">
+        <span data-train className="absolute bottom-full right-[8%] flex text-cocoa-900">
+          <TrainIcon className="h-4 sm:h-5" />
+        </span>
+      </div>
 
-        {/* Departures board */}
-        <div className="mt-12 overflow-hidden rounded-2xl border border-cream-50/10 bg-[#061129] shadow-[inset_0_0_48px_rgba(0,0,0,0.65)]">
-          <div className="led-panel flex items-center justify-between gap-4 border-x-0 border-t-0 px-4 py-2.5 sm:px-6">
-            <span className="led text-[11px] sm:text-xs">Departures</span>
-            <SplitFlap text={clock} length={5} speed={40} className="text-[15px] sm:text-base" />
-            <span className="led hidden text-[11px] sm:inline sm:text-xs">All services on time</span>
-            <span className="led text-[11px] sm:hidden">On time</span>
-          </div>
-
-          <div className="px-3 pb-3 pt-2 sm:px-6 sm:pb-5 sm:pt-3">
-            <div className="grid grid-cols-[1fr_2.25rem] items-center gap-x-3 px-1 py-1.5 sm:grid-cols-[3.5rem_1fr_2.5rem_auto]" aria-hidden>
-              <span className={cn(ledHead, "hidden sm:block")}>Time</span>
-              <span className={ledHead}>Destination</span>
-              <span className={cn(ledHead, "text-center")}>Pf</span>
-              <span className={cn(ledHead, "hidden text-right sm:block")}>Status</span>
+      <div className="container-x pb-[calc(env(safe-area-inset-bottom)+9rem)] pt-12 sm:pt-16 md:pb-[calc(env(safe-area-inset-bottom)+5rem)] lg:pb-10">
+        <div className="grid gap-10 xl:grid-cols-[19rem_1fr] xl:gap-20">
+          {/* Brand block */}
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between xl:flex-col xl:justify-start">
+            <div>
+              <Logo variant="stacked-white" className="h-24 sm:h-28" />
+              <p className="mt-5 max-w-xs text-[15px] leading-relaxed text-cream-50/70">Hot food from local kitchens, handed over at your train seat.</p>
+              <ul className="mt-3">
+                <li className={contact}>
+                  <Phone className="size-4 text-cream-50/50" aria-hidden />
+                  Helpline +91 98XXX XXXXX
+                </li>
+                <li>
+                  <a href="mailto:care@safarzaika.in" className={`${contact} decoration-copper-500 underline-offset-4 transition-colors hover:text-cream-50 hover:underline`}>
+                    <Mail className="size-4 text-cream-50/50" aria-hidden />
+                    care@safarzaika.in
+                  </a>
+                </li>
+              </ul>
             </div>
-
-            <ol className="divide-y divide-cream-50/6">
-              {departures.map(([time, label, href], i) => (
-                <Row key={href} i={i} time={time} label={label} href={href} hot={boarding === i} small={small} onHot={setBoarding} />
-              ))}
-            </ol>
-          </div>
-        </div>
-
-        <div className="mt-14">
-          <RouteLine
-            dark
-            labelSize={isMobile ? 30 : 17}
-            progress={progress}
-            stations={[{ label: "Mumbai Central" }, { label: "Vadodara" }, { label: "Kota" }, { label: "Jaipur" }, { label: "New Delhi" }]}
-          />
-        </div>
-
-        <div className="mt-10 flex flex-col gap-6 border-t border-cream-50/10 pt-8 md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-            <p className="text-[13px] text-cream-50/55">
-              Helpline <span className="text-cream-50/85">+91 98XXX XXXXX</span> ·{" "}
-              <a href="mailto:care@safarzaika.in" className="text-cream-50/85 transition-colors hover:text-gold-300">
-                care@safarzaika.in
-              </a>
-            </p>
-            <div className="flex items-center gap-1">
-              {socials.map((s) => (
-                <button
-                  key={s.label}
-                  type="button"
-                  aria-label={s.label}
-                  onClick={() => toast(`${s.label} page coming soon`)}
-                  className="inline-flex size-9 items-center justify-center rounded-full text-cream-50/70 transition-colors hover:bg-cream-50/10 hover:text-cream-50"
-                >
-                  <svg viewBox="0 0 24 24" className="size-[18px]" fill="currentColor" aria-hidden>
-                    <path d={s.path} />
-                  </svg>
-                </button>
-              ))}
+            <div className="flex flex-col gap-4 md:items-end xl:items-start">
+              <div className="-ml-2.5 flex items-center gap-1 md:ml-0 md:-mr-2.5 xl:-ml-2.5 xl:mr-0">
+                {socials.map((s) => (
+                  <button
+                    key={s.label}
+                    type="button"
+                    aria-label={s.label}
+                    onClick={() => toast(`${s.label} page coming soon`)}
+                    className="inline-flex size-10 items-center justify-center rounded-full text-cream-50/70 transition-colors hover:bg-cream-50/10 hover:text-cream-50"
+                  >
+                    <svg viewBox="0 0 24 24" className="size-[18px]" fill="currentColor" aria-hidden>
+                      <path d={s.path} />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {stores.map((store) => (
+                  <button
+                    key={store.name}
+                    type="button"
+                    onClick={() => toast({ title: `${store.name} app coming soon`, description: "The web app works great on your phone in the meantime." })}
+                    className="inline-flex h-12 items-center gap-2.5 rounded-xl border border-cream-50/15 bg-cream-50/6 px-3.5 text-left transition-colors hover:bg-cream-50/12"
+                  >
+                    <store.icon className="size-5 text-cream-50/80" aria-hidden />
+                    <span>
+                      <span className="block text-[11px] leading-tight text-cream-50/60">Coming soon on</span>
+                      <span className="block text-sm font-semibold leading-tight">{store.name}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-          <div className="flex flex-wrap gap-3">
-            {["App Store", "Google Play"].map((store) => (
-              <button
-                key={store}
-                type="button"
-                onClick={() => toast({ title: `${store} app coming soon`, description: "The web app works great on your phone in the meantime." })}
-                className="inline-flex h-11 items-center gap-3 rounded-xl border border-cream-50/15 bg-cream-50/6 px-4 text-left transition-colors hover:bg-cream-50/12"
-              >
-                <span className="inline-block size-5 rounded-md bg-cream-50/20" aria-hidden />
-                <span>
-                  <span className="block text-[10px] uppercase tracking-[0.14em] text-cream-50/60">Coming soon on</span>
-                  <span className="block text-[13px] font-semibold leading-tight">{store}</span>
-                </span>
-              </button>
+
+          {/* Link groups */}
+          <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 md:grid-cols-5">
+            {groups.map((g) => (
+              <nav key={g.title} aria-label={g.title}>
+                <h2 className="text-lg text-cream-50">{g.title}</h2>
+                <ul className="mt-2">
+                  {g.links.map(([label, href]) => (
+                    <li key={href}>
+                      <Link href={href} className="inline-flex min-h-10 items-center text-[15px] text-cream-50/70 decoration-copper-500 decoration-2 underline-offset-4 transition-colors hover:text-cream-50 hover:underline">
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             ))}
           </div>
         </div>
-        <p className="mt-6 text-[12px] text-cream-50/45">© 2026 Safar Zaika Food Private Limited. Prototype build, demo data only.</p>
+
+        <div className="mt-10 flex flex-col gap-1.5 border-t border-cream-50/10 pt-6 text-[13px] text-cream-50/55 sm:flex-row sm:justify-between sm:gap-6">
+          <p>© 2026 Safar Zaika Food Private Limited</p>
+          <p>Prototype build. Everything shown is demo data.</p>
+        </div>
       </div>
     </footer>
   );

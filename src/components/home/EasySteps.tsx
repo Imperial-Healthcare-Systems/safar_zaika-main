@@ -55,7 +55,7 @@ export function EasySteps() {
                 <li key={s.title} className="flex flex-col items-center text-center">
                   <span className="relative flex size-16 items-center justify-center rounded-full bg-rail-50 text-rail-600 ring-4 ring-cream-50 lg:size-[72px]">
                     <s.icon className="size-7" aria-hidden />
-                    <span aria-hidden className="absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full bg-cocoa-900 font-condensed text-[13px] font-bold text-cream-50">
+                    <span aria-hidden className="absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full bg-cocoa-900 text-xs font-bold text-cream-50">
                       {i + 1}
                     </span>
                   </span>

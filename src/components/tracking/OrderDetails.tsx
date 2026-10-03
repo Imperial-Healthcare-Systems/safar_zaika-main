@@ -2,7 +2,7 @@
 
 import { type ReactNode } from "react";
 import { Armchair, Headset, MapPin, Phone, RotateCcw, TrainFront, UserRound } from "lucide-react";
-import { Button, Price, VegDot } from "@/components/ui";
+import { Badge, Button, Price, VegDot } from "@/components/ui";
 import { paymentLabel } from "@/components/checkout/PaymentMethods";
 import { getStation } from "@/data/stations";
 import { cn, formatClock, formatDate, formatINR } from "@/lib/utils";
@@ -40,10 +40,15 @@ export function OrderDetails({ order, className }: { order: Order; className?: s
             {order.restaurantName}
           </h2>
         </div>
-        {/* Same board the kitchen sees on its slip. */}
-        <span className="signboard shrink-0" title={paid ? "Paid online" : "Cash on delivery, collected at your seat"}>
-          {paid ? "Prepaid" : "COD · Pay at seat"}
-        </span>
+        {/* Same split the kitchen sees on its slip. */}
+        <Badge
+          tone={cancelled ? "chili" : paid ? "leaf" : "copper"}
+          className="shrink-0 gap-1.5 normal-case tracking-normal"
+          title={cancelled ? "This order was cancelled" : paid ? "Paid online" : "Cash on delivery, collected at your seat"}
+        >
+          <span aria-hidden className="size-1.5 rounded-full bg-current" />
+          {cancelled ? "Cancelled" : paid ? "Paid online" : "Pay at your seat"}
+        </Badge>
       </div>
 
       <ul className="mt-4 divide-y divide-line">
@@ -80,7 +85,7 @@ export function OrderDetails({ order, className }: { order: Order; className?: s
       </dl>
 
       {!paid && !cancelled && (
-        <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-sign-600/40 bg-sign-400/25 px-4 py-3">
+        <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-copper-200 bg-copper-50 px-4 py-3">
           <div>
             <p className="text-sm font-semibold text-cocoa-900">Pay at delivery</p>
             <p className="text-[12px] text-muted">Cash or UPI to the partner at hand-over</p>

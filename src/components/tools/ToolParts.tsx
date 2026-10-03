@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useState, type KeyboardEvent, type ReactNode } from "react";
 import { AlertCircle, Info, Search } from "lucide-react";
-import { Button, Input } from "@/components/ui";
+import { Badge, Button, Input } from "@/components/ui";
 import { searchTrains } from "@/services";
 import { cn } from "@/lib/utils";
 import type { Train } from "@/types";
@@ -14,6 +14,16 @@ export function DemoNote({ children, dark, className }: { children: ReactNode; d
       <Info className={cn("mt-0.5 size-4 shrink-0", dark ? "text-gold-300" : "text-rail-500")} aria-hidden />
       <span>{children}</span>
     </p>
+  );
+}
+
+/** State pill: a coloured dot and a few sentence-case words. Green = fine, orange = needs attention, grey = neutral. */
+export function StatusPill({ tone, children }: { tone: "leaf" | "copper" | "cream"; children: ReactNode }) {
+  return (
+    <Badge tone={tone} className="shrink-0 gap-1.5 px-3 py-1.5 text-[13px] normal-case tracking-normal lg:text-[13px]">
+      <span aria-hidden className="size-2 rounded-full bg-current" />
+      {children}
+    </Badge>
   );
 }
 

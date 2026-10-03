@@ -8,7 +8,7 @@ import { getPnrStatus, PNR_REGEX } from "@/services";
 import { useJourneyStore } from "@/stores";
 import { cn, formatClock, formatDate } from "@/lib/utils";
 import type { PnrStatus } from "@/types";
-import { DemoNote, IdleHint, ToolError } from "./ToolParts";
+import { DemoNote, IdleHint, StatusPill, ToolError } from "./ToolParts";
 
 const DEMO_PNR = "1234567890";
 const STATUS_TONE = { CNF: "leaf", RAC: "gold", WL: "chili" } as const;
@@ -130,75 +130,70 @@ function TicketSkeleton() {
   );
 }
 
-/** Ticket-style result on navy stock, like the journey card: notched edges, condensed figures. */
+/** Ticket-shaped result on navy, like the journey card: train and chart status, the two ends with their times, the ticket facts, then the passengers. */
 function Ticket({ data, onOrder }: { data: PnrStatus; onOrder: () => void }) {
   const { journey, train, passengers, boardingStation, destinationStation, chartPrepared } = data;
   const pnr = journey.pnr ?? "";
   const days = train.stops[journey.destinationIndex].day - train.stops[journey.boardingIndex].day;
   return (
     <article className="ticket-edge relative overflow-hidden rounded-3xl bg-cocoa-900 text-cream-50" aria-label={`PNR status: ${train.number} ${train.name}`}>
-      <div aria-hidden className="absolute inset-0 map-grid-dark opacity-40" />
       <div className="relative grid gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:gap-8">
         <div>
-          <h2 className="font-condensed text-3xl font-bold tracking-normal sm:text-4xl">
-            <span className="text-gold-400">{train.number}</span> {train.name}
-          </h2>
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+            <h2 className="font-display text-2xl sm:text-3xl">
+              {train.number} {train.name}
+            </h2>
+            <StatusPill tone={chartPrepared ? "leaf" : "cream"}>{chartPrepared ? "Chart prepared" : "Chart not prepared"}</StatusPill>
+          </div>
 
-          <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+          <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-start gap-3">
             <div>
-              <p className="whitespace-nowrap font-condensed text-[1.75rem] font-bold leading-none tabular-nums sm:text-5xl">{formatClock(data.departure)}</p>
-              <p className="mt-2.5">
-                <span className="signboard text-[10px]">{boardingStation.code}</span>
+              <p className="whitespace-nowrap font-display text-[1.75rem] tabular-nums sm:text-[2.5rem]">{formatClock(data.departure)}</p>
+              <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold">
+                <span className="tag-dark">{boardingStation.code}</span>
+                {boardingStation.name}
               </p>
-              <p className="mt-1.5 text-sm font-semibold">{boardingStation.name}</p>
             </div>
-            <div className="flex items-center gap-1 px-1 sm:px-3" aria-hidden>
-              <span className="size-1.5 rounded-full bg-gold-400" />
-              <span className="h-px w-8 bg-cream-50/40 sm:w-24" />
+            <div className="flex items-center gap-1 px-1 pt-3 sm:px-3 sm:pt-5" aria-hidden>
+              <span className="size-1.5 rounded-full bg-cream-50/60" />
+              <span className="h-px w-8 bg-cream-50/30 sm:w-24" />
               <ArrowRight className="size-4 text-cream-50/60" />
             </div>
             <div className="text-right">
-              <p className="whitespace-nowrap font-condensed text-[1.75rem] font-bold leading-none tabular-nums sm:text-5xl">{formatClock(data.arrival)}</p>
-              <p className="mt-2.5">
-                {days > 0 && <span className="mr-2 font-condensed text-sm font-semibold text-cream-50/60">+{days} day</span>}
-                <span className="signboard text-[10px]">{destinationStation.code}</span>
+              <p className="whitespace-nowrap font-display text-[1.75rem] tabular-nums sm:text-[2.5rem]">{formatClock(data.arrival)}</p>
+              <p className="mt-2 flex flex-wrap items-center justify-end gap-x-2 gap-y-1 text-sm font-semibold">
+                {destinationStation.name}
+                <span className="tag-dark">{destinationStation.code}</span>
               </p>
-              <p className="mt-1.5 text-sm font-semibold">{destinationStation.name}</p>
+              {days > 0 && <p className="mt-1 text-xs font-medium text-cream-50/65">+{days} day</p>}
             </div>
           </div>
 
-          <dl className="mt-7 flex flex-wrap items-end gap-x-8 gap-y-4 font-condensed">
+          <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-3 border-t border-cream-50/10 pt-5">
             <Field label="PNR" value={`${pnr.slice(0, 3)} ••• ${pnr.slice(-3)}`} />
             <Field label="Date of journey" value={formatDate(journey.date)} />
             <Field label="Class" value={journey.travelClass} />
           </dl>
-
-          <p className="led-panel mt-6 inline-flex items-center gap-2.5 rounded-lg px-3.5 py-2">
-            <span aria-hidden className={cn("size-2 rounded-full", chartPrepared ? "bg-leaf-300" : "animate-blink bg-gold-400")} />
-            <span className={cn("led text-sm sm:text-base", chartPrepared && "[color:#9fe870] [text-shadow:0_0_6px_rgb(120_220_80/0.8),0_0_16px_rgb(80_200_40/0.4)]")}>{chartPrepared ? "Chart prepared" : "Chart not prepared"}</span>
-          </p>
         </div>
 
         <div className="border-t border-dashed border-cream-50/20 pt-5 lg:min-w-80 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
-          <p className="text-sm font-semibold text-cream-50/60">Passengers</p>
+          <p className="text-sm font-semibold text-cream-50/65">Passengers</p>
           <ul className="mt-3 space-y-2">
             {passengers.map((p) => (
-              <li key={p.coach + p.berth} className="flex items-center gap-3 rounded-xl bg-cream-50/6 px-3 py-2.5">
-                <span aria-hidden className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-cream-50/10 text-cream-50/80">
+              <li key={p.coach + p.berth} className="panel-dark flex items-center gap-3 px-3 py-2.5">
+                <span aria-hidden className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-cream-50/10 text-cream-50/85">
                   <UserRound className="size-4" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold tracking-wide">{p.name}</p>
-                  <p className="text-xs text-cream-50/60">{p.berthType} berth</p>
+                  <p className="truncate text-sm font-semibold">{p.name}</p>
+                  <p className="text-xs text-cream-50/65">{p.berthType} berth</p>
                 </div>
-                <p className="font-condensed text-2xl font-bold leading-none text-gold-300">
+                <p className="text-base font-bold leading-tight tabular-nums">
                   <span className="sr-only">
                     Coach {p.coach}, berth {p.berth}
                   </span>
                   <span aria-hidden>
-                    {p.coach}
-                    <span className="text-cream-50/40">/</span>
-                    {p.berth}
+                    {p.coach} / {p.berth}
                   </span>
                 </p>
                 <Badge tone={STATUS_TONE[p.status]} title={STATUS_TEXT[p.status]}>
@@ -207,7 +202,7 @@ function Ticket({ data, onOrder }: { data: PnrStatus; onOrder: () => void }) {
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-xs text-cream-50/55">Names are masked. Coach / berth as on the demo ticket.</p>
+          <p className="mt-3 text-xs text-cream-50/65">Names are masked. Coach / berth as on the demo ticket.</p>
         </div>
       </div>
 
@@ -221,12 +216,12 @@ function Ticket({ data, onOrder }: { data: PnrStatus; onOrder: () => void }) {
   );
 }
 
-/** Value on top, small label under it, like the printed fields on a ticket. */
+/** Small sentence-case label over its value. */
 function Field({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col-reverse">
-      <dt className="mt-1 font-sans text-xs text-cream-50/55">{label}</dt>
-      <dd className="text-xl font-bold leading-none">{value}</dd>
+    <div>
+      <dt className="text-xs text-cream-50/65">{label}</dt>
+      <dd className="mt-0.5 text-base font-bold leading-tight">{value}</dd>
     </div>
   );
 }

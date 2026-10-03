@@ -31,9 +31,6 @@ interface UIState {
   setWelcomeOpen: (open: boolean) => void;
   toast: (t: ToastInput) => void;
   dismissToast: (id: number) => void;
-  /** first-load intro finished (or skipped); the hero waits for it before animating */
-  introDone: boolean;
-  setIntroDone: () => void;
   /** close every overlay — called on route change */
   closeAll: () => void;
 }
@@ -49,8 +46,6 @@ export const useUIStore = create<UIState>()((set) => ({
   mobileNavOpen: false,
   welcomeOpen: false,
   toasts: [],
-  introDone: false,
-  setIntroDone: () => set({ introDone: true }),
   openLogin: (next) => set({ loginOpen: true, loginNext: next ?? null, mobileNavOpen: false, orderNowOpen: false, welcomeOpen: false }),
   closeLogin: () => set({ loginOpen: false, loginNext: null }),
   setOrderNowOpen: (open) => set({ orderNowOpen: open, mobileNavOpen: false, welcomeOpen: false }),

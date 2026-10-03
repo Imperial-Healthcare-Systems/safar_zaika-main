@@ -51,7 +51,7 @@ export function OfferCard({ offer, className }: { offer: Offer; className?: stri
         </span>
         {offer.expires && <span className="text-xs font-semibold text-muted">Till {new Date(offer.expires).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>}
       </div>
-      <h3 className="mt-3 text-2xl uppercase text-cocoa-900">{card?.headline ?? offer.title}</h3>
+      <h3 className="mt-3 text-2xl text-cocoa-900">{card?.headline ?? offer.title}</h3>
       <p className="mt-1.5 text-[13px] leading-snug text-muted">{card?.terms ?? offer.description}</p>
       <div className="mt-auto pt-4 [perspective:600px]">
         <button
@@ -63,7 +63,7 @@ export function OfferCard({ offer, className }: { offer: Offer; className?: stri
           <span ref={codeRef} className={cn("inline-block font-mono text-sm font-bold tracking-[0.18em]", revealed ? "text-rail-700" : "text-cocoa-900/35")}>
             {revealed ? offer.code : offer.code.replace(/./g, "•")}
           </span>
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-copper-700 max-lg:text-xs">
+          <span className="inline-flex items-center gap-1 text-xs font-bold text-copper-700">
             {revealed ? (
               <>
                 <Copy className="size-3.5" aria-hidden /> Copy

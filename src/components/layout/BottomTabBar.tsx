@@ -9,7 +9,7 @@ import { selectCartCount, useAuthStore, useCartStore, useUIStore } from "@/store
 
 const tab = (active: boolean) =>
   cn(
-    "relative flex h-14 flex-1 flex-col items-center justify-center gap-0.5 font-condensed text-[12px] font-semibold uppercase tracking-[0.08em] transition-colors",
+    "relative flex h-14 flex-1 flex-col items-center justify-center gap-0.5 text-xs font-semibold transition-colors",
     active ? "text-copper-700 before:absolute before:top-0 before:h-[3px] before:w-9 before:rounded-b-full before:bg-copper-500" : "text-cocoa-800",
   );
 
@@ -42,7 +42,7 @@ export function BottomTabBar() {
         <span className="relative">
           <ShoppingBag className="size-5" aria-hidden />
           {hydrated && count > 0 && (
-            <span className="absolute -right-3 -top-1.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-copper-500 px-1 font-sans text-[10.5px] font-bold leading-none tracking-normal text-cream-50 ring-2 ring-cream-50">
+            <span className="absolute -right-3 -top-1.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-copper-500 px-1 text-[10.5px] font-bold leading-none text-cream-50 ring-2 ring-cream-50">
               {count}
             </span>
           )}

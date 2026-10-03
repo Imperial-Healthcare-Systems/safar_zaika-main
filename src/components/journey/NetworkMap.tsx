@@ -268,13 +268,13 @@ export function NetworkMap({ mode = "full", fit, fitPad, route, routePathRef, dr
   );
 }
 
-/** Estimated pixel width of a SignLabel. */
-// ponytail: per-character estimate for Barlow Condensed Bold; measure with getComputedTextLength if boards ever get long free text.
-export const signWidth = (text: string, size = 11) => Math.round(text.length * size * 0.56 + size * 1.4);
+/** Estimated pixel width of a StationLabel. */
+// ponytail: per-character estimate for Barlow SemiBold; measure with getComputedTextLength if labels ever get long free text.
+export const labelWidth = (text: string, size = 11) => Math.round(text.length * size * 0.54 + size * 1.7);
 
 /**
- * Side and vertical nudge for each station board: alternate sides along the
- * route, flip a board that would clip the edge, and push boards that would
+ * Side and vertical nudge for each station label: alternate sides along the
+ * route, flip a label that would clip the edge, and push labels that would
  * stack on a same-side neighbour down a row.
  */
 export function layoutLabels(scr: Point[], widths: number[], size: Size, gap = 16): { right: boolean; dy: number }[] {
@@ -285,25 +285,35 @@ export function layoutLabels(scr: Point[], widths: number[], size: Size, gap = 1
     else if (!right && p.x - gap - widths[i] < 4) right = true;
     let dy = 0;
     for (let j = 0; j < i; j++) {
-      if (out[j].right === right && Math.abs(p.x - scr[j].x) < 160 && Math.abs(p.y + dy - (scr[j].y + out[j].dy)) < 36) dy += 36;
+      // vertical gap to a same-side neighbour's label; closer than a row = move a full row away, on the side this station already sits
+      const gapY = p.y + dy - (scr[j].y + out[j].dy);
+      if (out[j].right === right && Math.abs(p.x - scr[j].x) < 160 && Math.abs(gapY) < 36) dy += (gapY < 0 ? -36 : 36) - gapY;
     }
     out.push({ right, dy });
   });
   return out;
 }
 
-/** Station name board drawn in SVG (same look as the `signboard` utility). Width is estimated from the text. */
-export function SignLabel({ text, x = 0, y = 0, anchor = "start", size = 11, className }: { text: string; x?: number; y?: number; anchor?: "start" | "middle" | "end"; size?: number; className?: string }) {
-  const t = text.toUpperCase();
-  const w = signWidth(t, size);
-  const h = Math.round(size * 1.9);
+export type StationLabelTone = "default" | "available" | "selected" | "muted";
+
+const labelTones: Record<StationLabelTone, { pill: string; text: string }> = {
+  default: { pill: "fill-white", text: "fill-cocoa-900" },
+  available: { pill: "fill-white", text: "fill-rail-600" },
+  selected: { pill: "fill-leaf-500", text: "fill-white" },
+  muted: { pill: "fill-cocoa-800 stroke-cream-50/15", text: "fill-cream-50/80" },
+};
+
+/** Station name pill drawn in SVG: white on the night map, blue text where food can be ordered, green when selected, navy when out of reach. Width is estimated from the text. */
+export function StationLabel({ text, x = 0, y = 0, anchor = "start", size = 11, tone = "default", className }: { text: string; x?: number; y?: number; anchor?: "start" | "middle" | "end"; size?: number; tone?: StationLabelTone; className?: string }) {
+  const w = labelWidth(text, size);
+  const h = Math.round(size * 2);
   const left = anchor === "start" ? x : anchor === "end" ? x - w : x - w / 2;
+  const t = labelTones[tone];
   return (
     <g transform={`translate(${left} ${y - h / 2})`} className={className}>
-      <rect width={w} height={h} rx="3" className="fill-sign-500" stroke="#1a1208" strokeWidth="2" />
-      <rect x="3" y="3" width={w - 6} height={h - 6} rx="1" fill="none" stroke="#1a1208" strokeWidth="1" />
-      <text x={w / 2} y={h / 2 + 0.5} textAnchor="middle" dominantBaseline="central" className="font-condensed font-bold" fill="#1a1208" fontSize={size} letterSpacing="0.1em">
-        {t}
+      <rect width={w} height={h} rx={h / 2} strokeWidth="1" className={cn("transition-[fill] duration-300", t.pill)} style={{ filter: "drop-shadow(0 2px 4px rgb(7 22 52 / 0.35))" }} />
+      <text x={w / 2} y={h / 2 + 0.5} textAnchor="middle" dominantBaseline="central" className={cn("font-sans font-semibold transition-[fill] duration-300", t.text)} fontSize={size}>
+        {text}
       </text>
     </g>
   );

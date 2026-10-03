@@ -29,7 +29,7 @@ Also: `/train-tools` (PNR status, train schedule, simulated live status), `/orde
 
 ## Brand rules (from the client, 1 Oct 2026)
 
-- Logo usage (`Logo` component): the navbar is solid white on every page and carries the colour lockup; the white stacked lockup sits centred in the navy footer and on the loading curtain; the cream-plate masters (`public/brand/safar-zaika-*.png`) are used in the welcome popup, login page and placing overlay. The lockup already carries the wordmark, so the company name is never repeated next to it. Never recreated or recoloured.
+- Logo usage (`Logo` component): the navbar is solid white on every page and carries the colour lockup; the white stacked lockup sits in the navy footer's brand block; the cream-plate masters (`public/brand/safar-zaika-*.png`) are used in the welcome popup, login page and placing overlay. The lockup already carries the wordmark, so the company name is never repeated next to it. Never recreated or recoloured.
 - Nothing in the UI names a specific train or halt unless the visitor entered that journey: the hero board cycles meal windows until a PNR is loaded, then the real halts; the navbar journey chip only appears for the journey entered in this browser session (the journey store is session-scoped).
 - No eyebrow / kicker text above headings anywhere. Every heading stands alone with at most one supporting line.
 - No italic accent words, no gradient text. One solid copper or gold word at most.
@@ -38,7 +38,7 @@ Also: `/train-tools` (PNR status, train schedule, simulated live status), `/orde
 
 ## Layout direction (4 Oct 2026)
 
-The client asked for a blend of the direct competitor (railrecipe.com: functional, search-first, familiar) and our own blue design. What was taken from the competitor is structure only: a white navbar with the same link set, a centred hero with a three-tab search card, a four-step strip, a train-tools grid, coupon-style offers, a "why choose" row, a group-order box, a recent-orders ticker, an ordering guide, and a bottom tab bar on phones. What stays ours: the 3D train scene, split-flap and LED boards, the journey map and discovery sequence, the dish and kitchen rails, the palette and type.
+The client asked for a blend of the direct competitor (railrecipe.com: functional, search-first, familiar) and our own blue design. What was taken from the competitor is structure only: a white navbar with the same link set, a centred hero with a three-tab search card, a four-step strip, a train-tools grid, coupon-style offers, a "why choose" row, a group-order box, a recent-orders ticker, an ordering guide, and a bottom tab bar on phones. What stays ours: the 3D train scene, the journey map and discovery sequence, the dish and kitchen rails, the palette and type.
 Two things were deliberately not copied: authorisation or certification claims (none are made until approvals exist) and named customers in the recent-orders feed (ours shows coach, dish and station, tagged as sample activity).
 The previous version is preserved as git tag `backup-blue-v1` and branch `backup/blue-v1`.
 
@@ -47,8 +47,8 @@ The previous version is preserved as git tag `backup-blue-v1` and branch `backup
 | Library | Used for | Notes |
 | --- | --- | --- |
 | Next.js 16 (App Router, Turbopack), React 19, TypeScript strict | App | Server pages export metadata; interactivity lives in client components |
-| Tailwind CSS v4 | Styling, design tokens | All tokens in `src/app/globals.css` (`@theme`), custom utilities (`container-x`, `signboard`, `led`, `led-panel`, `flap-cell`, `glass`, `gradient-*`, `map-grid`, `ticket-edge`); carousel CSS in `src/app/carousels.css` |
-| GSAP 3 + ScrollTrigger + MotionPathPlugin + SplitText + `@gsap/react` | Every animation: hero line reveal (SplitText), section entrances (`Reveal` variants: rise, slide, zoom, flip, tilt, clip, letters; no two neighbouring home sections share one), pinned horizontal "How it works" with the active card centred, route-line trains, the PNR discovery camera, fly-to-cart, modals, page wipe, split-flap boards, scroll skew | Registered once in `src/lib/gsap.ts`; `useGSAP` handles cleanup |
+| Tailwind CSS v4 | Styling, design tokens | All tokens in `src/app/globals.css` (`@theme`), custom utilities (`container-x`, `tag`, `tag-dark`, `panel-dark`, `glass`, `gradient-*`, `map-grid`, `ticket-edge`); carousel CSS in `src/app/carousels.css` |
+| GSAP 3 + ScrollTrigger + MotionPathPlugin + SplitText + `@gsap/react` | Every animation: hero line reveal (SplitText), section entrances (`Reveal` variants: rise, slide, zoom, flip, tilt, clip, letters; no two neighbouring home sections share one), pinned horizontal "How it works" with the active card centred, route-line trains, the PNR discovery camera, fly-to-cart, modals, scroll skew | Registered once in `src/lib/gsap.ts`; `useGSAP` handles cleanup |
 | Lenis | Smooth scrolling | Single instance in `src/components/providers/SmoothScroll.tsx` (lerp 0.08, native touch) ticked by `gsap.ticker` with `lagSmoothing(0)` and `ScrollTrigger.update`; `useScrollSkew` reads Lenis velocity to skew carousels; disabled for reduced motion; modals call `lockScroll()`; carousels mark `data-lenis-prevent-horizontal` |
 | Swiper 14 | Categories (endless crawl), dishes (autoplay), restaurants (endless crawl), offers (autoplay), menu "Popular" row | Every instance: Navigation arrows (`CarouselArrows`), Mousewheel with axis split, Keyboard, A11y; every home carousel moves on its own and pauses on hover; a drag guard (`useDragGuard`) means a drag never click-throughs |
 | react-slick + slick-carousel | Testimonials only | Slick's `centerMode` + `centerPadding` + autoplay with custom dots is the classic quote-carousel pattern and needs no extra code; Swiper stays the engine everywhere else so two engines never compete on one page |
@@ -64,7 +64,7 @@ Deliberately **not** installed: **styled-components** (Tailwind tokens cover eve
 src/
   app/                  routes (server page.tsx + metadata; client views in components/), globals.css, carousels.css, opengraph-image
   components/
-    layout/             Navbar (solid white, competitor-style link row, scroll hairline, journey chip), BottomTabBar (mobile: Home, Tools, Cart, Offers, Account), MobileNav, Footer (departures board), PageHeader, PageTransition, IntroLoader
+    layout/             Navbar (solid white, sentence-case links, scroll hairline, journey chip), BottomTabBar (mobile: Home, Tools, Cart, Offers, Account), MobileNav, Footer (brand block + five link groups, one train crossing the top edge), PageHeader
     hero/               Hero (centred headline over the navy 3D band, reassurance chips, journey-aware LED line), HeroServices (service switcher: Order food = the three-tab search card, Train status = hand-off to /train-tools?tool=live-status&train=…, Hotels = a labelled coming-soon preview), HeroScene + scene/ (Train, Track, Backdrop, geometry, textures)
     pnr/                PnrModule (PNR / train / station modes; `variant="search"` is the wide hero card), PnrLoading (fullscreen discovery overlay), OrderView
     journey/            NetworkMap (shared camera map), JourneyMap, TrainMarker (isometric train), JourneyCard (ticket), StationCard, JourneyStatus, JourneyView
@@ -83,7 +83,7 @@ src/
                         StationCoverage, LiveJourney, RecentOrders (sample-activity ticker, no names), HomeGuide (ordering guide accordions), CtaBand;
                         HowItWorks (pinned steps) and FoodJourney live on /how-it-works
     tools/              TrainToolsView + PnrStatusTool, ScheduleTool, LiveStatusTool (mock data, labelled as demo)
-    animations/         SplitFlap (departure-board text), RouteLine, TrainIcon, Reveal, Magnetic, AnimatedNumber
+    animations/         RouteLine, TrainIcon, Reveal, Magnetic, AnimatedNumber
     providers/          Providers (stores rehydrate, global modals, toaster), SmoothScroll (Lenis+GSAP)
     ui/                 Button, Input/Textarea/Select, Card, Badge/VegDot/Rating/Price, Modal (native <dialog>), Tabs/Chip,
                         Skeleton, Toaster, Accordion, SectionHeading, Logo, CarouselArrows (+ SwiperProgress)
@@ -111,22 +111,19 @@ Railway blue with a single orange action colour (client direction, 3 Oct 2026; t
 | `line` / `muted` | `#d8e5f7` / `#5b7395` | borders, secondary text |
 | `leaf-500` | `#2f9e5f` | veg dot, success |
 | `chili-500` | `#e04434` | errors |
-| `sign-500` | `#f5c542` | Indian Railways station-board yellow (signboard chips) |
 
 The supplied logo is used exactly as delivered (warm brown on its cream plate): the colour lockup on white surfaces, the white lockup on navy. It is never recoloured.
 
-Type: the logo's tagline is set in Bahnschrift, a DIN-style railway signage face, so the whole UI uses the **Barlow** superfamily: Barlow Semi Condensed 800 for display (`h1`–`h3`, `.font-display`), Barlow for UI (`font-sans`), Barlow Condensed for boards (`font-condensed`). Railway devices: `signboard` (yellow station board with black frame), `led` + `led-panel` (dot-matrix coach indicator), `flap-cell` + `SplitFlap` (split-flap departures board), `ticket-edge` notches, route lines and the train glyph.
+Type: the logo's tagline is set in Bahnschrift, a DIN-style face, so the UI uses its closest open relative, **Barlow**: Barlow Semi Condensed 800 for display (`h1`–`h3`, `.font-display`) and Barlow for UI (`font-sans`). The visual language is a clean food app (client direction, 5 Oct 2026): white cards with soft navy shadows, sentence-case copy, status pills with a coloured dot, plain bold figures, `tag` / `tag-dark` labels for codes and small facts, `panel-dark` cards on navy. The earlier departure-board devices (flip cells, LED panels, yellow station-board chips) were removed everywhere at the client's request; do not reintroduce them.
 
 ## Signature interactions
 
-- **PNR discovery** (`PnrLoading`): a tilted, slowly rotating network map with a radar sweep while the railway is "contacted"; on success the camera flies to the route, the route draws station by station with signboard labels, the train runs it, a ticket stamps "JOURNEY FOUND" and the app moves to `/journey`. Errors flash and hand the exact service message back to the form. Works from the hero, the welcome popup, the CTA band and `/order` because it is a top-layer `<dialog>`.
-- **Journey map** (`JourneyMap` on `NetworkMap`): night-mode network, glowing copper route with marching dashes, signboard station labels, radar rings on the selected halt, an isometric train marker that rides to whatever you pick. In train mode the PNR card's mini map pans to the route as you type.
-- **Departures-board footer**: the site map as a split-flap board with a live clock; rows flip from ON TIME to BOARDING on hover and are real links.
-- **Split-flap boards** (`SplitFlap`): hero "next halt" readout, stats band figures, How-it-works stop readout, station coverage readout, journey-found stamp.
+- **PNR discovery** (`PnrLoading`): a tilted, slowly rotating network map with a soft scan while the railway is "contacted" (status shown as a plain pill with a spinner); on success the camera flies to the route, the route draws station by station with clean pill labels, the train runs it, a "Journey found" card appears and the app moves to `/journey`. Errors flash and hand the exact service message back to the form. Works from the hero, the welcome popup, the CTA band and `/order` because it is a top-layer `<dialog>`.
+- **Journey map** (`JourneyMap` on `NetworkMap`): night-mode network, glowing copper route with marching dashes, clean pill station labels, radar rings on the selected halt, an isometric train marker that rides to whatever you pick. In train mode the PNR card's mini map pans to the route as you type.
 - **3D hero train** (`HeroScene`): a double-ended trainset (two lofted bullet-nose driving cars + two coaches) in the Safar Zaika livery with wraparound windscreens, lit window bands, clearcoat body under a procedural dusk environment map, sway and bob, headlight bloom and red tail lamps, on real rails with sleepers, ballast, canopied platforms, lamps and a colour-light signal; ~59 draw calls / ~38k triangles; a 2.5 s camera push-in on load.
 - **Meal windows** (`MealTimes`, hero tiles): breakfast, lunch, dinner and chai panels; the active one follows the scheduled arrival (or the clock) and links to `/restaurants?meal=…`, which filters kitchens by the dishes they serve in that window.
 - **Carousels**: arrows + wheel + keyboard everywhere, endless category and restaurant crawls, dish and offer autoplay, Slick testimonials, Lenis-velocity skew and heading parallax, drag guard.
-- **Loading and transitions**: a cocoa curtain carries the stacked logo over a platform track that one full train crosses, used for the first-load intro (the page then soft-lands, scaling and fading in) and for every client-side route change. Sections themselves enter with their own restrained reveals, no banner wipes.
+- **No loading curtain**: pages open directly (the first-load intro and the page-change curtain were removed at the client's request). Sections enter with their own restrained reveals.
 
 ## Operating model reflected in the UI (from the client MOM)
 
@@ -137,7 +134,7 @@ Type: the logo's tagline is set in Bahnschrift, a DIN-style railway signage face
 | Vendor Live / Unavailable by date, day, time slot | `Restaurant.live`, `pausedReason`, `serviceWindows`, `closedDays`; `getRestaurantAvailability` evaluated at the scheduled arrival (`useDeliveryMoment`); pills, "Open at arrival" filter, menu banner, eligible-station counts |
 | Menu items with day/time availability | `Dish.availableWindows`, FoodCard chip + disabled Add outside the window |
 | Prices already include the markup; margins never shown | Prices are selling prices in `data/menu.ts`; no vendor base price anywhere |
-| Prepaid vs COD, vendor must see which | PaymentMethods grouped "Pay now" / "Pay at delivery", PREPAID / COD signboard on summary and tracking, `payment.status` |
+| Prepaid vs COD, vendor must see which | PaymentMethods grouped "Pay now" / "Pay at delivery", "Pay online" / "Pay at your seat" pill on summary and tracking, `payment.status` |
 | Order flow: received → confirmed → pushed to vendor → prepared → delivered | `orderStatusSteps` labels and the tracking LED |
 | Cancellation with mandatory reason | Cancel panel on tracking (only while received/confirmed), `CANCEL_REASONS`, `cancelMockOrder` |
 | Reminders for long routes, subject to consent | Reminder switch on `/journey` (persisted, consent copy) |
@@ -175,18 +172,18 @@ Payment: `CheckoutView` only collects a method; wire the gateway SDK behind "Con
 ## Performance notes
 
 - `next/image` with explicit `sizes` everywhere; AVIF/WebP enabled.
-- Scroll work is kept off the main thread: the navbar changes state only when it crosses the threshold, carousel crawls skip Swiper's per-tick relayout, split-flap boards share one 60 ms ticker and never spin off screen, route-line and map loops pause when out of view, and the hero's R3F canvas does not re-measure on scroll (`resize={{ scroll: false }}`).
+- Scroll work is kept off the main thread: the navbar changes state only when it crosses the threshold, carousel crawls skip Swiper's per-tick relayout, route-line and map loops pause when out of view, and the hero's R3F canvas does not re-measure on scroll (`resize={{ scroll: false }}`).
 - Three.js/R3F loaded via `dynamic(..., { ssr: false })` only on the home hero, md+ with WebGL; `dpr` capped at 1.5; instanced sleepers and wheels; geometries, materials and textures disposed on unmount; no per-frame allocations.
 - GSAP plugins registered once; animations live inside `useGSAP` (auto cleanup) or are killed on unmount; ScrollTrigger refreshes after route changes.
 - Lenis uses native scroll (no transform wrapper), so sticky/pinned elements and `next/link` scrolling behave normally.
-- `SplitFlap`, `RouteLine`, `NetworkMap` and `AnimatedNumber` write to the DOM per frame instead of re-rendering React; the footer board is capped at 16 rows.
+- `RouteLine`, `NetworkMap` and `AnimatedNumber` write to the DOM per frame instead of re-rendering React.
 - Zustand selectors return stable references (`selectCartTotals` is memoised); persisted stores skip SSR hydration.
 
 ## Accessibility notes
 
 - Native `<dialog>` for every modal, drawer, sheet and the PNR overlay (focus trap, Esc, top layer); native `<details>` accordions; labelled inputs with `aria-invalid`/`aria-describedby`; icon buttons have `aria-label`s; skip link; visible focus rings; one `h1` per page.
-- `prefers-reduced-motion`: Lenis off, hero/reveals/transitions skipped, tickers and autoplay off, split-flap text settles instantly, the PNR overlay jumps to the result.
-- Map stations are keyboard-focusable buttons with tooltips on focus; carousel arrows stay in the DOM for keyboard users even where they are visually hidden on touch; `SplitFlap` exposes its text via `role="img"` + `aria-label`.
+- `prefers-reduced-motion`: Lenis off, hero/reveals/transitions skipped, tickers and autoplay off, the PNR overlay jumps to the result.
+- Map stations are keyboard-focusable buttons with tooltips on focus; carousel arrows stay in the DOM for keyboard users even where they are visually hidden on touch.
 
 ## Known limitations
 
