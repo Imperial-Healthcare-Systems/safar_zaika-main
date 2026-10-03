@@ -138,12 +138,12 @@
   body {
     @apply bg-cream-50 text-cocoa-900 font-sans antialiased;
   }
-  /* Headings: one voice. Heavy, tight, no italics, no gradients. */
+  /* Headings: one voice. 700 not 800 — the heavier cut read as shouty (client, 3 Oct 2026). */
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
-    font-weight: 800;
-    letter-spacing: -0.012em;
-    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    line-height: 1.04;
   }
   ::selection {
     background: var(--color-cream-300);

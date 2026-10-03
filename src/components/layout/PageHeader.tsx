@@ -29,7 +29,7 @@ export function PageHeader({
       <div className="container-x relative">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-3xl">
-            <h1 className={cn("text-balance font-display leading-[0.95]", compact ? "text-[2.5rem] sm:text-5xl lg:text-6xl" : "text-[2.75rem] sm:text-6xl lg:text-7xl")}>{title}</h1>
+            <h1 className={cn("text-balance font-display leading-[1.02]", compact ? "text-[2.25rem] sm:text-[2.75rem] lg:text-5xl" : "text-[2.5rem] sm:text-5xl lg:text-6xl")}>{title}</h1>
             {description && <p className={cn("mt-4 max-w-2xl text-pretty text-base leading-relaxed sm:text-lg", dark ? "text-cream-50/70" : "text-muted")}>{description}</p>}
           </div>
           {actions && <div className="flex shrink-0 flex-wrap gap-3">{actions}</div>}

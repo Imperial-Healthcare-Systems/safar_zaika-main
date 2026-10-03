@@ -64,7 +64,7 @@ Deliberately **not** installed: **styled-components** (Tailwind tokens cover eve
 src/
   app/                  routes (server page.tsx + metadata; client views in components/), globals.css, carousels.css, opengraph-image
   components/
-    layout/             Navbar (transparent over the home hero, solid white elsewhere; sentence-case links, scroll hairline, journey chip), BottomTabBar (mobile: Home, Tools, Cart, Offers, Account), MobileNav, Footer (tagline headline, a thali plate that turns with scroll inside a ring of text, five plain link groups), PageHeader
+    layout/             Navbar (transparent over the home hero, solid white elsewhere; sentence-case links, scroll hairline, journey chip), BottomTabBar (mobile: Home, Tools, Cart, Offers, Account), MobileNav, Footer (tagline headline, a thali plate that turns with scroll inside a ring of text, then brand + contact beside four plain link groups, privacy and terms in the bottom bar), PageHeader
     hero/               Hero (content block vertically centred over the navy 3D band, reassurance chips, journey-aware info pill), HeroServices (service switcher: Order food = the three-tab search card, Train status = hand-off to /train-tools?tool=live-status&train=…, Hotels = a labelled coming-soon preview), HeroScene + scene/ (Train, Track, Backdrop, geometry, textures)
     pnr/                PnrModule (PNR / train / station modes; `variant="search"` is the wide hero card), PnrLoading (fullscreen discovery overlay), OrderView
     journey/            NetworkMap (shared camera map), JourneyMap, TrainMarker (isometric train), JourneyCard (ticket), StationCard, JourneyStatus, JourneyView
@@ -78,12 +78,12 @@ src/
     offers/             OfferCard, OffersSection, OffersGrid
     testimonials/       Testimonials (react-slick)
     modals/             WelcomeModal (auto-opens once per session), LoginModal + LoginForm (OTP), OrderNowModal, SearchModal
-    home/               StatsBand, EasySteps (four steps, a train rides the track once), TrainToolsGrid (eight working tiles), Categories,
+    home/               StatsBand (plan figures read from the data and counted up by `CountUp`), EasySteps (four steps, a train rides the track once), TrainToolsGrid (eight working tiles), Categories,
                         MealTimes, FoodDiscovery, RestaurantShowcase, TrustSection ("Why choose", light icon grid), BulkCta (group-order panel),
                         StationCoverage, LiveJourney, RecentOrders (sample-activity ticker, no names), HomeGuide (ordering guide accordions), CtaBand;
                         HowItWorks (pinned steps) and FoodJourney live on /how-it-works
     tools/              TrainToolsView + PnrStatusTool, ScheduleTool, LiveStatusTool (mock data, labelled as demo)
-    animations/         RouteLine, TrainIcon, Reveal, Magnetic, AnimatedNumber
+    animations/         RouteLine, TrainIcon, Reveal, Magnetic, AnimatedNumber (+ `CountUp`: counts a figure up once, when it scrolls in)
     providers/          Providers (stores rehydrate, global modals, toaster), SmoothScroll (Lenis+GSAP)
     ui/                 Button, Input/Textarea/Select, Card, Badge/VegDot/Rating/Price, Modal (native <dialog>), Tabs/Chip,
                         Skeleton, Toaster, Accordion, SectionHeading, Logo, CarouselArrows (+ SwiperProgress)
@@ -114,7 +114,7 @@ Railway blue with a single orange action colour (client direction, 3 Oct 2026; t
 
 The supplied logo is used exactly as delivered (warm brown on its cream plate): the colour lockup on white surfaces, the white lockup on navy. It is never recoloured.
 
-Type: the logo's tagline is set in Bahnschrift, a DIN-style face, so the UI uses its closest open relative, **Barlow**: Barlow Semi Condensed 800 for display (`h1`–`h3`, `.font-display`) and Barlow for UI (`font-sans`). The visual language is a clean food app (client direction, 5 Oct 2026): white cards with soft navy shadows, sentence-case copy, status pills with a coloured dot, plain bold figures, `tag` / `tag-dark` labels for codes and small facts, `panel-dark` cards on navy. The earlier departure-board devices (flip cells, LED panels, yellow station-board chips) were removed everywhere at the client's request; do not reintroduce them.
+Type: the logo's tagline is set in Bahnschrift, a DIN-style face, so the UI uses its closest open relative, **Barlow**: Barlow Semi Condensed for display (`h1`–`h3`, `.font-display`) and Barlow for UI (`font-sans`). Headings are set at **700**, not 800 — the heavier cut read as shouty (client, 3 Oct 2026). A quieter, non-condensed display face is the open follow-up. The visual language is a clean food app (client direction, 5 Oct 2026): white cards with soft navy shadows, sentence-case copy, status pills with a coloured dot, plain bold figures, `tag` / `tag-dark` labels for codes and small facts, `panel-dark` cards on navy. The earlier departure-board devices (flip cells, LED panels, yellow station-board chips) were removed everywhere at the client's request; do not reintroduce them.
 
 ## Signature interactions
 

@@ -7,6 +7,7 @@ import { ArrowRight, MapPin, Search, Store } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button, Chip, Input, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/animations/Reveal";
+import { CountUp } from "@/components/animations/AnimatedNumber";
 import { PnrModule } from "@/components/pnr/PnrModule";
 import { PLANNED_STATIONS, REGIONS, stations } from "@/data/stations";
 import { restaurantsByStation } from "@/data/restaurants";
@@ -34,7 +35,11 @@ export function StationExplorer() {
   return (
     <>
       <PageHeader
-        title={`Food at ${PLANNED_STATIONS} stations, across four regions`}
+        title={
+          <>
+            Food at <CountUp value={PLANNED_STATIONS} /> stations, across {REGIONS.length} regions
+          </>
+        }
         description="That's the network being built out: North, East, West and South, with two partner kitchens live per station at launch. The stations listed below are the demo subset; your PNR check is the source of truth for your route."
       >
         <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Filter by region">
